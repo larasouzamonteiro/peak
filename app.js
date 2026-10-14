@@ -50,7 +50,9 @@ const TIPOS = {
     '.webp': 'image/webp', '.ico': 'image/x-icon', '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg'
 }
 
-    // o endereço puro manda a pessoa para /html/index.html (302 = "vá para lá")
+function entregarArquivo(pathname, res){
+    // o endereço puro (https://site.com/) manda a pessoa para /html/index.html.
+    // Precisa ser um "redirecionamento" (302) para os links da página funcionarem.
     if(pathname == '/'){
         res.writeHead(302, {'Location': '/html/index.html'})
         return res.end()
