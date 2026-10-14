@@ -11,7 +11,7 @@ module.exports = {
     port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'peak_final',
+    database: process.env.DB_NAME || 'projetopeak',
     dateStrings: true,          // as datas vêm como texto ('2026-10-10')
     connectionLimit: 5,         // no máximo 5 conexões abertas ao mesmo tempo (o Aiven grátis tem poucas)
 

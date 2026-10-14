@@ -18,9 +18,9 @@
 --   usuarioId vazio (NULL) = é oficial da Peak
 --   usuarioId preenchido   = foi criado por aquela pessoa
 
-DROP DATABASE IF EXISTS peak_final;
-CREATE DATABASE peak_final CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE peak_final;
+DROP DATABASE IF EXISTS projetopeak;
+CREATE DATABASE projetopeak CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE projetopeak;
 
 
 -- ---------- USUÁRIOS ----------
@@ -236,21 +236,11 @@ INSERT INTO interesses
 VALUES
 ('RPG'), ('D&D'), ('Old Dragon'), ('Anime'), ('Jogos'), ('Fantasia'), ('Terror'), ('Ficção científica'), ('Aventura');
 
-INSERT INTO usuario_interesses
-(usuarioId, interesseId)
-VALUES
-(1, 1), (1, 4), (1, 6);
-
 -- parcerias (ids 1 a 6)
 INSERT INTO parcerias
 (nome)
 VALUES
 ('Ilustrador'), ('Mestre'), ('Jogador'), ('Escritor'), ('Músico'), ('Criador de mapas');
-
-INSERT INTO usuario_parcerias
-(usuarioId, parceriaId, tipo)
-VALUES
-(1, 1, 'sou'), (1, 2, 'sou'), (1, 3, 'procuro');
 
 -- raças oficiais (ids 1 a 6)
 INSERT INTO racas
@@ -296,8 +286,36 @@ VALUES
 INSERT INTO campanhas
 (usuarioMestreId, nome, descricao, historia, imagemCapa, codigoConvite, oficial, oficialId, criadaPor)
 VALUES
-(NULL, 'Guardiões de Ágora', 'Um dragão guarda o rio que secou. Descubra por quê antes que Ágora fique sem água.', 'A campanha principal da Peak, inspirada nos Objetivos de Desenvolvimento Sustentável (ODS) da ONU.\n\nA cidade de Ágora está adoecendo: o rio secou, a colheita falhou e as famílias do bairro de baixo não têm mais onde morar. Cada capítulo apresenta um problema ligado a uma ODS (fome zero, água potável, cidades sustentáveis, vida na água, vida terrestre...) e o grupo só vence quando resolve a causa do problema, e não só o monstro.\n\nNo último capítulo, os heróis precisam unir os povos da região: é a ODS 17, parcerias e meios de implementação.', '../img/novas/dragao.jpg', NULL, 1, NULL, 'Equipe Peak'),
-(NULL, 'Dohomatika', 'Uma história original de um artista parceiro da Peak. (Texto de exemplo: troque pelo resumo de verdade no painel do admin.)', 'Aqui entra a história completa da Dohomatika.\n\nEste texto é só um exemplo para a página não ficar vazia. Entre com a conta de administrador, abra Administração > Campanhas oficiais e clique em Editar para colocar a história de verdade.', '../img/mascote/espada.jpg', NULL, 1, NULL, 'Nome do artista');
+(NULL, 'As Raízes do Fim', 'A água está morrendo, mas os seis princípios discordam sobre o que deve ser salvo: o rio, as pessoas, a ordem, a verdade ou a possibilidade de um futuro diferente.', '# As Raízes do Fim
+
+Campanha de RPG de fantasia sombria • ODS 6 — Água Potável e Saneamento
+
+Durante séculos, o reino de Valdora prosperou graças ao Rio de Elar, cujas águas alimentavam plantações, sustentavam vilas e mantinham vivas as florestas. Entretanto, com o crescimento das cidades e a expansão da mineração, o rio começou a escurecer. Os peixes morreram, as colheitas apodreceram e doenças se espalharam entre aqueles que não podiam pagar por água limpa. Enquanto os poderosos protegiam seus privilégios, a população era obrigada a sobreviver com aquilo que restava.
+
+O reino atribuiu a tragédia a uma antiga maldição, mas a verdade era mais terrível: a própria humanidade havia envenenado aquilo que a mantinha viva.
+
+À medida que a corrupção se espalha pelas águas e raízes, antigas entidades começam a despertar. Fim, Humano, Anjo, Luz, Justiça e Dúvida são princípios que representam forças fundamentais da existência. Cada um possui sua própria compreensão do que deve ser preservado, do que merece ser destruído e de quem deve responder pelas consequências de seus atos.
+
+Os jogadores são enviados para investigar a origem da contaminação e acabam envolvidos em uma disputa que ultrapassa os limites do reino. Para descobrir o que realmente aconteceu, precisarão explorar vilas abandonadas, atravessar florestas corrompidas e confrontar aqueles que lucraram com a tragédia. No caminho, encontrarão criaturas deformadas pela poluição, vítimas transformadas em monstros e entidades cujas intenções nem sempre correspondem às aparências.
+
+Entretanto, descobrir os culpados será apenas o começo. Revelar a verdade poderá provocar uma guerra; buscar justiça poderá condenar inocentes; e salvar o rio poderá exigir o fim de um sistema do qual milhares de pessoas dependem para sobreviver.
+
+No fim, os aventureiros terão de decidir se é possível reconstruir um mundo sem repetir os erros que o destruíram — e se a humanidade merece uma segunda oportunidade.
+
+Porque nem toda maldição nasce da magia, nem todo monstro nasce mau e nem toda salvação acontece sem sacrifícios.
+
+A campanha aborda a importância do acesso à água potável, do saneamento, da preservação dos ecossistemas aquáticos e da responsabilidade coletiva pela proteção dos recursos naturais, relacionando sua narrativa à ODS 6 da ONU.', '../img/novas/odspoluicao.png', NULL, 1, NULL, 'Equipe Peak'),
+(NULL, 'Dohomatika', 'Uma história original de um artista parceiro da Peak; César. Uma narrativa sobre a existência, a insanidade e os limites da realidade, onde até a própria inexistência pode ser temida.', 'Dohomatika é uma campanha ambientada no universo de Openworld, um conjunto que reúne as histórias de diferentes livros em uma mesma existência. Nesse universo, a realidade é habitada por seres transcendentais, criaturas extraordinárias e entidades cujos poderes ultrapassam os limites da compreensão comum. Suas histórias se entrelaçam por meio de conflitos, relações complexas e acontecimentos capazes de afetar não apenas indivíduos, mas a própria estrutura da existência.
+
+No centro dessa narrativa está Dohomatika, uma entidade inexistente que não possui mente ou alma próprias, sendo apenas uma couraça capaz de abrigar outros seres. Sua natureza misteriosa e seu poder sem limites conhecidos fazem dele uma presença singular, capaz de apagar da realidade aqueles que ousam desafiá-lo. Entretanto, sua importância não se resume à sua força, pois seu corpo também se torna parte do destino de outras existências que nele habitam.
+
+Entre essas figuras estão os Errantes, membros de um grupo transcendental responsáveis por narrar as histórias de Openworld. Nosa, conhecido como O Cordeiro Puro, Descendente do Clarividente, destaca-se por sua habilidade de combate e por seu papel no conflito que leva à expulsão de Zaggaz, o Canibal de Corações e pilar da insanidade. Após esse acontecimento, Zaggaz passa a vagar fora da couraça de Dohomatika, afundando cada vez mais em sua própria demência. Shade, por sua vez, é reconhecido por sua sabedoria e pelo uso de estiletes envenenados, enquanto outros Errantes ainda aguardam seu momento de revelar suas histórias.
+
+A campanha também apresenta personagens como Mistake, filha de Lyra, cuja busca por uma filha perfeita resulta em um pacto com Exegork. Transformada em uma criatura de beleza extraordinária, capaz de salvar a existência por meio de sua voz, Mistake é condenada a carregar duas maldições: a Miséria Silenciosa e a Miséria Luxuriosa. Sua trajetória é marcada pela perda de Darek, seu filho que nunca chegou a nascer, e pela busca frustrada de consolo em Dohomatika, uma entidade incapaz de sentir. Já Dogma representa uma ameaça de natureza diferente: um conceito imortal que caça suas vítimas, regenera seus ferimentos e utiliza sua inteligência para superar adversários cada vez mais poderosos. Embora possa ser derrotado em combate, apenas Dohomatika é capaz de exterminá-lo por completo.
+
+Cada personagem carrega sua própria natureza, seus conflitos e suas consequências, contribuindo para uma narrativa na qual poder não significa necessariamente compreensão, e imortalidade não representa ausência de sofrimento. As relações entre essas figuras moldam acontecimentos que ultrapassam suas próprias histórias, revelando diferentes perspectivas sobre a existência, a insanidade, a perda e a permanência.
+
+Assim, Dohomatika não é apenas uma história sobre seres poderosos, mas sobre as contradições que habitam um universo onde até mesmo a realidade pode ser questionada. Em Openworld, cada existência possui seu lugar, cada conflito pode desencadear consequências imprevisíveis e nem mesmo aquilo que parece eterno está necessariamente livre de seu próprio destino.', '../img/mascote/dohomatika.png', NULL, 1, NULL, 'César');
 
 
 -- monstros
