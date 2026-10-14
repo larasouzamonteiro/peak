@@ -51,8 +51,11 @@ const TIPOS = {
 }
 
 function entregarArquivo(pathname, res){
+    // o endereço puro (https://site.com/) manda a pessoa para /html/index.html.
+    // Precisa ser um "redirecionamento" (302) para os links da página funcionarem.
     if(pathname == '/'){
-        pathname = '/html/index.html'
+        res.writeHead(302, {'Location': '/html/index.html'})
+        return res.end()
     }
 
     var caminho = path.normalize(path.join(PASTA_FRONT, decodeURIComponent(pathname)))
