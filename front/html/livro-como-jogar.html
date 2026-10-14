@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Como jogar | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Lora nos livros) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | historia.css = estante e livros -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/historia.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <a class="lateral-marca" href="inicio.html">
+      <img class="logo-peak" src="../img/logo.png" alt="">
+      <span>Peak</span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+      <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link ativo" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+      <a class="lateral-conta" href="perfil.html">
+        <div class="avatar" id="menuLetra"></div>
+        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <!-- o id="topo" é para onde o botão "voltar ao topo" leva -->
+  <main class="secao biblioteca" id="topo">
+    <div class="container">
+
+      <div class="cabecalho-pagina">
+        <div>
+          <h1 class="titulo">História</h1>
+          <p class="texto-suave">Livro I · Como jogar</p>
+        </div>
+      </div>
+
+      <div class="aberto-topo">
+        <a class="botao" href="historia.html">‹ Voltar à estante</a>
+
+        <!-- BOTÕES DE LEITURA (as funções estão no js/historia.js) -->
+        <div class="barra-leitura">
+          <button type="button" class="botao botao-principal" id="botaoAudio" onclick="tocarAudio()">▶ Ouvir</button>
+          <button type="button" class="botao" id="botaoMarcaTexto" onclick="ligarMarcaTexto()">Marca-texto</button>
+        </div>
+      </div>
+
+      <!-- a narração deste livro: grave e salve em front/sons/livro-como-jogar.mp3 -->
+      <audio id="audio" src="../sons/livro-como-jogar.mp3" onended="audioTerminou()"></audio>
+      <p class="alerta" id="avisoAudio"></p>
+
+      <!-- O LIVRO: página da esquerda = arte e sumário (links #cap-1, #cap-2...)
+           página da direita = os capítulos, um embaixo do outro (id="cap-1", id="cap-2"...).
+           As palavras sublinhadas (class="palavra") são links para o Dicionário, no fim da página;
+           com o mouse em cima, o CSS mostra a explicação que está no data-def. -->
+      <div class="livro-aberto" id="livro-como-jogar">
+        <div class="pagina-esq" style="--capa:url(../img/livros/como-jogar.jpg)">
+          <div class="pagina-arte"></div>
+          <div class="pagina-sumario">
+            <small>Livro I</small>
+            <h2>Como jogar</h2>
+            <ol>
+              <li><a class="sumario-item" href="#cap-1"><span>1</span>Crie a sua ficha</a></li>
+              <li><a class="sumario-item" href="#cap-2"><span>2</span>Entre numa campanha</a></li>
+              <li><a class="sumario-item" href="#cap-3"><span>3</span>Jogue as sessões</a></li>
+              <li><a class="sumario-item" href="#cap-4"><span>4</span>Role os dados</a></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="pagina-dir">
+          <section class="cap-texto" id="cap-1">
+            <small class="cap-numero">Capítulo 1</small>
+            <h3>Crie a sua ficha</h3>
+            <p><span class="capitular">T</span>odo aventureiro começa numa folha em branco. Em <b>Fichas</b>, a Oficina leva você por cinco etapas: identidade, raça, classe, combate e itens, atributos e detalhes.</p>
+            <p>A <a class="palavra" href="#raca" data-def="O povo do personagem: elfo, humano, goblin... Define a vida inicial.">raça</a> define quanto de vida o personagem tem no começo. A <a class="palavra" href="#classe" data-def="A profissão de aventureiro: o que o personagem sabe fazer.">classe</a> diz o que ele sabe fazer. Os seis <a class="palavra" href="#atributos" data-def="Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma.">atributos</a> mostram no que ele é bom e no que é desastrado.</p>
+            <p>Não existe ficha errada: um mago com pouca inteligência só rende histórias mais engraçadas.</p>
+            <div class="pagina-rodape"><span>1</span></div>
+          </section>
+
+          <section class="cap-texto" id="cap-2">
+            <small class="cap-numero">Capítulo 2</small>
+            <h3>Entre numa campanha</h3>
+            <p><span class="capitular">O</span> <a class="palavra" href="#mestre" data-def="Quem conduz a história: descreve o mundo e interpreta os monstros.">Mestre</a> cria a <a class="palavra" href="#campanha" data-def="A aventura inteira, do começo ao fim. É formada por várias sessões.">campanha</a> e recebe um código de convite. Você digita esse código em <b>Campanhas</b>, escolhe com qual ficha vai jogar, e pronto: já faz parte do grupo.</p>
+            <p>Quer mestrar? Crie a sua campanha do zero ou use uma campanha oficial da Peak como ponto de partida. Você recebe uma cópia só sua, com a história e os monstros prontos.</p>
+            <div class="pagina-rodape"><span>2</span></div>
+          </section>
+
+          <section class="cap-texto" id="cap-3">
+            <small class="cap-numero">Capítulo 3</small>
+            <h3>Jogue as sessões</h3>
+            <p><span class="capitular">C</span>ada encontro do grupo é uma <a class="palavra" href="#sessao" data-def="Um encontro do grupo para jogar um pedaço da campanha.">sessão</a>. O Mestre mostra o mapa, coloca música e sons, e descreve o que acontece. Os jogadores dizem o que os seus personagens fazem.</p>
+            <p>Ninguém joga contra ninguém: o grupo inteiro joga junto para ver até onde a história vai. Depois, o Mestre anota o resultado na aba <b>Sessões</b>, e cada um atualiza a vida e o nível da própria ficha.</p>
+            <div class="pagina-rodape"><span>3</span></div>
+          </section>
+
+          <section class="cap-texto" id="cap-4">
+            <small class="cap-numero">Capítulo 4</small>
+            <h3>Role os dados</h3>
+            <p><span class="capitular">Q</span>uando não dá para saber se uma ação vai dar certo (pular um abismo, enganar um guarda), quem decide é o <a class="palavra" href="#dado" data-def="Decide o que depende da sorte. d20 é o dado de 20 lados.">dado</a>.</p>
+            <p>O botão vermelho no canto da tela rola d4, d6, d8, d10, d12 e d20. Quanto maior o número, melhor o resultado. O Mestre diz qual dado rolar e quanto precisa tirar.</p>
+            <div class="pagina-rodape"><span>4</span></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="dicionario-pagina" id="dicionario">
+        <small class="cap-numero">Palavras do RPG</small>
+        <h2>Dicionário</h2>
+        <div class="dicionario">
+          <div class="termo" id="mestre"><h4>Mestre</h4><p>Quem conduz a história: descreve o mundo, interpreta os monstros e decide o que acontece.</p></div>
+          <div class="termo" id="ficha"><h4>Ficha</h4><p>A "folha" do personagem: raça, classe, vida, atributos, itens e história.</p></div>
+          <div class="termo" id="campanha"><h4>Campanha</h4><p>A aventura inteira, do começo ao fim. É formada por várias sessões.</p></div>
+          <div class="termo" id="sessao"><h4>Sessão</h4><p>Um encontro do grupo para jogar um pedaço da campanha.</p></div>
+          <div class="termo" id="dado"><h4>Dado</h4><p>Decide o que depende da sorte. "d20" é o dado de 20 lados.</p></div>
+          <div class="termo" id="atributos"><h4>Atributos</h4><p>FOR, DES, CON, INT, SAB e CAR: no que o personagem é bom.</p></div>
+          <div class="termo" id="raca"><h4>Raça</h4><p>O povo do personagem: elfo, humano, goblin... Define a vida inicial.</p></div>
+          <div class="termo" id="classe"><h4>Classe</h4><p>A profissão de aventureiro: o que o personagem sabe fazer.</p></div>
+          <div class="termo" id="monstro"><h4>Monstro</h4><p>Qualquer criatura que o grupo encontra pelo caminho.</p></div>
+          <div class="termo" id="nivel"><h4>Nível</h4><p>Quanto o personagem já evoluiu. Sobe conforme ele vive aventuras.</p></div>
+          <div class="termo" id="ods"><h4>ODS</h4><p>Objetivos de Desenvolvimento Sustentável: 17 metas da ONU para o mundo até 2030.</p></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MARCA-TEXTO: a faixa amarela. Começa escondida; ligarMarcaTexto() mostra e
+       moverMarcaTexto() faz ela seguir o mouse. O visual está no css/historia.css -->
+  <div class="marca-texto oculto" id="marcaTexto"></div>
+
+  <!-- VOLTAR AO TOPO: é só um link para o id="topo" -->
+  <a class="botao-topo" href="#topo" title="Voltar ao topo">↑</a>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+
+  <!-- script.js: funções usadas em todas as páginas (menu, dado...) -->
+  <script src="../js/script.js"></script>
+
+  <!-- historia.js: o áudio e o marca-texto deste livro -->
+  <script src="../js/historia.js"></script>
+</body>
+</html>

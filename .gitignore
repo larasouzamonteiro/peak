@@ -1,0 +1,4 @@
+# não sobe para o GitHub:
+node_modules/
+.env
+*.log

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar | Peak</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap">
+
+  <!-- style.css = botões e campos | entrada.css = o desenho e a animação desta tela -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/entrada.css">
+</head>
+<body class="entrada">
+
+  <a class="entrada-marca" href="index.html"><img class="logo-peak" src="../img/logo.png" alt=""> Peak</a>
+  <a class="entrada-voltar" href="index.html">Voltar ao início</a>
+
+  <!-- A CAIXA tem duas metades: a arte e os formulários (login e cadastro, um em cima do outro).
+       Quando a caixa ganha a classe "cadastro", as metades trocam de lado e o formulário muda.
+       Quem coloca e tira essa classe: mostrarCadastro() e mostrarLogin(), no js/login.js.
+       A animação inteira está no css/entrada.css. -->
+  <div class="entrada-caixa" id="caixa">
+
+    <!-- METADE DA ARTE -->
+    <div class="entrada-arte">
+      <div class="entrada-arte-fundo"></div>
+      <!-- as duas personagens ficam no mesmo lugar: o CSS mostra uma de cada vez -->
+      <img class="arte-login" src="../img/mascote/login-personagem.png" alt="">
+      <img class="arte-cadastro" src="../img/mascote/cadastro-personagem.png" alt="">
+    </div>
+
+    <!-- METADE DOS FORMULÁRIOS -->
+    <div class="entrada-lado">
+
+      <!-- ===== LOGIN ===== -->
+      <div class="entrada-form form-login">
+        <h1>Bem-vindo de volta</h1>
+        <p class="entrada-sub">Entre para continuar sua aventura.</p>
+
+        <div class="campo">
+          <label class="rotulo" for="nomeUsuario">Usuário ou e-mail</label>
+          <input class="input" type="text" id="nomeUsuario" autocomplete="username">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="senha">Senha</label>
+          <input class="input" type="password" id="senha" autocomplete="current-password">
+        </div>
+
+        <!-- mensagem de erro do servidor (função login do js/login.js) -->
+        <p class="alerta" id="alert"></p>
+
+        <button type="button" class="botao botao-principal botao-largo" onclick="login()">Entrar</button>
+
+        <p class="entrada-trocar">Ainda não tem conta? <button type="button" class="link-trocar" onclick="mostrarCadastro()">Criar conta</button></p>
+      </div>
+
+      <!-- ===== CADASTRO ===== -->
+      <div class="entrada-form form-cadastro">
+        <h1>Crie sua conta</h1>
+        <p class="entrada-sub">Monte sua ficha e chame seu grupo.</p>
+
+        <div class="campo">
+          <label class="rotulo" for="nomeCadastro">Nome de usuário</label>
+          <input class="input" type="text" id="nomeCadastro" maxlength="30" placeholder="Ex.: luna.art" autocomplete="username">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="emailCadastro">E-mail</label>
+          <input class="input" type="email" id="emailCadastro" maxlength="80" placeholder="voce@email.com" autocomplete="email">
+        </div>
+
+        <div class="linha-campos">
+          <div class="campo">
+            <label class="rotulo" for="senhaCadastro">Senha</label>
+            <input class="input" type="password" id="senhaCadastro" autocomplete="new-password">
+          </div>
+          <div class="campo">
+            <label class="rotulo" for="senha2Cadastro">Confirmar senha</label>
+            <input class="input" type="password" id="senha2Cadastro" autocomplete="new-password">
+          </div>
+        </div>
+
+        <!-- mensagem de erro (função cadastrar do js/login.js) -->
+        <p class="alerta" id="alertCadastro"></p>
+
+        <button type="button" class="botao botao-principal botao-largo" onclick="cadastrar()">Criar conta</button>
+
+        <p class="entrada-trocar">Já tem conta? <button type="button" class="link-trocar" onclick="mostrarLogin()">Entrar</button></p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../js/script.js"></script>
+  <script src="../js/login.js"></script>
+</body>
+</html>

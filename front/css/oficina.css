@@ -1,0 +1,468 @@
+/* =====================================================
+   OFICINA.CSS - criar ficha em etapas (criar-ficha.html)
+
+   Esta página tem um visual só dela: cards brancos arredondados,
+   nomes em letra com serifa e botões com degradê.
+   Todas as regras começam com ".oficina" (a classe que está no
+   <main> da página), assim nada daqui muda as outras páginas.
+
+     1. Cores desta página
+     2. Título e indicador de etapas
+     3. Cards, textos e campos
+     4. Botões
+     5. Etapa 1: retratos
+     6. Etapas 2 e 3: raças e classes
+     7. Etapa 4: itens
+     8. Etapa 5: atributos
+     9. Resumo do personagem (coluna da direita)
+    10. Telas menores
+   ===================================================== */
+
+
+/* ---------- 1. CORES DESTA PÁGINA ---------- */
+.oficina{
+    --papel: rgba(255, 253, 249, 0.86);      /* fundo dos cards (um pouco transparente, para combinar com o vidro) */
+    --papel-2: #f0e8dc;                      /* botões claros e fundo dos itens */
+    --marrom: #3d3128;                       /* texto */
+    --marrom-2: #7d6d5f;                     /* texto mais claro */
+    --marrom-3: #a8998a;                     /* texto bem claro */
+    --borda: rgba(90, 70, 45, 0.1);
+    --borda-forte: rgba(90, 70, 45, 0.18);
+    --vinho: #b0514a;                        /* destaque */
+    --vinho-claro: rgba(176, 81, 74, 0.1);
+    --sombra: 0 2px 10px rgba(90, 70, 45, 0.06);
+
+    color: var(--marrom);
+}
+
+
+/* ---------- 2. TÍTULO E INDICADOR DE ETAPAS ---------- */
+.oficina .titulo{
+    margin: 0 0 4px;
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-transform: none;
+}
+
+.oficina .texto-suave{
+    margin: 0;
+    color: var(--marrom-2);
+}
+
+.oficina .etapas{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+/* cada etapa é uma "pílula". O js/criar-ficha.js troca as classes "ativa" e "feita". */
+.oficina .etapa-marca{
+    padding: 6px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background: var(--papel);
+    color: var(--marrom-3);
+    font-size: 0.85rem;
+}
+
+.oficina .etapa-marca.feita{
+    color: #9a3f39;
+}
+
+.oficina .etapa-marca.ativa{
+    border-color: var(--vinho);
+    background: var(--vinho);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* formulário na esquerda e o resumo do personagem na direita */
+.oficina .oficina-grade{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 22px;
+    align-items: start;
+}
+
+
+/* ---------- 3. CARDS, TEXTOS E CAMPOS ---------- */
+.oficina .card{
+    padding: 22px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: var(--papel);
+    box-shadow: var(--sombra);
+}
+
+.oficina .card-titulo{
+    margin: 0 0 4px;
+    font-size: 1.02rem;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.oficina .card-texto{
+    margin: 0 0 12px;
+    color: var(--marrom-2);
+    font-size: 0.92rem;
+}
+
+/* a segunda parte de uma etapa (Itens, Detalhes): uma linha separa da primeira */
+.oficina .junto{
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--borda);
+}
+
+.oficina .linha-titulo{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.oficina .linha-titulo .card-titulo{
+    margin: 0;
+}
+
+.oficina .rotulo{
+    color: var(--marrom);
+    font-size: 0.86rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.oficina .input{
+    padding: 10px 14px;
+    border: 1px solid var(--borda-forte);
+    border-radius: 8px;
+    background: var(--papel);
+    color: var(--marrom);
+    font-size: 0.92rem;
+}
+
+.oficina .input:focus{
+    border-color: var(--vinho);
+    outline: 3px solid var(--vinho-claro);
+}
+
+.oficina .ajuda{
+    color: var(--marrom-3);
+    font-size: 0.82rem;
+}
+
+.oficina .selo{
+    padding: 2px 9px;
+    border-radius: 6px;
+    background: var(--papel-2);
+    color: var(--marrom-2);
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.oficina .alerta{
+    color: #b0362f;
+    font-weight: 600;
+}
+
+
+/* ---------- 4. BOTÕES ---------- */
+.oficina .botao{
+    min-height: 40px;
+    padding: 0 18px;
+    border: 1px solid var(--borda-forte);
+    border-radius: 8px;
+    background: var(--papel-2);
+    color: var(--marrom);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.oficina .botao:hover{
+    transform: none;
+    box-shadow: none;
+}
+
+.oficina .botao-principal{
+    border-color: transparent;
+    background: linear-gradient(135deg, #8a5a3c 0%, #b0514a 60%, #d9826b 100%);
+    box-shadow: 0 6px 18px rgba(176, 81, 74, 0.25);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* "+ Raças da comunidade": botão tracejado que abre a área de baixo */
+.oficina .botao-comunidade{
+    display: block;
+    width: 100%;
+    margin: 22px 0 14px;
+    padding: 13px;
+    border: 1px dashed var(--borda-forte);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--marrom-2);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.oficina .botao-comunidade:hover{
+    border-color: var(--vinho);
+    color: var(--vinho);
+}
+
+
+/* ---------- 5. ETAPA 1: RETRATOS ---------- */
+.oficina .escolhas-retrato{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+}
+
+.oficina .retrato-opcao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--marrom-3);
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+/* a bolinha do radio fica escondida: o que mostra a escolha é a borda da foto */
+.oficina .retrato-opcao input{
+    display: none;
+}
+
+.oficina .retrato{
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px solid var(--borda);
+    border-radius: 14px;
+    background: var(--papel);
+    object-fit: cover;
+    object-position: center 15%;
+}
+
+.oficina .retrato-opcao:has(input:checked){
+    color: var(--marrom);
+}
+
+.oficina .retrato-opcao:has(input:checked) .retrato{
+    border-color: var(--vinho);
+    box-shadow: 0 0 0 4px var(--vinho-claro);
+}
+
+
+/* ---------- 6. ETAPAS 2 E 3: RAÇAS E CLASSES ---------- */
+.oficina .galeria{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.oficina .galeria-card{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    box-shadow: var(--sombra);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    position: relative;      /* a foto ocupa o card todo e o texto fica por cima */
+    min-height: 270px;
+    background: #1d1416;
+    color: #f6ece3;
+}
+
+/* a raça (ou classe) escolhida: o js/criar-ficha.js coloca a classe "selecionado" */
+.oficina .galeria-card.selecionado{
+    border-color: var(--rosa);
+    box-shadow: 0 0 0 4px rgba(232, 135, 90, 0.3);
+}
+
+.oficina .galeria-img .foto{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+}
+
+.oficina .galeria-img{
+    position: absolute;
+    inset: 0;
+}
+
+/* o nome fica embaixo, num degradê escuro por cima da foto */
+.oficina .galeria-info{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: auto;
+    padding: 50px 14px 12px;
+    background: linear-gradient(180deg, rgba(29, 20, 22, 0) 0%, rgba(29, 20, 22, 0.82) 38%, rgba(29, 20, 22, 0.95) 100%);
+}
+
+.oficina .galeria-info strong{
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.oficina .galeria-info small{
+    color: rgba(246, 236, 227, 0.7);
+    font-size: 0.78rem;
+}
+
+
+/* ---------- 7. ETAPA 4: ITENS ---------- */
+.oficina .itens-grade{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.oficina .item-card{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.45);
+    box-shadow: var(--sombra);
+    color: var(--marrom);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.oficina .item-card.selecionado{
+    border-color: var(--vinho);
+    box-shadow: 0 0 0 4px var(--vinho-claro);
+}
+
+.oficina .item-img{
+    height: 150px;
+    padding: 14px;
+}
+
+.oficina .item-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 8px rgba(60, 30, 20, 0.25));   /* os itens são png sem fundo */
+}
+
+.oficina .item-card span{
+    display: block;
+    padding: 10px 12px 12px;
+}
+
+.oficina .item-card strong{
+    display: block;
+    font-size: 0.9rem;
+}
+
+.oficina .item-card small{
+    color: var(--marrom-3);
+    font-size: 0.74rem;
+}
+
+
+/* ---------- 8. ETAPA 5: ATRIBUTOS ---------- */
+/* Equilibrado / Aleatório / Personalizado */
+.oficina .opcoes{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.oficina .opcoes label{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* campo travado (Equilibrado e Aleatório): fica mais apagado.
+   O js/criar-ficha.js só coloca e tira o atributo "readonly" dos campos. */
+.oficina .input[readonly]{
+    background: var(--papel-2);
+    color: var(--marrom-2);
+}
+
+
+/* ---------- 9. RESUMO DO PERSONAGEM ---------- */
+/* acompanha a rolagem da página */
+.oficina .resumo{
+    position: sticky;
+    top: 20px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: var(--papel);
+    box-shadow: 0 20px 50px rgba(90, 70, 45, 0.18);
+}
+
+.oficina .resumo-arte{
+    height: 340px;
+    background: #fff;
+}
+
+.oficina .resumo-arte img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+}
+
+.oficina .resumo-texto{
+    padding: 16px 18px 20px;
+}
+
+.oficina .resumo-texto h3{
+    margin: 6px 0 4px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.oficina .resumo-texto p{
+    margin: 0 0 6px;
+    color: var(--marrom-2);
+    font-size: 0.88rem;
+}
+
+
+/* ---------- 10. TELAS MENORES ---------- */
+@media (max-width: 1100px){
+    .oficina .oficina-grade{
+        grid-template-columns: 1fr;
+    }
+
+    .oficina .resumo{
+        position: static;
+    }
+
+    .oficina .galeria,
+    .oficina .itens-grade{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .oficina .escolhas-retrato{
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

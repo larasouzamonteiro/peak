@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bestiário | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/bestiario.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <a class="lateral-marca" href="inicio.html">
+      <img class="logo-peak" src="../img/logo.png" alt="">
+      <span>Peak</span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+      <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link ativo" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+      <a class="lateral-conta" href="perfil.html">
+        <div class="avatar" id="menuLetra"></div>
+        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <main class="secao">
+    <div class="container">
+
+      <div class="cabecalho-pagina">
+        <h1 class="titulo">Bestiário</h1>
+      </div>
+
+      <!-- FAIXAS: uma para a Peak, uma para cada campanha oficial, Comunidade e Meus.
+           Os botões são criados pela função desenharFaixas(). Clicar em um troca a lista de baixo. -->
+      <div class="faixas" id="faixas"></div>
+
+      <!-- frase que explica a faixa escolhida (função desenharFaixas) -->
+      <p class="faixa-info" id="faixaInfo"></p>
+
+      <!-- a cada letra digitada a lista é desenhada de novo (oninput) -->
+      <input class="input busca-monstros" type="text" id="busca" placeholder="Buscar pelo nome" oninput="desenharMonstros()">
+
+      <!-- os cards dos monstros entram aqui: função desenharMonstros() -->
+      <div class="grade-monstros" id="listaMonstros"></div>
+
+    </div>
+  </main>
+
+  <!-- JANELA: VER UM MONSTRO. Começa escondida; abre ao clicar num card (função abrirMonstro).
+       Os textos são preenchidos pelo js/monstros.js. -->
+  <div class="modal-fundo oculto" id="janelaMonstro">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="monstroNome"></h2>
+        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaMonstro')">Fechar</button>
+      </div>
+
+      <img class="monstro-imagem" id="monstroImagem" src="../img/logo.png" alt="">
+
+      <div class="chips">
+        <span class="selo" id="monstroVida"></span>
+        <span class="selo selo-escuro" id="monstroDefesa"></span>
+        <span class="chip" id="monstroOrigem"></span>
+      </div>
+
+      <p class="espaco-topo-pequeno" id="monstroDescricao"></p>
+
+      <!-- só aparece se o monstro for meu (abrirMonstro tira a classe "oculto") -->
+      <div class="formulario espaco-topo oculto" id="areaDono">
+        <div class="campo">
+          <label class="rotulo" for="descricaoEdicao">Editar descrição</label>
+          <textarea class="input" id="descricaoEdicao" rows="3"></textarea>
+        </div>
+
+        <label><input type="checkbox" id="publicoEdicao"> Tornar público (aparece em Comunidade)</label>
+
+        <div class="botoes">
+          <button type="button" class="botao botao-principal" onclick="salvarEdicao()">Salvar</button>
+          <button type="button" class="botao" onclick="excluirMonstro()">Excluir monstro</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JANELA: CRIAR MONSTRO. Abre pelo quadro "Criar monstro" da faixa Meus. -->
+  <div class="modal-fundo oculto" id="janelaNovo">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2>Criar monstro</h2>
+        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaNovo')">Fechar</button>
+      </div>
+
+      <div class="formulario">
+        <div class="campo">
+          <label class="rotulo" for="nome">Nome</label>
+          <input class="input" type="text" id="nome" maxlength="50" placeholder="Ex.: Goblin">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="imagem">Imagem (opcional, até 500 KB)</label>
+          <input class="input" type="file" id="imagem" accept="image/*">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="descricao">Descrição</label>
+          <textarea class="input" id="descricao"></textarea>
+        </div>
+
+        <div class="linha-campos">
+          <div class="campo">
+            <label class="rotulo" for="vidaMaxima">Vida</label>
+            <input class="input" type="number" id="vidaMaxima" value="10" min="1">
+          </div>
+          <div class="campo">
+            <label class="rotulo" for="defesa">Defesa</label>
+            <input class="input" type="number" id="defesa" value="10" min="0">
+          </div>
+        </div>
+
+        <label><input type="checkbox" id="publico"> Tornar público (aparece em Comunidade)</label>
+
+        <!-- mensagem de erro do servidor (função salvarMonstro) -->
+        <p class="alerta" id="alert"></p>
+
+        <div><button type="button" class="botao botao-principal" onclick="salvarMonstro()">Salvar monstro</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+
+  <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
+  <script src="../js/script.js"></script>
+  <script src="../js/monstros.js"></script>
+</body>
+</html>

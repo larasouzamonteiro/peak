@@ -1,0 +1,1319 @@
+/* =====================================================
+   STYLE.CSS - o que é igual em TODAS as páginas de dentro
+   (as páginas com o menu do lado). O que é só de uma página
+   fica no arquivo dela: inicio.css, campanhas.css, fichas.css...
+
+   O JavaScript nunca escreve CSS. Ele só coloca ou tira classes:
+     .oculto  -> esconde          .ativo -> botão/aba escolhido
+
+   VISUAL "VIDRO": o fundo é uma arte desfocada com um véu cor de areia
+   por cima. O menu, os blocos e as janelas são painéis meio transparentes
+   ("vidro"). Quase tudo sai das variáveis da parte 1: para mudar a cor do
+   site inteiro, é lá que se mexe.
+
+     1. Cores e medidas
+     2. Base
+     3. Estrutura: menu lateral, topo e dado
+     4. Cabeçalho das páginas, filtros e abas
+     5. Botões
+     6. Cards e grades
+     7. Formulários
+     8. Selos e chips
+     9. Avatar e fotos
+    10. Cards de foto e cartas de ficha
+    11. Janelas (as caixas que abrem por cima da página)
+    12. Utilidades
+    13. Telas menores
+   ===================================================== */
+
+
+/* ---------- 1. CORES E MEDIDAS ---------- */
+:root{
+    --fundo: #f3e1d3;           /* pêssego (aparece enquanto a arte do fundo carrega) */
+    --fundo-2: #ead2c0;
+    --cartao: #fdf8f3;          /* cards claros sem transparência */
+    --cartao-2: #f8ece2;
+    --menu: #fbf3ec;
+
+    --tinta: #3a2318;           /* texto */
+    --tinta-2: #4f3427;
+    --tinta-3: #6b4d40;         /* texto mais claro (ainda dá para ler em cima do fundo) */
+    --linha: rgba(90, 60, 50, 0.16);
+    --linha-forte: rgba(90, 60, 50, 0.3);
+
+    --rosa: #e8875a;            /* destaque pêssego (botão principal, etiquetas, vida) */
+    --rosa-escuro: #b65c33;
+    --rosa-claro: #f6c7ac;
+    --escuro: #3a2318;          /* fundo dos cards de foto */
+    --sobre-escuro: #fbf1ee;    /* texto em cima do escuro */
+
+    --verde: #4f9b62;
+    --amarelo: #c9902a;
+    --vermelho: #c0392b;
+
+    --lateral: 272px;
+    --rapido: 160ms ease;
+    --suave: cubic-bezier(0.16, 1, 0.3, 1);     /* movimento que sai rápido e freia no fim */
+
+    /* ----- o fundo ----- */
+    --arte: url(../img/mascote/fundo-login.jpg);            /* a imagem que fica desfocada atrás de tudo */
+    --veu: radial-gradient(900px 640px at 94% -6%, rgba(190, 150, 96, 0.45), transparent 64%),
+           linear-gradient(180deg, rgba(250, 235, 222, 0.82), rgba(240, 215, 196, 0.88));
+                                                            /* a cor por cima da arte: uma luz dourada no canto + areia */
+
+    /* ----- o vidro ----- */
+    --vidro: rgba(255, 255, 255, 0.75);         /* blocos comuns */
+    --vidro-leve: rgba(255, 255, 255, 0.55);    /* blocos dentro de blocos */
+    --vidro-forte: rgba(255, 251, 247, 0.92);   /* janelas e textos longos: quase sem transparência, para ler bem */
+    --vidro-borda: rgba(255, 255, 255, 0.66);
+    --desfoque: blur(18px) saturate(1.4);       /* o quanto o vidro embaça o que está atrás dele */
+    --brilho: inset 0 1.5px 0 rgba(255, 255, 255, 0.85);    /* a linha de luz na borda de cima */
+    --raio: 22px;                               /* cantos arredondados */
+
+    /* ----- as sombras (sempre leves, sempre de cima para baixo) ----- */
+    --sombra-pequena: 0 1px 2px rgba(50, 35, 25, 0.08), 0 3px 8px rgba(50, 35, 25, 0.07);
+    --sombra: 0 1px 2px rgba(50, 35, 25, 0.08), 0 10px 26px rgba(50, 35, 25, 0.13);
+    --sombra-foto: 0 2px 4px rgba(50, 35, 25, 0.10), 0 14px 30px rgba(50, 35, 25, 0.20);
+    --sombra-forte: 0 2px 6px rgba(50, 35, 25, 0.12), 0 24px 54px rgba(50, 35, 25, 0.26);
+
+    /* ----- o painel escuro em cima das fotos (nome da campanha, dados da ficha) -----
+       Começa transparente e escurece aos poucos, em curva, para não aparecer uma faixa reta. */
+    --painel-foto: linear-gradient(180deg,
+        rgba(30, 17, 21, 0) 0, rgba(30, 17, 21, 0.14) 10px, rgba(30, 17, 21, 0.36) 22px,
+        rgba(30, 17, 21, 0.58) 36px, rgba(30, 17, 21, 0.74) 54px, rgba(30, 17, 21, 0.84) 100%);
+}
+
+
+/* ---------- 2. BASE ---------- */
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    background: var(--fundo);
+    color: var(--tinta);
+    font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+
+    /* o menu lateral é fixo: o conteúdo da página começa depois dele */
+    padding-left: var(--lateral);
+}
+
+/* O FUNDO DO SITE são duas camadas presas na tela, atrás de tudo (z-index negativo):
+   ::before -> a arte, desfocada        ::after -> o véu cor de areia por cima dela */
+body::before,
+body::after{
+    content: "";
+    position: fixed;
+    z-index: -1;
+}
+
+body::before{
+    inset: -40px;                 /* passa um pouco da tela, senão o desfoque deixa a borda clara */
+    z-index: -2;
+    background: var(--arte) center 20% / cover;
+    filter: blur(10px) saturate(1.1) brightness(1.03);
+}
+
+body::after{
+    inset: 0;
+    background: var(--veu);
+}
+
+a{
+    color: var(--rosa-escuro);
+    text-decoration: none;
+}
+
+img{
+    max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p{
+    margin-top: 0;
+}
+
+:focus-visible{
+    outline: 2px solid var(--rosa);
+    outline-offset: 2px;
+}
+
+.container{
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 34px;
+}
+
+.secao{
+    padding: 10px 0 70px;
+}
+
+
+/* ---------- 3. ESTRUTURA: MENU LATERAL, TOPO E DADO ---------- */
+/* -- menu lateral: um painel solto da borda da tela, com a boneca.
+      O fundo tem duas camadas:
+        1. a imagem dela, presa embaixo, ocupando 62% da altura do menu
+           (assim a CABEÇA fica logo abaixo dos links, e não escondida atrás deles);
+        2. por cima, um degradê cor de areia: fechado em cima (onde ficam os links)
+           e sumindo aos poucos até mostrar a boneca. -- */
+.lateral{
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    bottom: 14px;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    width: calc(var(--lateral) - 28px);
+    padding: 22px 14px;
+    overflow: hidden;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 28px;
+    background-color: #fbf3ec;
+    background-image:
+        linear-gradient(180deg, #fbf3ec 0%, #fbf3ec 38%, rgba(251, 243, 236, 0.82) 45%, rgba(251, 243, 236, 0.30) 54%, rgba(251, 243, 236, 0) 62%),
+        url(../img/mascote/m1.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%, auto 62%;       /* degradê: o menu todo | boneca: 62% da altura */
+    background-position: 0 0, 85% 100%;         /* boneca: puxada para a direita (o rosto fica no meio) e presa embaixo */
+    box-shadow: var(--sombra-forte), var(--brilho);
+    backdrop-filter: var(--desfoque);
+}
+
+.lateral-marca{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px 26px;
+    color: var(--tinta);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.logo-peak{
+    height: 42px;
+}
+
+.lateral-grupo{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lateral-link{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--tinta-2);
+    font: inherit;
+    font-size: 0.93rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--rapido);
+}
+
+/* os ícones são arquivos .svg da pasta img/icones */
+.lateral-link img{
+    width: 20px;
+    height: 20px;
+}
+
+.lateral-link:hover{
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.lateral-link.ativo{
+    background: rgba(255, 255, 255, 0.86);
+    color: var(--tinta);
+    box-shadow: var(--sombra), var(--brilho);
+}
+
+/* Configurações, Sair e a conta ficam lá embaixo */
+.lateral-rodape{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+}
+
+/* Configurações, Sair e a conta: pequenos vidros em cima da boneca */
+.lateral-rodape .lateral-link,
+.lateral-conta{
+    border: 1px solid var(--vidro-borda);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--tinta);
+    box-shadow: var(--brilho);
+    backdrop-filter: blur(14px);
+}
+
+.lateral-conta{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.lateral-conta .avatar{
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+}
+
+.lateral-conta span{
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.lateral-conta small{
+    color: var(--tinta-3);
+    font-size: 0.72rem;
+}
+
+/* -- barra do topo -- */
+.topo{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 34px 0;
+}
+
+.topo-oi{
+    color: var(--tinta-3);
+    font-size: 1.05rem;
+}
+
+.topo-oi b{
+    color: var(--tinta);
+}
+
+/* -- dado (botão redondo no canto, em todas as páginas de dentro) -- */
+.dado-botao{
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 45;
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #f2a37b, #e8875a);
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(220, 120, 70, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
+
+.dado-botao img{
+    width: 30px;
+    height: 30px;
+}
+
+.dado-menu{
+    position: fixed;
+    right: 28px;
+    bottom: 104px;
+    z-index: 45;
+    width: 230px;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    background: rgba(43, 23, 25, 0.84);
+    color: var(--sobre-escuro);
+    box-shadow: var(--sombra-forte);
+    backdrop-filter: var(--desfoque);
+}
+
+.dado-menu p{
+    margin: 0 0 10px;
+    font-size: 0.8rem;
+    color: var(--rosa-claro);
+}
+
+.dado-faces{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.dado-faces button{
+    padding: 8px 0;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.dado-faces button:hover{
+    background: var(--rosa);
+}
+
+.dado-resultado{
+    margin-top: 12px;
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+}
+
+/* o número sorteado: a cada rolagem o script.js escreve um <b> novo, e por isso a animação toca de novo */
+.dado-resultado b{
+    display: block;
+    animation: rolar 400ms ease;
+}
+
+.dado-resultado small{
+    display: block;
+    color: var(--rosa-claro);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+@keyframes rolar{
+    from{ transform: rotate(-200deg) scale(0.4); opacity: 0; }
+    to{ transform: none; opacity: 1; }
+}
+
+
+/* ---------- 4. CABEÇALHO DAS PÁGINAS, FILTROS E ABAS ---------- */
+.cabecalho-pagina{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 22px 0 22px;
+}
+
+.titulo{
+    margin: 0;
+    font-size: 4.4rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    text-transform: uppercase;
+}
+
+/* etiqueta simples ao lado do título ("3 personagens") */
+.contagem{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--tinta-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: var(--sombra-pequena);
+}
+
+.contagem b{
+    color: var(--tinta);
+    font-weight: 800;
+}
+
+.contagem:empty{
+    display: none;
+}
+
+/* subtítulo embaixo do título (raças, criar campanha, admin...) */
+.cabecalho-pagina .titulo + .texto-suave{
+    margin: 12px 0 0;
+}
+
+/* botões e filtros do lado direito do cabeçalho */
+.cabecalho-acoes{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* filtros: botões dentro de uma cápsula de vidro (igual às abas, mais abaixo) */
+.filtros,
+.abas{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 5px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 999px;
+    background: var(--vidro);
+    box-shadow: var(--sombra-pequena), var(--brilho);
+    backdrop-filter: blur(14px);
+}
+
+.filtro,
+.abas a,
+.abas button{
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--tinta-2);
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* o escolhido fica escuro */
+.filtro.ativo,
+.abas a.ativo,
+.abas button.ativo{
+    background: var(--tinta);
+    color: #fff;
+    box-shadow: var(--sombra-pequena);
+}
+
+/* título de uma parte da página ("SEUS PERSONAGENS  3") */
+.secao-titulo{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px 0 14px;
+}
+
+.secao-titulo h2{
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+}
+
+.secao-titulo .contagem{
+    padding: 4px 11px;
+    font-size: 0.8rem;
+}
+
+/* link, botão ou filtros no fim da linha do título */
+.secao-titulo a,
+.secao-titulo .botao,
+.secao-titulo .filtros{
+    margin-left: auto;
+}
+
+.secao-titulo a{
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.secao-titulo a.botao{
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.texto-suave{
+    margin: 0;
+    color: var(--tinta-3);
+}
+
+/* abas dentro da página (ex.: Personagens | Raças | Classes) */
+.abas{
+    margin-bottom: 22px;
+}
+
+/* ---------- 5. BOTÕES ---------- */
+.botao{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 20px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--tinta);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: var(--sombra-pequena), var(--brilho);
+    transition: transform 200ms var(--suave), box-shadow 200ms;
+}
+
+/* com o mouse em cima, o botão sobe 1px e a sombra cresce */
+.botao:hover{
+    transform: translateY(-1px);
+    box-shadow: var(--sombra), var(--brilho);
+}
+
+.botao-principal{
+    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(180deg, #f2a37b, #e8875a);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(220, 120, 70, 0.32), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
+}
+
+.botao-claro{
+    background: rgba(255, 255, 255, 0.92);
+    color: #2b1719;
+}
+
+.botao-perigo{
+    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(180deg, #d9594c, #b23225);
+    color: #fff;
+}
+
+.botao-largo{
+    width: 100%;
+}
+
+.botao-pequeno{
+    min-height: 32px;
+    padding: 0 14px;
+    font-size: 0.72rem;
+}
+
+.botao:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.botoes{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+/* ---------- 6. CARDS E GRADES ---------- */
+/* bloco de vidro: meio transparente, embaça o fundo, tem a linha de luz em cima e uma sombra leve */
+.card{
+    padding: 22px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: var(--raio);
+    background: var(--vidro);
+    box-shadow: var(--sombra), var(--brilho);
+    backdrop-filter: var(--desfoque);
+}
+
+.card-titulo{
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.card-texto{
+    color: var(--tinta-2);
+    font-size: 0.92rem;
+}
+
+/* card tracejado de "criar" */
+.card-novo{
+    width: 100%;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 180px;
+    border: 2px dashed rgba(70, 40, 35, 0.42);
+    border-radius: var(--raio);
+    background: var(--vidro-leve);
+    color: var(--tinta-2);
+    backdrop-filter: blur(12px);
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+}
+
+.card-novo:hover{
+    border-color: var(--rosa);
+    color: var(--rosa-escuro);
+}
+
+/* o "+" do card de criar */
+.card-novo img{
+    width: 34px;
+    height: 34px;
+}
+
+.grade{
+    display: grid;
+    gap: 14px;
+}
+
+.grade-2{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grade-3{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* grade das cartas de ficha: cada carta tem 236px de largura e cabem quantas der na linha */
+.grade-cartas{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 236px);
+    gap: 14px;
+}
+
+.grade-cartas .card-novo{
+    height: 300px;
+    min-height: 0;
+}
+
+/* lista de linhas (monstros da campanha, sessões...) */
+.lista{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 16px;
+    background: var(--vidro-leve);
+    box-shadow: var(--sombra-pequena);
+}
+
+.item-info{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.item-info strong{
+    font-weight: 700;
+}
+
+/* os 6 atributos de uma ficha, lado a lado */
+.atributos{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin: 12px 0;
+    text-align: center;
+}
+
+.atributo span{
+    display: block;
+    color: var(--tinta-3);
+    font-size: 0.62rem;
+    font-weight: 700;
+}
+
+.atributo strong{
+    font-size: 1.05rem;
+}
+
+/* vida em 10 quadradinhos (função htmlGomos do script.js) */
+.gomos{
+    display: flex;
+    gap: 2px;
+}
+
+.gomos i{
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.gomos i.cheio{
+    background: var(--rosa);
+}
+
+
+/* ---------- 7. FORMULÁRIOS ---------- */
+.formulario{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.campo{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rotulo{
+    color: var(--tinta-2);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.input{
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--linha);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--tinta);
+    font: inherit;
+    font-size: 0.92rem;
+}
+
+.input::placeholder{
+    color: var(--tinta-3);
+}
+
+.input:focus{
+    outline: none;
+    border-color: var(--rosa);
+    background: #fff;
+}
+
+textarea.input{
+    min-height: 100px;
+    resize: vertical;
+}
+
+input[type="checkbox"],
+input[type="radio"]{
+    accent-color: var(--rosa);
+}
+
+.linha-campos{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.ajuda{
+    margin: 0;
+    color: var(--tinta-3);
+    font-size: 0.82rem;
+}
+
+/* mensagem de erro que o servidor mandou. Vazia, ela não ocupa espaço. */
+.alerta{
+    margin: 0;
+    color: var(--vermelho);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.alerta:empty{
+    display: none;
+}
+
+.campo-com-botao{
+    display: flex;
+    gap: 10px;
+}
+
+.campo-com-botao .input{
+    flex: 1;
+}
+
+
+/* ---------- 8. SELOS E CHIPS ---------- */
+.chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 13px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--tinta-2);
+    box-shadow: var(--sombra-pequena);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.chip.ativo{
+    border-color: var(--tinta);
+    background: var(--tinta);
+    color: #fff;
+}
+
+/* chip que é um botão (filtros da comunidade, sons do mapa) */
+.chip-botao:hover{
+    background: #fff;
+}
+
+.chip-botao.ativo:hover{
+    background: var(--tinta);
+}
+
+/* chip com caixinha de marcar dentro (interesses e parcerias do perfil):
+   a caixinha fica escondida e o chip inteiro escurece quando ela está marcada */
+.chip input{
+    display: none;
+}
+
+.chip:has(input:checked){
+    border-color: var(--tinta);
+    background: var(--tinta);
+    color: #fff;
+}
+
+/* etiqueta pequena e quadrada (OFICIAL, NV 3, MESTRE...) */
+.selo{
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(90, 60, 50, 0.14);
+    color: var(--tinta-2);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.selo-escuro{
+    background: var(--tinta);
+    color: var(--fundo);
+}
+
+
+/* ---------- 9. AVATAR E FOTOS ---------- */
+.avatar{
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rosa), #8e3b36);
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Toda foto de card é feita pela função htmlFoto() do script.js:
+     com imagem -> <img class="foto">
+     sem imagem -> <div class="foto sem-foto">L</div>  (um quadro com a primeira letra do nome) */
+img.foto{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sem-foto{
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #5a3338, var(--escuro));
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 4rem;
+    font-weight: 800;
+}
+
+
+/* ---------- 10. CARDS DE FOTO E CARTAS DE FICHA ---------- */
+/* card de foto: a imagem ocupa o card todo e o nome fica embaixo (campanhas, monstros) */
+.foto-card{
+    position: relative;
+    display: block;
+    min-height: 200px;
+    overflow: hidden;
+    border-radius: var(--raio);
+    background: var(--escuro);
+    color: #fff;
+    box-shadow: var(--sombra-foto);
+}
+
+/* quando o card é um <button> (campanhas oficiais, monstros) */
+button.foto-card{
+    width: 100%;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.foto-card .foto{
+    position: absolute;
+    inset: 0;
+    object-position: center 25%;
+    transition: transform 400ms ease;
+}
+
+.foto-card:hover .foto{
+    transform: scale(1.04);
+}
+
+.foto-card .etiquetas{
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+}
+
+.foto-card .etiquetas .selo{
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(232, 135, 90, 0.92);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.foto-card .etiquetas .selo-escuro{
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(38, 22, 26, 0.7);
+    color: #fff;
+}
+
+/* o nome fica num painel escuro encostado embaixo (o degradê está na variável --painel-foto) */
+.foto-card .nome{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 44px 18px 16px;
+    background: var(--painel-foto);
+}
+
+.foto-card .nome b{
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.foto-card .nome small{
+    font-size: 0.78rem;
+    opacity: 0.9;
+}
+
+.foto-card .nome p{
+    max-width: 460px;
+    margin: 8px 0 0;
+    color: #f3dfda;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* CARTA DE FICHA (função htmlCarta do script.js): retrato em cima; nome, atributos e vida embaixo */
+.carta{
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: var(--raio);
+    background: var(--escuro);
+    color: #fff;
+    box-shadow: var(--sombra-foto);
+}
+
+/* a carta inteira é um link para ficha.html?id=... */
+.carta-link{
+    position: absolute;
+    inset: 0;
+    color: #fff;
+}
+
+/* o retrato ocupa a carta menos os 96px de baixo, onde ficam os textos */
+/* o retrato ocupa a carta inteira; os textos ficam por cima, no painel de baixo */
+.carta .foto{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    object-position: center 15%;
+}
+
+.carta .sem-foto{
+    background: linear-gradient(135deg, #5a3338, var(--escuro));
+}
+
+.carta .topo-carta{
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    right: 14px;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+}
+
+.carta .topo-carta .selo{
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(232, 135, 90, 0.92);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+/* painel escuro de baixo: nome, raça e classe, atributos e vida */
+.carta .info{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 40px 16px 14px;
+    background: var(--painel-foto);
+}
+
+.carta h3{
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.carta .info small{
+    color: var(--rosa-claro);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.carta .atributos{
+    margin: 8px 0 8px;
+}
+
+.carta .atributo strong{
+    font-size: 0.95rem;
+}
+
+.carta .atributo span{
+    color: #c9aaa3;
+}
+
+.carta .atributo strong{
+    color: #fff;
+}
+
+/* botões no canto da carta (Editar, Excluir): só aparecem com o mouse em cima */
+.carta .acoes{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity var(--rapido);
+}
+
+.carta:hover .acoes,
+.carta:focus-within .acoes{
+    opacity: 1;
+}
+
+/* nas listas, o card levanta um pouco quando o mouse passa */
+.grade-cartas .carta,
+.grade-campanhas .foto-card{
+    transition: transform 240ms var(--suave), box-shadow 240ms;
+}
+
+.grade-cartas .carta:hover,
+.grade-campanhas .foto-card:hover{
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-forte);
+}
+
+
+/* ---------- 11. JANELAS ---------- */
+/* fundo escuro que cobre a página; abrirJanela() e fecharJanela() do script.js tiram e colocam "oculto" */
+.modal-fundo{
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgba(40, 20, 24, 0.4);
+    backdrop-filter: blur(6px);       /* a página atrás da janela fica embaçada */
+}
+
+.modal-caixa{
+    width: min(520px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: 24px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: var(--raio);
+    background: var(--vidro-forte);
+    box-shadow: var(--sombra-forte), var(--brilho);
+}
+
+.modal-cabecalho{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-cabecalho h2{
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.modal-larga{
+    width: min(980px, 100%);
+}
+
+
+/* grade dos cards de campanha (Campanhas e Perfil) */
+.grade-campanhas{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.grade-campanhas .foto-card,
+.grade-campanhas .card-novo{
+    min-height: 200px;
+}
+
+/* texto longo escrito pela pessoa: respeita as quebras de linha que ela digitou */
+.historia{
+    white-space: pre-line;
+}
+
+
+/* ---------- 12. UTILIDADES ---------- */
+.oculto{
+    display: none !important;
+}
+
+.espaco-topo{
+    margin-top: 30px;
+}
+
+.espaco-topo-pequeno{
+    margin-top: 10px;
+}
+
+.espaco-baixo{
+    margin-bottom: 22px;
+}
+
+
+/* ---------- 13. TELAS MENORES ---------- */
+@media (max-width: 1100px){
+    .grade-3,
+    .grade-campanhas{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .titulo{
+        font-size: 3.2rem;
+    }
+}
+
+/* celular: o menu lateral vira uma barra embaixo */
+@media (max-width: 760px){
+    body{
+        padding-left: 0;
+        padding-bottom: 70px;
+    }
+
+    .lateral{
+        top: auto;
+        left: 0;
+        bottom: 0;
+        flex-direction: row;
+        width: 100%;
+        height: 64px;
+        padding: 6px;
+        border-radius: 0;
+        background-color: rgba(246, 238, 224, 0.9);
+        background-image: none;
+    }
+
+    .lateral-marca,
+    .lateral-rodape{
+        display: none;
+    }
+
+    .lateral-grupo{
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .lateral-link{
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .lateral-link span{
+        display: none;
+    }
+
+    .topo{
+        padding: 16px 16px 0;
+    }
+
+    .topo-oi{
+        display: none;
+    }
+
+    .container{
+        padding: 0 16px;
+    }
+
+    .titulo{
+        font-size: 2.6rem;
+    }
+
+    .grade-2,
+    .grade-3,
+    .grade-campanhas{
+        grid-template-columns: 1fr;
+    }
+
+    .dado-botao{
+        bottom: 80px;
+    }
+}
+
+/* quem pede menos movimento no sistema não vê animações */
+@media (prefers-reduced-motion: reduce){
+    *{
+        animation: none !important;
+        transition: none !important;
+    }
+}

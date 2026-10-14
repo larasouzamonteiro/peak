@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Peak</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap">
+
+  <!-- esta página tem um CSS só dela (não usa o style.css) -->
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+
+    <!-- PÁGINA DE PROPAGANDA: é a primeira coisa que o visitante vê.
+         O JS (js/index.js) só faz a boneca seguir o mouse, as pétalas caírem
+         e trocar a classe da vitrine. -->
+
+    <!-- MENU -->
+    <header class="nav">
+        <div class="nav-left">
+            <a class="brand" href="index.html"><img src="../img/editorial/logo.png" alt="">peak.</a>
+            <nav class="nav-links">
+                <a href="#mural">o que tem</a><a href="#classes">classes</a><a href="#blocos">comunidade</a><a href="historia.html">história</a>
+            </nav>
+        </div>
+        <div class="nav-right">
+            <a href="login.html">entrar</a>
+            <a class="btn-dark" href="login.html?cadastro=sim">criar conta</a>
+        </div>
+    </header>
+
+    <!-- CAPA -->
+    <section class="hero" id="hero">
+        <div class="bg-doll" id="bg-doll"></div>
+        <div class="dot-overlay"></div>
+        <div class="corner tl"></div>
+        <div class="corner br"></div>
+        <div class="bg-marquee">PEAK ✶ CAMPANHAS ✶ BESTIÁRIO ✶ FICHAS ✶ DADOS ✶</div>
+        <canvas id="petals-canvas"></canvas>
+
+        <div class="left-panel">
+            <p class="hero-quote">
+                O mestre cria. O grupo entra. A história começa.
+                <span>Uma mesa de RPG que cabe no navegador.</span>
+            </p>
+
+            <div class="title-wrap" id="title-layer">
+                <div class="title-float">
+                    <span class="kicker">MESA VIRTUAL DE RPG</span>
+                    <h1 class="main-title">peak.</h1>
+                    <span class="tagline">ONDE AS LENDAS NASCEM</span>
+                </div>
+                <div class="badge">TUDO QUE SUA MESA PRECISA</div>
+            </div>
+
+            <div class="left-footer">
+                <p class="scroll-hint">ROLE A PÁGINA ↓</p>
+                <a class="tag-pill" href="login.html?cadastro=sim">CRIAR CONTA</a>
+            </div>
+        </div>
+
+        <div class="center-panel">
+            <div class="art-window">
+                <div class="glass-lines">
+                    <span>CRIE SUA CAMPANHA</span>
+                    <span>REÚNA SEU GRUPO</span>
+                    <span>ROLE OS DADOS</span>
+                    <div class="pulse-bar"></div>
+                </div>
+            </div>
+            <div class="character-root" id="character-layer">
+                <div class="character-img" role="img" aria-label="Personagem da capa"></div>
+            </div>
+        </div>
+
+        <aside class="right-panel">
+            <div class="pill-box">RPG</div>
+            <div class="vertical-wrap">
+                <span class="v-title">PEAK</span>
+                <span class="v-sub">MESA</span>
+                <span class="star">✶</span>
+                <span class="v-sub">VIRTUAL</span>
+            </div>
+            <p class="micro-text">PEAK · 2026</p>
+        </aside>
+    </section>
+
+    <!-- FAIXA -->
+    <div class="strip">
+        <div class="strip-track">
+            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
+            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
+            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
+            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
+        </div>
+    </div>
+
+
+    <!-- (01) MURAL: as partes do site como fotos penduradas (o "torto" é só CSS: transform: rotate) -->
+    <section class="mural" id="mural">
+      <div class="nota">psiu! a mirela procura jogador pra sexta</div>
+      <h2>A mesa inteira,<br><em>no seu mural.</em></h2>
+      <p>Fichas, campanhas, monstros e o grupo, tudo num lugar só. Passe o mouse nas fotos.</p>
+      <div class="fotos">
+      <div class="pol"><span class="fita"></span><img src="../img/classes/mago.jpg" alt=""><b>Fichas</b><small>monte seu personagem</small></div>
+      <div class="pol"><span class="fita"></span><img src="../img/livros/campanhas.jpg" alt=""><b>Campanhas</b><small>o mestre cria, o grupo entra</small></div>
+      <div class="pol"><span class="fita"></span><img src="../img/monstros/lich.jpg" alt=""><b>Bestiário</b><small>monstros pra toda mesa</small></div>
+      <div class="pol"><span class="fita"></span><img src="../img/retratos/r10.jpg" alt=""><b>Comunidade</b><small>ache sua parceria</small></div>
+      <div class="pol"><span class="fita"></span><img src="../img/livros/o-que-e-rpg.jpg" alt=""><b>História</b><small>aprenda a jogar</small></div>
+      </div>
+    </section>
+
+    <div class="clara">
+
+    <!-- (02) VITRINE DE CLASSES: as 6 classes já estão aqui no HTML.
+         Só a escolhida aparece; as outras têm a classe "oculto".
+         Clicar numa miniatura chama mostrarClasse() no js/index.js. -->
+    <section class="vit" id="classes">
+      <div class="vit-arte" id="classeFoto1"><img src="../img/classes/guerreiro.jpg" alt=""></div>
+      <div class="vit-arte oculto" id="classeFoto2"><img src="../img/classes/paladino.jpg" alt=""></div>
+      <div class="vit-arte oculto" id="classeFoto3"><img src="../img/classes/barbaro.jpg" alt=""></div>
+      <div class="vit-arte oculto" id="classeFoto4"><img src="../img/classes/ladrao.jpg" alt=""></div>
+      <div class="vit-arte oculto" id="classeFoto5"><img src="../img/classes/clerigo.jpg" alt=""></div>
+      <div class="vit-arte oculto" id="classeFoto6"><img src="../img/classes/mago.jpg" alt=""></div>
+      <div class="vit-txt">
+        <div id="classeTexto1">
+          <p class="label">(02) escolha sua classe — 01/06</p>
+          <h2>Guerreiro<em>.</em></h2>
+          <p>Especialista em combate corpo a corpo. Usa qualquer arma e armadura, e é o primeiro a entrar na briga.</p>
+        </div>
+        <div class="oculto" id="classeTexto2">
+          <p class="label">(02) escolha sua classe — 02/06</p>
+          <h2>Paladino<em>.</em></h2>
+          <p>Cavaleiro sagrado que junta espada e fé. Protege o grupo e cura com as mãos.</p>
+        </div>
+        <div class="oculto" id="classeTexto3">
+          <p class="label">(02) escolha sua classe — 03/06</p>
+          <h2>Bárbaro<em>.</em></h2>
+          <p>Guerreiro selvagem movido pela fúria. Quanto mais apanha, mais forte bate.</p>
+        </div>
+        <div class="oculto" id="classeTexto4">
+          <p class="label">(02) escolha sua classe — 04/06</p>
+          <h2>Ladrão<em>.</em></h2>
+          <p>Ágil e discreto, abre fechaduras, desarma armadilhas e some nas sombras.</p>
+        </div>
+        <div class="oculto" id="classeTexto5">
+          <p class="label">(02) escolha sua classe — 05/06</p>
+          <h2>Clérigo<em>.</em></h2>
+          <p>Servo de uma divindade. Cura os aliados e enfrenta os mortos-vivos.</p>
+        </div>
+        <div class="oculto" id="classeTexto6">
+          <p class="label">(02) escolha sua classe — 06/06</p>
+          <h2>Mago<em>.</em></h2>
+          <p>Estudioso das artes arcanas. Lança magias poderosas lidas do seu grimório.</p>
+        </div>
+        <div class="vit-lista">
+          <button type="button" class="ativo" id="classeBotao1" onclick="mostrarClasse(1)"><img src="../img/classes/guerreiro.jpg" alt="">Guerreiro</button>
+          <button type="button" id="classeBotao2" onclick="mostrarClasse(2)"><img src="../img/classes/paladino.jpg" alt="">Paladino</button>
+          <button type="button" id="classeBotao3" onclick="mostrarClasse(3)"><img src="../img/classes/barbaro.jpg" alt="">Bárbaro</button>
+          <button type="button" id="classeBotao4" onclick="mostrarClasse(4)"><img src="../img/classes/ladrao.jpg" alt="">Ladrão</button>
+          <button type="button" id="classeBotao5" onclick="mostrarClasse(5)"><img src="../img/classes/clerigo.jpg" alt="">Clérigo</button>
+          <button type="button" id="classeBotao6" onclick="mostrarClasse(6)"><img src="../img/classes/mago.jpg" alt="">Mago</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- (03) BLOCOS: o que dá para fazer na Peak -->
+    <section class="blocos" id="blocos">
+      <h2>Tudo que a sua mesa precisa.</h2>
+      <div class="bl grande"><img src="../img/editorial/grupo-cor.jpg" alt=""><p class="label">(03) campanhas</p><h3>O mestre cria.<br>O grupo entra.</h3><p>Um código de convite, uma ficha escolhida, e a campanha começa.</p></div>
+      <div class="bl"><img src="../img/monstros/devorador.jpg" alt=""><p class="label">(04) bestiário</p><h3>Monstros</h3></div>
+      <div class="bl coral"><div class="rostos"><img src="../img/retratos/r10.jpg" alt=""><img src="../img/retratos/r03.jpg" alt=""><img src="../img/retratos/r05.jpg" alt=""></div><p class="label" style="color:var(--cacau)">(05) comunidade</p><h3>Ache sua parceria</h3><span class="selo">combina</span></div>
+      <div class="bl"><img src="../img/livros/o-que-e-rpg.jpg" alt=""><p class="label">(06) história</p><h3>Aprenda a jogar</h3></div>
+      <div class="bl"><img src="../img/mascote/fundo-login-escuro.jpg" alt=""><p class="label">(07) mapa</p><h3>Mapa, música e sons</h3></div>
+    </section>
+
+    <!-- (04) CHAMADA FINAL -->
+    <section class="chamada">
+      <img src="../img/editorial/dragao.jpg" alt="">
+      <div>
+        <p class="label">(08) sua vez</p>
+        <h2>Chama o grupo.<br>A mesa <em>tá pronta.</em></h2>
+        <a class="btn-coral" href="login.html?cadastro=sim">criar conta</a>
+      </div>
+    </section>
+
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+        <div class="footer-logo">peak.</div>
+        <div class="footer-row">
+            <span>mesa virtual de rpg · projeto escolar 2026</span>
+            <span>campanhas — bestiário — comunidade — história</span>
+            <span><a href="login.html">entrar</a> / <a href="login.html?cadastro=sim">criar conta</a></span>
+        </div>
+    </footer>
+
+
+    <script src="../js/index.js"></script>
+</body>
+</html>

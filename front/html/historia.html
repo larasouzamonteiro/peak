@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>História | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Lora nos livros) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | historia.css = estante e livros -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/historia.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <a class="lateral-marca" href="inicio.html">
+      <img class="logo-peak" src="../img/logo.png" alt="">
+      <span>Peak</span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+      <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link ativo" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+      <a class="lateral-conta" href="perfil.html">
+        <div class="avatar" id="menuLetra"></div>
+        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <!-- o id="topo" é para onde o botão "voltar ao topo" leva -->
+  <main class="secao biblioteca" id="topo">
+    <div class="container">
+
+      <div class="cabecalho-pagina">
+        <div>
+          <h1 class="titulo">História</h1>
+          <p class="texto-suave">Quatro livros para entender a Peak. Escolha um para abrir.</p>
+        </div>
+      </div>
+
+      <!-- ESTANTE: cada livro é um link para a página dele (livro-NOME.html).
+           A imagem da capa vem do style="--capa:url(...)": o CSS usa essa variável. -->
+      <section class="estante">
+        <div class="prateleira">
+          <a class="livro" href="livro-como-jogar.html" style="--capa:url(../img/livros/como-jogar.jpg)">
+            <span class="livro-capa"><span class="livro-titulo"><small>Livro I</small>Como jogar</span></span>
+            <span class="livro-fita"></span>
+          </a>
+          <a class="livro" href="livro-campanhas.html" style="--capa:url(../img/livros/campanhas.jpg)">
+            <span class="livro-capa"><span class="livro-titulo"><small>Livro II</small>Campanhas oficiais</span></span>
+            <span class="livro-fita"></span>
+          </a>
+          <a class="livro" href="livro-rpg.html" style="--capa:url(../img/livros/o-que-e-rpg.jpg)">
+            <span class="livro-capa"><span class="livro-titulo"><small>Livro III</small>O que é RPG</span></span>
+            <span class="livro-fita"></span>
+          </a>
+          <a class="livro" href="livro-equipe.html" style="--capa:url(../img/livros/a-equipe.jpg)">
+            <span class="livro-capa"><span class="livro-titulo"><small>Livro IV</small>A equipe Peak</span></span>
+            <span class="livro-fita"></span>
+          </a>
+        </div>
+        <div class="tabua"></div>
+        <div class="legendas">
+          <p><b>Como jogar</b><span>Fichas, campanhas, sessões e dados</span></p>
+          <p><b>Campanhas oficiais</b><span>Guardiões de Ágora e Dohomatika</span></p>
+          <p><b>O que é RPG</b><span>A origem do jogo e o dicionário</span></p>
+          <p><b>A equipe Peak</b><span>Quem fez o site e por quê</span></p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+
+  <!-- script.js: funções usadas em todas as páginas (menu, dado...) -->
+  <script src="../js/script.js"></script>
+
+  <!-- historia.js: aqui na estante ele só chama o verificarLogin() (o nome no menu) -->
+  <script src="../js/historia.js"></script>
+</body>
+</html>

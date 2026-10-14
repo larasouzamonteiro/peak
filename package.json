@@ -1,0 +1,17 @@
+{
+  "name": "peak",
+  "version": "1.0.0",
+  "description": "Peak - site de RPG (projeto escolar) - versão para o servidor",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "nodemailer": "^10.0.12",
+    "mysql2": "^3.11.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

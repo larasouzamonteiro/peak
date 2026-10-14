@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ficha | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/fichas.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <a class="lateral-marca" href="inicio.html">
+      <img class="logo-peak" src="../img/logo.png" alt="">
+      <span>Peak</span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+      <a class="lateral-link ativo" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+      <a class="lateral-conta" href="perfil.html">
+        <div class="avatar" id="menuLetra"></div>
+        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <main class="secao">
+    <div class="container">
+
+      <p><a href="fichas.html">‹ Voltar para as fichas</a></p>
+
+      <!-- FICHA ABERTA: todos os textos e números são preenchidos pelo js/ficha.js,
+           função carregarFicha(). O id de cada pedaço diz o que vai ali. -->
+      <article class="folha">
+
+        <div class="folha-topo">
+          <div class="folha-retrato"><img id="fichaRetrato" src="../img/logo.png" alt=""></div>
+
+          <div class="folha-nome">
+            <span class="selo" id="fichaNivel"></span>
+            <h2 id="fichaNome"></h2>
+            <p id="fichaSub"></p>
+          </div>
+
+          <!-- só aparece para o dono da ficha (carregarFicha tira a classe "oculto") -->
+          <div class="folha-botoes oculto" id="botoesDono">
+            <button type="button" class="botao botao-principal botao-pequeno" onclick="abrirEdicao()">Editar</button>
+            <button type="button" class="botao botao-pequeno" onclick="excluirFicha()">Excluir</button>
+          </div>
+        </div>
+
+        <div class="folha-corpo">
+          <div>
+            <section class="folha-bloco">
+              <h3>Vida</h3>
+              <div class="folha-vida"><strong id="fichaVida"></strong></div>
+              <!-- barra de vida: carregarFicha muda o value e o max -->
+              <progress class="barra" id="fichaBarra" value="0" max="1"></progress>
+            </section>
+
+            <section class="folha-bloco">
+              <h3>Atributos</h3>
+              <div class="atributos">
+                <div class="atributo"><span>FOR</span><strong id="fichaForca"></strong></div>
+                <div class="atributo"><span>DES</span><strong id="fichaDestreza"></strong></div>
+                <div class="atributo"><span>CON</span><strong id="fichaConstituicao"></strong></div>
+                <div class="atributo"><span>INT</span><strong id="fichaInteligencia"></strong></div>
+                <div class="atributo"><span>SAB</span><strong id="fichaSabedoria"></strong></div>
+                <div class="atributo"><span>CAR</span><strong id="fichaCarisma"></strong></div>
+              </div>
+            </section>
+
+            <section class="folha-bloco">
+              <h3>Itens</h3>
+              <!-- os itens entram aqui: js/ficha.js, função carregarItens() -->
+              <div class="folha-itens" id="fichaItens"></div>
+            </section>
+          </div>
+
+          <div>
+            <section class="folha-bloco">
+              <h3>Personalidade</h3>
+              <p id="fichaPersonalidade"></p>
+            </section>
+
+            <section class="folha-bloco">
+              <h3>História</h3>
+              <p class="historia" id="fichaHistoria"></p>
+            </section>
+
+            <section class="folha-bloco">
+              <h3 id="fichaRacaTitulo">Raça</h3>
+              <p id="fichaRacaDescricao"></p>
+            </section>
+
+            <section class="folha-bloco">
+              <h3 id="fichaClasseTitulo">Classe</h3>
+              <p id="fichaClasseDescricao"></p>
+            </section>
+          </div>
+        </div>
+      </article>
+
+      <!-- EDITAR: começa escondido. Abre com o botão Editar (função abrirEdicao do js/ficha.js).
+           Só muda o que muda durante o jogo: nível, vida, atributos, personalidade e história. -->
+      <div class="card espaco-topo oculto" id="caixaEdicao">
+        <h2 class="card-titulo">Editar ficha</h2>
+
+        <div class="formulario">
+          <div class="linha-campos">
+            <div class="campo">
+              <label class="rotulo" for="nivel">Nível</label>
+              <input class="input" type="number" id="nivel" min="1">
+            </div>
+            <div class="campo">
+              <label class="rotulo" for="vidaMaxima">Vida máxima</label>
+              <input class="input" type="number" id="vidaMaxima" min="1">
+            </div>
+            <div class="campo">
+              <label class="rotulo" for="vidaAtual">Vida atual</label>
+              <input class="input" type="number" id="vidaAtual" min="0">
+            </div>
+          </div>
+
+          <div class="linha-campos">
+            <div class="campo"><label class="rotulo" for="forca">FOR</label><input class="input" type="number" id="forca"></div>
+            <div class="campo"><label class="rotulo" for="destreza">DES</label><input class="input" type="number" id="destreza"></div>
+            <div class="campo"><label class="rotulo" for="constituicao">CON</label><input class="input" type="number" id="constituicao"></div>
+            <div class="campo"><label class="rotulo" for="inteligencia">INT</label><input class="input" type="number" id="inteligencia"></div>
+            <div class="campo"><label class="rotulo" for="sabedoria">SAB</label><input class="input" type="number" id="sabedoria"></div>
+            <div class="campo"><label class="rotulo" for="carisma">CAR</label><input class="input" type="number" id="carisma"></div>
+          </div>
+
+          <div class="campo">
+            <label class="rotulo" for="personalidade">Personalidade</label>
+            <textarea class="input" id="personalidade"></textarea>
+          </div>
+
+          <div class="campo">
+            <label class="rotulo" for="historia">História</label>
+            <textarea class="input" id="historia" rows="5"></textarea>
+          </div>
+
+          <!-- mensagem de erro do servidor (salvarFicha) -->
+          <p class="alerta" id="alert"></p>
+
+          <div class="botoes">
+            <button type="button" class="botao botao-principal" onclick="salvarFicha()">Salvar</button>
+            <button type="button" class="botao" onclick="fecharJanela('caixaEdicao')">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+
+  <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
+  <script src="../js/script.js"></script>
+  <script src="../js/ficha.js"></script>
+</body>
+</html>

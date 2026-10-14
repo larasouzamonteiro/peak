@@ -1,0 +1,146 @@
+/* =====================================================
+   INICIO.CSS - só a página inicio.html
+
+     1. Mural de campanhas
+     2. Seus personagens (a carta aberta)
+     3. Telas menores
+   ===================================================== */
+
+
+/* ---------- 1. MURAL DE CAMPANHAS ---------- */
+/* um card grande na esquerda e dois menores na direita */
+.mural{
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: 200px 200px;
+    gap: 14px;
+}
+
+.mural .foto-card:first-child{
+    grid-row: span 2;
+}
+
+.mural .foto-card:first-child .nome b{
+    font-size: 3rem;
+}
+
+/* no card grande o painel é mais alto, porque tem título, resumo e botão */
+.mural .foto-card:first-child .nome{
+    padding: 60px 26px 24px;
+}
+
+/* se só existir UM card do lado direito, ele ocupa as duas linhas */
+.mural .foto-card:nth-child(2):last-child{
+    grid-row: span 2;
+}
+
+/* o botão "Usar como minha campanha" do card grande */
+.mural .nome .botao{
+    margin-top: 14px;
+}
+
+
+/* ---------- 2. SEUS PERSONAGENS ---------- */
+/* Uma carta "fechada" mostra só o retrato. Na carta com a classe "aberta", o painel
+   escuro SOBE de baixo, e o nome, a raça, os atributos e a vida entram um depois do outro.
+
+   Quem coloca a classe é o js/inicio.js (função abrirCarta): a primeira carta já começa
+   aberta, e passar o mouse em outra abre ela. Ela fica aberta até o mouse passar por outra.
+
+   A animação só mexe em "transform" (posição) e "opacity" (transparência): são as duas
+   propriedades que o navegador anima sem engasgar. */
+.fila-cartas{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 22px 0 14px;
+}
+
+.fila-cartas .carta,
+.fila-cartas .card-novo{
+    height: 320px;
+}
+
+.fila-cartas .carta{
+    transition: transform 420ms var(--suave), box-shadow 420ms;
+}
+
+/* ----- fechada ----- */
+/* o painel fica escondido logo abaixo da carta (102% = a altura dele inteira e mais um pouco) */
+.fila-cartas .carta .info{
+    transform: translateY(102%);
+    transition: transform 460ms var(--suave);
+}
+
+/* cada pedaço do painel (nome, raça, atributos, vida) começa invisível e 12px mais baixo */
+.fila-cartas .carta .info > *{
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 320ms, transform 420ms var(--suave);
+}
+
+.fila-cartas .carta .topo-carta{
+    opacity: 0;
+    transition: opacity 250ms;
+}
+
+/* ----- aberta ----- */
+.fila-cartas .carta.aberta{
+    z-index: 3;
+    transform: translateY(-6px) scale(1.04);
+    box-shadow: var(--sombra-forte);
+}
+
+.fila-cartas .carta.aberta .info{
+    transform: none;
+}
+
+.fila-cartas .carta.aberta .info > *{
+    opacity: 1;
+    transform: none;
+}
+
+/* "transition-delay" é o tempo de espera antes de começar: cada pedaço espera
+   um pouco mais que o anterior, e por isso eles entram em fila */
+.fila-cartas .carta.aberta .info > :nth-child(1){ transition-delay: 120ms; }    /* nome */
+.fila-cartas .carta.aberta .info > :nth-child(2){ transition-delay: 170ms; }    /* raça e classe */
+.fila-cartas .carta.aberta .info > :nth-child(3){ transition-delay: 220ms; }    /* atributos */
+.fila-cartas .carta.aberta .info > :nth-child(4){ transition-delay: 270ms; }    /* vida */
+
+.fila-cartas .carta.aberta .topo-carta{
+    opacity: 1;
+    transition-delay: 180ms;
+}
+
+
+/* ---------- 3. TELAS MENORES ---------- */
+@media (max-width: 1100px){
+    .fila-cartas{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 760px){
+    .mural{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .mural .foto-card{
+        min-height: 220px;
+    }
+
+    .mural .foto-card:first-child{
+        grid-row: auto;
+        min-height: 360px;
+    }
+
+    /* no celular não existe mouse: as cartas já aparecem abertas */
+    .fila-cartas .carta .topo-carta,
+    .fila-cartas .carta .info,
+    .fila-cartas .carta .info > *{
+        opacity: 1;
+        transform: none;
+    }
+}

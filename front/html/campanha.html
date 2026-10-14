@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campanha | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/campanhas.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <a class="lateral-marca" href="inicio.html">
+      <img class="logo-peak" src="../img/logo.png" alt="">
+      <span>Peak</span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link ativo" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+      <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+      <a class="lateral-conta" href="perfil.html">
+        <div class="avatar" id="menuLetra"></div>
+        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <main class="secao">
+    <div class="container">
+
+      <p><a href="campanhas.html">‹ Voltar para as campanhas</a></p>
+
+      <!-- CAPA DA CAMPANHA: imagem, nome e resumo. Tudo preenchido pelo js/campanha.js,
+           função carregarCampanha(). -->
+      <section class="foto-card campanha-capa">
+        <img class="foto" id="campanhaCapa" src="../img/cenas/mina.svg" alt="">
+        <div class="etiquetas"><span class="selo selo-escuro" id="campanhaPapel"></span></div>
+        <div class="nome">
+          <b id="campanhaNome"></b>
+          <small id="campanhaInfo"></small>
+          <p id="campanhaDescricao"></p>
+        </div>
+      </section>
+
+      <!-- ABAS: a função mostrarAba() mostra uma parte da página e esconde as outras.
+           Quem tem a classe "so-mestre" começa escondido e só aparece para o Mestre. -->
+      <nav class="abas">
+        <button type="button" class="ativo" id="botaoAbaMesa" onclick="mostrarAba('Mesa')">Mesa</button>
+        <button type="button" id="botaoAbaHistoria" onclick="mostrarAba('Historia')">História</button>
+        <button type="button" id="botaoAbaSessoes" onclick="mostrarAba('Sessoes')">Sessões</button>
+        <button type="button" class="so-mestre oculto" id="botaoAbaMestre" onclick="mostrarAba('Mestre')">Painel do Mestre</button>
+        <a class="so-mestre oculto" id="linkMapa" href="mapa.html">Mapa e sons</a>
+      </nav>
+
+      <!-- ========== ABA MESA: quem está jogando ========== -->
+      <section id="abaMesa">
+        <div class="secao-titulo">
+          <h2>O grupo</h2>
+        </div>
+
+        <!-- as cartas dos personagens entram aqui: função carregarJogadores() -->
+        <div class="grade-cartas" id="listaGrupo"></div>
+
+        <!-- só aparece para quem é jogador (classe "so-jogador") -->
+        <p class="espaco-topo so-jogador oculto">
+          <button type="button" class="botao" onclick="sairDaCampanha()">Sair da campanha</button>
+        </p>
+      </section>
+
+      <!-- ========== ABA HISTÓRIA ========== -->
+      <section class="card oculto" id="abaHistoria">
+        <h2 class="card-titulo">História da campanha</h2>
+        <p class="texto-suave" id="campanhaCriadaPor"></p>
+        <p class="historia" id="campanhaHistoria"></p>
+      </section>
+
+      <!-- ========== ABA SESSÕES ========== -->
+      <section class="oculto" id="abaSessoes">
+
+        <!-- as sessões entram aqui: função carregarSessoes() -->
+        <div class="lista" id="listaSessoes"></div>
+
+        <!-- NOVA SESSÃO: só o Mestre vê -->
+        <div class="card espaco-topo so-mestre oculto">
+          <h2 class="card-titulo">Nova sessão</h2>
+
+          <div class="formulario">
+            <div class="linha-campos">
+              <div class="campo">
+                <label class="rotulo" for="sessaoNome">Nome da sessão</label>
+                <input class="input" type="text" id="sessaoNome" maxlength="80" placeholder="Ex.: Sessão 2 — A descida">
+              </div>
+              <div class="campo">
+                <label class="rotulo" for="sessaoData">Data</label>
+                <input class="input" type="date" id="sessaoData">
+              </div>
+            </div>
+
+            <div class="campo">
+              <label class="rotulo" for="sessaoDescricao">O que aconteceu (ou o que vai acontecer)</label>
+              <textarea class="input" id="sessaoDescricao"></textarea>
+            </div>
+
+            <div class="campo">
+              <label class="rotulo" for="sessaoResultado">Resultado</label>
+              <textarea class="input" id="sessaoResultado" placeholder="Preencha depois que a sessão terminar."></textarea>
+            </div>
+
+            <!-- mensagem de erro do servidor (função salvarSessao) -->
+            <p class="alerta" id="alertSessao"></p>
+
+            <div><button type="button" class="botao botao-principal" onclick="salvarSessao()">Salvar sessão</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== ABA PAINEL DO MESTRE (só o Mestre abre) ========== -->
+      <section class="oculto" id="abaMestre">
+        <div class="grade grade-2">
+
+          <div class="card">
+            <h2 class="card-titulo">Código de convite</h2>
+            <p class="card-texto">Passe este código para os jogadores. Eles digitam em Campanhas, em "Tem um código?".</p>
+            <p class="codigo-convite" id="campanhaCodigo"></p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-titulo">Monstros da campanha</h2>
+            <p class="card-texto">Escolha quais monstros aparecem nesta aventura.</p>
+
+            <!-- os monstros já escolhidos entram aqui: função carregarMonstros() -->
+            <div class="lista" id="listaMonstros"></div>
+
+            <div class="campo-com-botao espaco-topo-pequeno">
+              <!-- as opções são criadas pela função carregarOpcoesDeMonstros() -->
+              <select class="input" id="monstro" aria-label="Monstro"></select>
+              <button type="button" class="botao botao-principal" onclick="adicionarMonstro()">Adicionar</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-titulo">Editar campanha</h2>
+
+            <div class="formulario">
+              <div class="campo">
+                <label class="rotulo" for="edicaoDescricao">Resumo</label>
+                <textarea class="input" id="edicaoDescricao"></textarea>
+              </div>
+
+              <div class="campo">
+                <label class="rotulo" for="edicaoHistoria">História</label>
+                <textarea class="input" id="edicaoHistoria" rows="6"></textarea>
+              </div>
+
+              <div><button type="button" class="botao botao-principal" onclick="salvarCampanha()">Salvar</button></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-titulo">Excluir campanha</h2>
+            <p class="card-texto">Apaga a campanha, as sessões e tira todos os jogadores. Não dá para desfazer.</p>
+            <button type="button" class="botao" onclick="excluirCampanha()">Excluir campanha</button>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+
+  <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
+  <script src="../js/script.js"></script>
+  <script src="../js/campanha.js"></script>
+</body>
+</html>

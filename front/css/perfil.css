@@ -1,0 +1,137 @@
+/* =====================================================
+   PERFIL.CSS - só a página perfil.html
+
+     1. Capa
+     2. Coluna da esquerda (foto, nome, sobre mim...)
+     3. Coluna da direita (abas)
+     4. Telas menores
+   ===================================================== */
+
+
+/* ---------- 1. CAPA ---------- */
+/* sem imagem de capa, fica um vidro dourado */
+.perfil-capa{
+    height: 230px;
+    overflow: hidden;
+    border: 1px solid var(--vidro-borda);
+    border-radius: var(--raio);
+    background: linear-gradient(120deg, rgba(214, 170, 104, 0.55), rgba(240, 214, 170, 0.4) 55%, rgba(196, 150, 110, 0.5));
+    box-shadow: var(--sombra), var(--brilho);
+    backdrop-filter: var(--desfoque);
+}
+
+.perfil-capa img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+}
+
+
+/* ---------- 2. COLUNA DA ESQUERDA ---------- */
+.perfil-grade{
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 26px;
+    align-items: start;
+}
+
+/* a coluna sobe 70px para a foto ficar por cima da capa */
+.perfil-lado{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: -70px;
+    padding-left: 14px;
+}
+
+/* a foto redonda (ou a bolinha com a primeira letra do nome) */
+.perfil-foto .foto{
+    width: 140px;
+    height: 140px;
+    border: 5px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: var(--sombra);
+}
+
+.perfil-foto .sem-foto{
+    background: linear-gradient(135deg, var(--rosa), #8e3b36);
+    color: #fff;
+    font-size: 3rem;
+}
+
+.perfil-nome{
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+#perfilCombina{
+    margin: 0;
+}
+
+#perfilCombina .selo{
+    background: var(--rosa);
+    color: #fff;
+}
+
+.perfil-lado .card{
+    padding: 16px;
+}
+
+.perfil-lado .rotulo{
+    margin-bottom: 6px;
+}
+
+/* aqui os chips são só informação, não botões */
+.perfil-lado .chip{
+    cursor: default;
+}
+
+/* respeita as quebras de linha que a pessoa digitou */
+.perfil-bio{
+    margin: 0;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+
+/* ---------- 3. COLUNA DA DIREITA ---------- */
+.perfil-abas{
+    margin: 18px 0;
+}
+
+.perfil-conteudo .card{
+    margin-bottom: 14px;
+}
+
+.perfil-conteudo .rotulo{
+    margin-bottom: 6px;
+}
+
+.perfil-conteudo .grade-campanhas{
+    grid-template-columns: repeat(2, 1fr);
+}
+
+
+/* ---------- 4. TELAS MENORES ---------- */
+@media (max-width: 1000px){
+    .perfil-grade{
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-lado{
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 760px){
+    .perfil-conteudo .grade-campanhas{
+        grid-template-columns: 1fr;
+    }
+}

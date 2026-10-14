@@ -1,0 +1,5 @@
+Sons e músicas da página mapa.html (gerados por computador, só para exemplo).
+Para usar sons de verdade, troque os arquivos mantendo o mesmo nome
+(ou mude o nome no data-arquivo dos botões / no value das músicas em mapa.html).
+  sons/          efeitos rápidos (chuva, vento, espada, magia...)
+  sons/musicas/  músicas que repetem (taverna, exploração, batalha, mistério)

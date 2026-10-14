@@ -1,0 +1,341 @@
+/* =====================================================
+   ENTRADA.CSS - login.html e confirmar.html
+   Usado junto com o style.css (de lá vêm .input, .botao, .campo...)
+
+   A tela é uma caixa com duas metades: a ARTE e os FORMULÁRIOS.
+   No login.html, quando a caixa ganha a classe "cadastro"
+   (funções mostrarCadastro e mostrarLogin do js/login.js),
+   as metades trocam de lado deslizando. O JavaScript só coloca
+   e tira essa classe: a animação inteira está na parte 5 daqui.
+
+     1. Fundo da tela
+     2. A caixa
+     3. Metade da arte
+     4. Metade dos formulários
+     5. MODO CADASTRO (a animação)
+     6. Telas menores
+   ===================================================== */
+
+
+/* ---------- 1. FUNDO DA TELA ---------- */
+/* o fundo (arte desfocada + véu de areia) vem do style.css: é o mesmo das páginas de dentro */
+body.entrada{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 90px 20px 40px;      /* estas páginas não têm menu lateral */
+    overflow-x: hidden;
+}
+
+/* "Peak" no canto de cima e "Voltar" no outro canto */
+.entrada-marca,
+.entrada-voltar{
+    position: fixed;
+    top: 24px;
+    color: var(--tinta);
+}
+
+.entrada-marca{
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.entrada-voltar{
+    top: 30px;
+    right: 40px;
+    font-size: 0.9rem;
+}
+
+
+/* ---------- 2. A CAIXA ---------- */
+/* As duas metades ficam "soltas" dentro da caixa (position: absolute),
+   cada uma ocupando 50%. É isso que deixa elas deslizarem na animação. */
+.entrada-caixa{
+    position: relative;
+    width: 1040px;
+    max-width: 100%;
+    height: 660px;
+    border-radius: 22px;
+    background: #fffdf9;
+    box-shadow: 0 40px 90px rgba(90, 60, 50, 0.22), 0 46px 40px -26px rgba(60, 30, 30, 0.45);
+}
+
+
+/* ---------- 3. METADE DA ARTE (começa na esquerda) ---------- */
+.entrada-arte{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;                   /* fica por cima dos formulários (o cabelo passa na frente) */
+    width: 50%;
+    height: 100%;
+    pointer-events: none;         /* o clique "atravessa" o cabelo e chega nos campos */
+
+    /* A personagem é maior que a metade dela. Este recorte diz até onde ela pode aparecer:
+       - para CIMA, sai 400px da caixa (a cabeça e o laço);
+       - para o lado do formulário, passa 220px, mas só nos 41% de cima (o cabelo);
+       - embaixo e do lado de fora, é cortada na borda da caixa. */
+    clip-path: polygon(0 -400px, calc(100% + 220px) -400px, calc(100% + 220px) 41%, 100% 41%, 100% 100%, 0 100%);
+
+    transition: transform 0.7s cubic-bezier(0.7, 0, 0.3, 1), clip-path 0.7s;
+}
+
+/* o fundo vermelho atrás da personagem */
+.entrada-arte-fundo{
+    position: absolute;
+    inset: 0;
+    border-radius: 22px 0 0 22px;
+    background: radial-gradient(circle at 60% 35%, #d98a72, #b0514a 45%, #4a2328 100%);
+    transition: border-radius 0.7s;
+}
+
+/* as personagens: imagens sem fundo, presas embaixo e um pouco mais altas que a caixa */
+.entrada-arte img{
+    position: absolute;
+    bottom: 0;
+    height: 108%;
+    max-width: none;
+    transition: opacity 0.5s 0.2s;
+}
+
+.arte-login{
+    right: -90px;
+}
+
+/* a personagem do cadastro fica invisível até a caixa entrar no modo cadastro */
+.arte-cadastro{
+    left: -90px;
+    opacity: 0;
+}
+
+/* sombra embaixo, para a personagem não "flutuar" */
+.entrada-arte::after{
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 30%;
+    border-radius: 0 0 0 22px;
+    background: linear-gradient(0deg, rgba(40, 22, 26, 0.6), transparent);
+    transition: border-radius 0.7s;
+}
+
+
+/* ---------- 4. METADE DOS FORMULÁRIOS (começa na direita) ---------- */
+.entrada-lado{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 0 22px 22px 0;
+    transition: transform 0.7s cubic-bezier(0.7, 0, 0.3, 1), border-radius 0.7s;
+}
+
+/* login e cadastro ocupam o mesmo espaço, um em cima do outro */
+.entrada-form{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 60px;
+    transition: opacity 0.35s, transform 0.45s, visibility 0s;
+}
+
+/* o formulário de cadastro começa escondido
+   (visibility: hidden também tira os campos dele do alcance do teclado) */
+.form-cadastro{
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    transition: opacity 0.35s, transform 0.45s, visibility 0s 0.35s;
+}
+
+.entrada-form h1{
+    margin: 0 0 4px;
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 1.05;
+}
+
+.entrada-sub{
+    margin: 0 0 26px;
+    color: var(--tinta-2);
+    font-size: 0.95rem;
+}
+
+.entrada-form .campo{
+    margin-bottom: 12px;
+}
+
+/* nesta tela os campos são arredondados e os rótulos não ficam em maiúsculas */
+.entrada-form .rotulo{
+    color: var(--tinta);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: none;
+}
+
+.entrada-form .input{
+    border-radius: 10px;
+    background: #fff;
+}
+
+.entrada-form .linha-campos{
+    grid-template-columns: 1fr 1fr;
+}
+
+.entrada-form .alerta{
+    margin-bottom: 6px;
+}
+
+.entrada-form .botao-largo{
+    margin-top: 10px;
+    min-height: 44px;
+    background: #b0453c;
+    font-size: 0.95rem;
+    text-transform: none;
+}
+
+/* "Ainda não tem conta? Criar conta" */
+.entrada-trocar{
+    margin: 18px 0 0;
+    color: var(--tinta-2);
+    font-size: 0.86rem;
+    text-align: center;
+}
+
+/* botão com cara de link ("Criar conta", "Entrar", "Enviar outro código") */
+.link-trocar{
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--tinta);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.link-trocar:hover{
+    color: var(--rosa-escuro);
+}
+
+
+/* ---------- 5. MODO CADASTRO (a animação) ---------- */
+/* Tudo aqui só vale quando a caixa tem a classe "cadastro".
+   Como as regras de cima têm "transition", o navegador faz a mudança aos poucos. */
+
+/* a arte desliza para a direita (100% da largura dela)... */
+.entrada-caixa.cadastro .entrada-arte{
+    transform: translateX(100%);
+    /* ...e o recorte espelha: agora o cabelo passa para o lado ESQUERDO */
+    clip-path: polygon(-220px -400px, 100% -400px, 100% 100%, 0 100%, 0 41%, -220px 41%);
+}
+
+/* ...os formulários deslizam para a esquerda... */
+.entrada-caixa.cadastro .entrada-lado{
+    transform: translateX(-100%);
+    border-radius: 22px 0 0 22px;
+}
+
+/* ...os cantos arredondados trocam de lado... */
+.entrada-caixa.cadastro .entrada-arte-fundo{
+    border-radius: 0 22px 22px 0;
+}
+
+.entrada-caixa.cadastro .entrada-arte::after{
+    border-radius: 0 0 22px 0;
+}
+
+/* ...a personagem troca... */
+.entrada-caixa.cadastro .arte-login{
+    opacity: 0;
+}
+
+.entrada-caixa.cadastro .arte-cadastro{
+    opacity: 1;
+}
+
+/* ...e o formulário também: o de login some e o de cadastro aparece */
+.entrada-caixa.cadastro .form-login{
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    transition: opacity 0.35s, transform 0.45s, visibility 0s 0.35s;
+}
+
+.entrada-caixa.cadastro .form-cadastro{
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 0.35s, transform 0.45s, visibility 0s;
+}
+
+
+/* ---------- 6. TELAS MENORES ---------- */
+/* celular: a arte vira uma faixa em cima e nada desliza */
+@media (max-width: 860px){
+    .entrada-caixa{
+        height: auto;
+    }
+
+    .entrada-arte,
+    .entrada-caixa.cadastro .entrada-arte{
+        position: relative;
+        width: 100%;
+        height: 220px;
+        transform: none;
+        clip-path: inset(0 round 22px 22px 0 0);
+    }
+
+    .entrada-arte-fundo,
+    .entrada-caixa.cadastro .entrada-arte-fundo{
+        border-radius: 22px 22px 0 0;
+    }
+
+    .entrada-arte::after{
+        display: none;
+    }
+
+    .entrada-arte img{
+        top: -40px;
+        right: auto;
+        bottom: auto;
+        left: 50%;
+        height: 520px;
+        transform: translateX(-50%);
+    }
+
+    .entrada-lado,
+    .entrada-caixa.cadastro .entrada-lado{
+        position: relative;
+        width: 100%;
+        height: 560px;
+        transform: none;
+        border-radius: 0 0 22px 22px;
+    }
+
+    .entrada-form{
+        padding: 0 24px;
+    }
+
+    .entrada-form h1{
+        font-size: 2.2rem;
+    }
+
+    .entrada-marca{
+        left: 20px;
+    }
+
+    .entrada-voltar{
+        right: 20px;
+    }
+}

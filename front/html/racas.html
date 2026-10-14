@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raças | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/fichas.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <a class="lateral-marca" href="inicio.html">
+      <img class="logo-peak" src="../img/logo.png" alt="">
+      <span>Peak</span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+      <a class="lateral-link ativo" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+      <a class="lateral-conta" href="perfil.html">
+        <div class="avatar" id="menuLetra"></div>
+        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <main class="secao">
+    <div class="container">
+
+      <div class="cabecalho-pagina">
+        <h1 class="titulo">Raças</h1>
+        <a class="botao botao-principal cabecalho-acoes" href="#nova">+ Criar raça</a>
+      </div>
+
+      <nav class="abas">
+        <a href="fichas.html">Personagens</a>
+        <a href="racas.html" class="ativo">Raças</a>
+        <a href="classes.html">Classes</a>
+      </nav>
+
+      <!-- ===== RAÇAS DA PEAK ===== -->
+      <div class="secao-titulo">
+        <h2>Raças da Peak</h2>
+      </div>
+      <!-- os cards entram aqui: js/racas.js, função desenharRacas() -->
+      <div class="galeria" id="listaOficiais"></div>
+
+      <!-- ===== RAÇAS DA COMUNIDADE (criadas por outras pessoas e marcadas como públicas) ===== -->
+      <div class="secao-titulo">
+        <h2>Da comunidade</h2>
+      </div>
+      <div class="galeria" id="listaComunidade"></div>
+
+      <!-- ===== MINHAS RAÇAS ===== -->
+      <div class="secao-titulo">
+        <h2>Minhas raças</h2>
+      </div>
+      <div class="galeria" id="listaMinhas"></div>
+
+      <!-- ===== CRIAR RAÇA ===== -->
+      <div class="secao-titulo" id="nova">
+        <h2>Criar raça</h2>
+      </div>
+      <div class="card">
+        <div class="formulario">
+          <div class="linha-campos">
+            <div class="campo">
+              <label class="rotulo" for="nome">Nome</label>
+              <input class="input" type="text" id="nome" maxlength="40" placeholder="Ex.: Gnomo">
+            </div>
+            <div class="campo">
+              <label class="rotulo" for="vidaMaxima">Vida</label>
+              <input class="input" type="number" id="vidaMaxima" value="8" min="1">
+            </div>
+          </div>
+
+          <div class="campo">
+            <label class="rotulo" for="descricao">Descrição</label>
+            <textarea class="input" id="descricao"></textarea>
+          </div>
+
+          <div class="campo">
+            <label class="rotulo" for="imagem">Imagem (opcional, até 500 KB)</label>
+            <input class="input" type="file" id="imagem" accept="image/*">
+          </div>
+
+          <label><input type="checkbox" id="publico"> Tornar pública (aparece para os outros jogadores)</label>
+
+          <!-- mensagem de erro do servidor (função salvarRaca) -->
+          <p class="alerta" id="alert"></p>
+
+          <div><button type="button" class="botao botao-principal" onclick="salvarRaca()">Salvar raça</button></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- JANELA DE EDITAR: começa escondida. Abre com o botão Editar de uma raça minha
+       (função abrirEdicao do js/racas.js). Só muda a descrição e se é pública. -->
+  <div class="modal-fundo oculto" id="janelaEdicao">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloEdicao">Editar raça</h2>
+        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaEdicao')">Fechar</button>
+      </div>
+
+      <div class="formulario">
+        <div class="campo">
+          <label class="rotulo" for="descricaoEdicao">Descrição</label>
+          <textarea class="input" id="descricaoEdicao" rows="4"></textarea>
+        </div>
+
+        <label><input type="checkbox" id="publicoEdicao"> Tornar pública (aparece para os outros jogadores)</label>
+
+        <div><button type="button" class="botao botao-principal" onclick="salvarEdicao()">Salvar</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+
+  <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
+  <script src="../js/script.js"></script>
+  <script src="../js/racas.js"></script>
+</body>
+</html>
