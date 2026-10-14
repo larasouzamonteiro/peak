@@ -228,7 +228,7 @@ CREATE TABLE sessoes(
 INSERT INTO usuarios
 (nomeUsuario, email, senha, tipo, fotoPerfil, capaPerfil, bio, contato, emailVerificado, tutorialVisto)
 VALUES
-('laraadmin', 'laraadmin@peak.com', '!', 'admin', '../img/mascote/zero.jpg', '../img/mascote/espada.jpg', 'Olá! Eu sou a Lara, da equipe da Peak. Cuido das campanhas oficiais e dos monstros do Bestiário.', 'Discord: lara.peak', 1, 1);
+('laraadmin', 'projetopeak.rpg@gmail.com', '!', 'admin', '../img/mascote/zero.jpg', '../img/mascote/espada.jpg', 'Olá! Eu sou a Lara, da equipe da Peak. Cuido das campanhas oficiais e dos monstros do Bestiário.', 'Discord: lara.peak', 1, 1);
 
 -- interesses (ids 1 a 9)
 INSERT INTO interesses
