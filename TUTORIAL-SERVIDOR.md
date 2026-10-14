@@ -65,7 +65,7 @@ Depois de salvar as variáveis, o Render instala tudo e liga o site. O link fica
 - **Senhas:** nenhuma senha fica escrita no código. Todas vêm das variáveis do Render.
 - **Contas de exemplo:** o banco não tem contas com senha conhecida. A admin é criada pelo passo 4.
 - **O que o servidor entrega:** só a pasta `front/`. Pedidos como `/../database/config.js` são recusados.
-- **Tamanho dos pedidos:** no máximo 1 MB. JSON quebrado responde erro em vez de travar o servidor.
+- **Tamanho dos pedidos:** no máximo 3 MB. JSON quebrado responde erro em vez de travar o servidor.
 - **Dados conferidos:** nenhum campo pode ser um objeto (isso mudaria o sentido do SQL). Números e textos têm limite.
 - **Imagens:** só aceita PNG, JPG, GIF ou WEBP enviados pela pessoa, ou imagens do próprio site.
 - **Tentativas erradas:**

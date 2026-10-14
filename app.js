@@ -89,7 +89,7 @@ function imagemValida(img){
         return true
     }
 
-    if(typeof img != 'string' || img.length > 700000){
+       if(img.length > 3500000) return false{
         return false
     }
 
@@ -114,7 +114,7 @@ function conferirDados(dados){
         }
 
         if(CAMPOS_IMAGEM.indexOf(campo) != -1){
-            if(!imagemValida(valor)) return 'Imagem inválida (use PNG, JPG, GIF ou WEBP de até 500 KB)'
+            if(!imagemValida(valor)) return 'Imagem inválida (use PNG, JPG, GIF ou WEBP de até 2.5 MB)'
             continue
         }
 
@@ -459,11 +459,11 @@ const callback = (req, res)=>{
         var body = ''
         var grandeDemais = false
 
-        // VERSÃO SERVIDOR: no máximo 1 MB por pedido (uma imagem de 500 KB em base64 cabe)
+        // VERSÃO SERVIDOR: no máximo 2.5 MB por pedido 
         req.on('data', (data)=>{
             body += data
 
-            if(body.length > 1024 * 1024 && !grandeDemais){
+                  if(body.length > 4 * 1024 * 1024){
                 grandeDemais = true
                 responder(res, 413, {'error': 'Dados grandes demais'})
                 req.destroy()

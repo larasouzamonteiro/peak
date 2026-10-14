@@ -194,7 +194,7 @@ function lerImagem(campo, depois, limiteKB){
     }
 
     if(limiteKB == undefined){
-        limiteKB = 500
+      limiteKB = 2500
     }
 
     if(arquivo.size > limiteKB * 1024){
