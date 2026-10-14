@@ -251,7 +251,8 @@ VALUES
 (NULL, 'Humano', 'Versáteis e ambiciosos, se adaptam a qualquer lugar e aprendem qualquer ofício.', 10, '../img/racas/humano.jpg', 1),
 (NULL, 'Fada', 'Seres pequenos e luminosos das florestas antigas, curiosos e imprevisíveis.', 6, '../img/racas/fada.jpg', 1),
 (NULL, 'Goblin', 'Pequenos, espertos e cheios de truques. Onde ninguém vê saída, um goblin acha três.', 7, '../img/racas/goblin.jpg', 1),
-(NULL, 'Centauro', 'Metade humano, metade cavalo. Fortes, rápidos e protetores das florestas.', 12, '../img/racas/centauro.jpg', 1);
+(NULL, 'Centauro', 'Metade humano, metade cavalo. Fortes, rápidos e protetores das florestas.', 12, '../img/racas/centauro.jpg', 1),
+(NULL, 'Tiefling', ' são humanoides marcados por uma linhagem infernal, exibindo chifres, caudas e olhos sem pupilas devido a pactos de seus ancestrais. Possuem visão no escuro, resistência natural ao fogo e um despertar gradual para magias inatas.', 12, '../img/racas/tiefling.png', 1);
 
 -- classes oficiais (ids 1 a 6)
 INSERT INTO classes
