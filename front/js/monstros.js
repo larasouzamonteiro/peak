@@ -104,7 +104,9 @@ function estaNaFaixa(m){
     }
 
     if(faixaEscolhida == 'comunidade'){
-        return m.usuarioId != null && m.usuarioId != eu.id
+        // A faixa deve mostrar qualquer monstro de jogador que seja público,
+        // inclusive o que a própria pessoa acabou de compartilhar.
+        return m.usuarioId != null && m.publico == 1
     }
 
     if(faixaEscolhida == 'meus'){
