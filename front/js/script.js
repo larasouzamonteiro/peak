@@ -181,7 +181,7 @@ function fecharJanela(id){
 // depois: função que recebe a imagem transformada em TEXTO (ou '' se não escolheu nada).
 //         É esse texto que vai para o servidor e fica guardado no banco.
 //
-// limiteKB: tamanho máximo do arquivo. Se não mandar, vale 500 KB
+// limiteKB: tamanho máximo do arquivo. Se não mandar, vale 2500 KB (2,5 MB)
 //           (imagem muito grande deixa o banco pesado).
 //
 // Ex.: lerImagem(document.getElementById('imagem'), function(imagem){ ... })
@@ -194,7 +194,7 @@ function lerImagem(campo, depois, limiteKB){
     }
 
     if(limiteKB == undefined){
-      limiteKB = 2500
+        limiteKB = 2500
     }
 
     if(arquivo.size > limiteKB * 1024){
