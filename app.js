@@ -50,9 +50,10 @@ const TIPOS = {
     '.webp': 'image/webp', '.ico': 'image/x-icon', '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg'
 }
 
-function entregarArquivo(pathname, res){
+    // o endereço puro manda a pessoa para /html/index.html (302 = "vá para lá")
     if(pathname == '/'){
-        pathname = '/html/index.html'
+        res.writeHead(302, {'Location': '/html/index.html'})
+        return res.end()
     }
 
     var caminho = path.normalize(path.join(PASTA_FRONT, decodeURIComponent(pathname)))
