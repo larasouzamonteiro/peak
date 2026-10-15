@@ -906,6 +906,62 @@ const callback = (req, res)=>{
                     })
                 })
 
+            // ----- admin: raças oficiais -----
+            }else if(rota.pathname == '/admin/racas/criar'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    RacasBD.addOficial(dados, (message)=>{
+                        res.writeHead(201, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/admin/racas/atualizar'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    RacasBD.atualizarOficial(dados, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/admin/racas/excluir'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    RacasBD.excluirOficial(dados.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            // ----- admin: classes oficiais -----
+            }else if(rota.pathname == '/admin/classes/criar'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    ClassesBD.addOficial(dados, (message)=>{
+                        res.writeHead(201, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/admin/classes/atualizar'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    ClassesBD.atualizarOficial(dados, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/admin/classes/excluir'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    ClassesBD.excluirOficial(dados.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
             // ----- admin: campanhas oficiais -----
             }else if(rota.pathname == '/admin/campanhas/criar'){
 

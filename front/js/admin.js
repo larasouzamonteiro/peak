@@ -2,6 +2,7 @@
 // Painel do administrador. Ele só cuida do que é OFICIAL:
 //   - monstros oficiais (os gerais da Peak e os de cada campanha oficial)
 //   - campanhas oficiais
+//   - raças oficiais e classes oficiais (as que aparecem para todo mundo na Oficina)
 //
 // Quem protege de verdade é o servidor: as rotas /admin/... recusam quem não é admin.
 // Aqui a página só manda embora quem entrou por engano.
@@ -10,18 +11,24 @@ var monstros = []            // só os oficiais (usuarioId vazio)
 var campanhas = []           // as campanhas oficiais
 var monstroEditando = null   // id do monstro aberto na janela (null = está criando um novo)
 var campanhaEditando = null  // id da campanha aberta na janela (null = está criando uma nova)
+var racas = []               // só as raças oficiais
+var classes = []             // só as classes oficiais
+var racaEditando = null      // id da raça aberta na janela (null = está criando uma nova)
+var classeEditando = null    // id da classe aberta na janela (null = está criando uma nova)
 
 if(verificarLogin()){
     if(pegarUsuarioLogado().tipo != 'admin'){
         window.location.href = 'inicio.html'
     }else{
         carregarCampanhas()
+        carregarRacas()
+        carregarClasses()
     }
 }
 
-// ABAS: mostra <section id="abaMonstros"> ou <section id="abaCampanhas">
+// ABAS: mostra só uma <section id="aba..."> e esconde as outras
 function mostrarAba(nome){
-    var abas = ['Monstros', 'Campanhas']
+    var abas = ['Monstros', 'Campanhas', 'Racas', 'Classes']
 
     for(var i = 0; i < abas.length; i++){
         document.getElementById('aba' + abas[i]).classList.toggle('oculto', abas[i] != nome)
@@ -303,5 +310,261 @@ function excluirCampanha(id){
         }
 
         carregarCampanhas()
+    })
+}
+
+
+// =====================================================
+// RAÇAS OFICIAIS
+// =====================================================
+
+// Da lista de raças, ficam só as oficiais (usuarioId vazio)
+function carregarRacas(){
+    buscar('/racas', function(lista){
+        racas = []
+
+        for(var i = 0; i < lista.length; i++){
+            if(lista[i].usuarioId == null){
+                racas.push(lista[i])
+            }
+        }
+
+        desenharRacas()
+    })
+}
+
+// Uma linha da tabela para cada raça, em <tbody id="tabelaRacas">
+function desenharRacas(){
+    var html = ''
+
+    for(var i = 0; i < racas.length; i++){
+        var r = racas[i]
+
+        html += `
+            <tr>
+                <td>${r.imagem ? '<img class="miniatura" src="' + seguro(r.imagem) + '" alt="">' : ''}</td>
+                <td><strong>${seguro(r.nome)}</strong></td>
+                <td>${r.vidaMaxima}</td>
+                <td>
+                    <div class="botoes">
+                        <button type="button" class="botao botao-pequeno" onclick="editarRaca(${r.id})">Editar</button>
+                        <button type="button" class="botao botao-pequeno" onclick="excluirRaca(${r.id})">Excluir</button>
+                    </div>
+                </td>
+            </tr>`
+    }
+
+    if(html == ''){
+        html = '<tr><td colspan="4" class="texto-suave">Nenhuma raça oficial ainda.</td></tr>'
+    }
+
+    document.getElementById('tabelaRacas').innerHTML = html
+}
+
+// Abre a janela vazia, para criar
+function novaRaca(){
+    racaEditando = null
+
+    document.getElementById('tituloRaca').textContent = 'Nova raça oficial'
+    document.getElementById('racaNome').value = ''
+    document.getElementById('racaDescricao').value = ''
+    document.getElementById('racaVida').value = 8
+    document.getElementById('racaImagem').value = ''
+    document.getElementById('alertRaca').textContent = ''
+
+    abrirJanela('janelaRaca')
+}
+
+// Abre a janela preenchida com a raça clicada, para editar
+function editarRaca(id){
+    racaEditando = id
+
+    for(var i = 0; i < racas.length; i++){
+        if(racas[i].id == id){
+            var r = racas[i]
+
+            document.getElementById('tituloRaca').textContent = 'Editar ' + r.nome
+            document.getElementById('racaNome').value = r.nome
+            document.getElementById('racaDescricao').value = r.descricao
+            document.getElementById('racaVida').value = r.vidaMaxima
+        }
+    }
+
+    document.getElementById('racaImagem').value = ''
+    document.getElementById('alertRaca').textContent = ''
+
+    abrirJanela('janelaRaca')
+}
+
+// O mesmo botão Salvar cria (racaEditando == null) ou edita
+function salvarRaca(){
+    lerImagem(document.getElementById('racaImagem'), function(imagem){
+
+        var raca = {
+            nome: document.getElementById('racaNome').value.trim(),
+            descricao: document.getElementById('racaDescricao').value.trim(),
+            vidaMaxima: document.getElementById('racaVida').value,
+            imagem: imagem
+        }
+
+        var rota = '/admin/racas/criar'
+
+        if(racaEditando != null){
+            rota = '/admin/racas/atualizar'
+            raca.id = racaEditando
+        }
+
+        enviar(rota, raca, function(dados){
+
+            if(dados.hasOwnProperty('error')){
+                document.getElementById('alertRaca').textContent = dados.error
+                return
+            }
+
+            fecharJanela('janelaRaca')
+            carregarRacas()
+        })
+    })
+}
+
+function excluirRaca(id){
+    if(!confirm('Excluir esta raça oficial?')){
+        return
+    }
+
+    enviar('/admin/racas/excluir', {id: id}, function(dados){
+
+        if(dados.hasOwnProperty('error')){
+            alert(dados.error)
+            return
+        }
+
+        carregarRacas()
+    })
+}
+
+
+// =====================================================
+// CLASSES OFICIAIS
+// =====================================================
+
+// Da lista de classes, ficam só as oficiais (usuarioId vazio)
+function carregarClasses(){
+    buscar('/classes', function(lista){
+        classes = []
+
+        for(var i = 0; i < lista.length; i++){
+            if(lista[i].usuarioId == null){
+                classes.push(lista[i])
+            }
+        }
+
+        desenharClasses()
+    })
+}
+
+// Uma linha da tabela para cada classe, em <tbody id="tabelaClasses">
+function desenharClasses(){
+    var html = ''
+
+    for(var i = 0; i < classes.length; i++){
+        var c = classes[i]
+
+        html += `
+            <tr>
+                <td>${c.imagem ? '<img class="miniatura" src="' + seguro(c.imagem) + '" alt="">' : ''}</td>
+                <td><strong>${seguro(c.nome)}</strong></td>
+                <td>
+                    <div class="botoes">
+                        <button type="button" class="botao botao-pequeno" onclick="editarClasse(${c.id})">Editar</button>
+                        <button type="button" class="botao botao-pequeno" onclick="excluirClasse(${c.id})">Excluir</button>
+                    </div>
+                </td>
+            </tr>`
+    }
+
+    if(html == ''){
+        html = '<tr><td colspan="3" class="texto-suave">Nenhuma classe oficial ainda.</td></tr>'
+    }
+
+    document.getElementById('tabelaClasses').innerHTML = html
+}
+
+// Abre a janela vazia, para criar
+function novaClasse(){
+    classeEditando = null
+
+    document.getElementById('tituloClasse').textContent = 'Nova classe oficial'
+    document.getElementById('classeNome').value = ''
+    document.getElementById('classeDescricao').value = ''
+    document.getElementById('classeImagem').value = ''
+    document.getElementById('alertClasse').textContent = ''
+
+    abrirJanela('janelaClasse')
+}
+
+// Abre a janela preenchida com a classe clicada, para editar
+function editarClasse(id){
+    classeEditando = id
+
+    for(var i = 0; i < classes.length; i++){
+        if(classes[i].id == id){
+            var c = classes[i]
+
+            document.getElementById('tituloClasse').textContent = 'Editar ' + c.nome
+            document.getElementById('classeNome').value = c.nome
+            document.getElementById('classeDescricao').value = c.descricao
+        }
+    }
+
+    document.getElementById('classeImagem').value = ''
+    document.getElementById('alertClasse').textContent = ''
+
+    abrirJanela('janelaClasse')
+}
+
+// O mesmo botão Salvar cria (classeEditando == null) ou edita
+function salvarClasse(){
+    lerImagem(document.getElementById('classeImagem'), function(imagem){
+
+        var classe = {
+            nome: document.getElementById('classeNome').value.trim(),
+            descricao: document.getElementById('classeDescricao').value.trim(),
+            imagem: imagem
+        }
+
+        var rota = '/admin/classes/criar'
+
+        if(classeEditando != null){
+            rota = '/admin/classes/atualizar'
+            classe.id = classeEditando
+        }
+
+        enviar(rota, classe, function(dados){
+
+            if(dados.hasOwnProperty('error')){
+                document.getElementById('alertClasse').textContent = dados.error
+                return
+            }
+
+            fecharJanela('janelaClasse')
+            carregarClasses()
+        })
+    })
+}
+
+function excluirClasse(id){
+    if(!confirm('Excluir esta classe oficial?')){
+        return
+    }
+
+    enviar('/admin/classes/excluir', {id: id}, function(dados){
+
+        if(dados.hasOwnProperty('error')){
+            alert(dados.error)
+            return
+        }
+
+        carregarClasses()
     })
 }

@@ -103,6 +103,88 @@ class ClassesBD{
             })
         })
     }
+
+    // ---------- ADMIN: CLASSES OFICIAIS ----------
+    // Classe oficial = usuarioId vazio (NULL). Só o admin cria, edita e apaga.
+    // classe: { nome, descricao, imagem }
+    static addOficial(classe, callback){
+
+        if(!classe.nome){
+            return callback({'error': 'Digite o nome da classe'})
+        }
+
+        var nova = {
+            usuarioId: null,
+            nome: classe.nome,
+            descricao: classe.descricao,
+            imagem: classe.imagem,
+            publico: 1
+        }
+
+        const connection = ClassesBD.connect()
+
+        connection.query('insert into classes set ?', nova, (error, results)=>{
+            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            callback({'message': 'Classe oficial criada!'})
+        })
+
+        connection.end()
+    }
+
+    // classe: { id, nome, descricao, imagem }
+    // Se a imagem vier vazia, a imagem que já estava no banco continua.
+    static atualizarOficial(classe, callback){
+
+        if(!classe.nome){
+            return callback({'error': 'Digite o nome da classe'})
+        }
+
+        var sql = 'update classes set nome = ?, descricao = ? where id = ? and usuarioId is null'
+        var valores = [classe.nome, classe.descricao, classe.id]
+
+        if(classe.imagem){
+            sql = 'update classes set nome = ?, descricao = ?, imagem = ? where id = ? and usuarioId is null'
+            valores = [classe.nome, classe.descricao, classe.imagem, classe.id]
+        }
+
+        const connection = ClassesBD.connect()
+
+        connection.query(sql, valores, (error, results)=>{
+            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            if(results.affectedRows == 0){
+                callback({'error': 'Classe oficial não encontrada'})
+            }else{
+                callback({'message': 'Classe oficial salva!'})
+            }
+        })
+
+        connection.end()
+    }
+
+    static excluirOficial(id, callback){
+        const connection = ClassesBD.connect()
+
+        // uma classe que já está em alguma ficha não pode ser apagada
+        connection.query('select id from fichas where classeId = ?', [id], (error, results)=>{
+            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            if(results.length > 0){
+                return callback({'error': 'Não dá para excluir: já existe ficha usando esta classe.'})
+            }
+
+            connection.query('delete from classes where id = ? and usuarioId is null', [id], (error, results)=>{
+                if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+                if(results.affectedRows == 0){
+                    callback({'error': 'Classe oficial não encontrada'})
+                }else{
+                    callback({'message': 'Classe oficial excluída!'})
+                }
+            })
+        })
+    }
 }
 
 module.exports = ClassesBD

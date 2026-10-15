@@ -54,7 +54,7 @@
       <div class="cabecalho-pagina">
         <div>
           <h1 class="titulo">Administração</h1>
-          <p class="texto-suave">Área da equipe da Peak. Aqui você cuida do que é oficial: os monstros e as campanhas.</p>
+          <p class="texto-suave">Área da equipe da Peak. Aqui você cuida do que é oficial: os monstros, as campanhas, as raças e as classes.</p>
         </div>
       </div>
 
@@ -62,6 +62,8 @@
       <nav class="abas">
         <button type="button" class="ativo" id="botaoAbaMonstros" onclick="mostrarAba('Monstros')">Monstros oficiais</button>
         <button type="button" id="botaoAbaCampanhas" onclick="mostrarAba('Campanhas')">Campanhas oficiais</button>
+        <button type="button" id="botaoAbaRacas" onclick="mostrarAba('Racas')">Raças oficiais</button>
+        <button type="button" id="botaoAbaClasses" onclick="mostrarAba('Classes')">Classes oficiais</button>
       </nav>
 
       <!-- ========== ABA MONSTROS OFICIAIS ========== -->
@@ -98,6 +100,51 @@
 
         <!-- os cards entram aqui: função desenharCampanhas() -->
         <div class="grade grade-2" id="listaCampanhas"></div>
+      </section>
+
+      <!-- ========== ABA RAÇAS OFICIAIS ========== -->
+      <section class="oculto" id="abaRacas">
+        <div class="secao-titulo">
+          <h2>Raças oficiais</h2>
+          <button type="button" class="botao botao-principal botao-pequeno" onclick="novaRaca()">+ Nova raça oficial</button>
+        </div>
+
+        <div class="card">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th>Vida</th>
+                <th></th>
+              </tr>
+            </thead>
+            <!-- as linhas entram aqui: função desenharRacas() -->
+            <tbody id="tabelaRacas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== ABA CLASSES OFICIAIS ========== -->
+      <section class="oculto" id="abaClasses">
+        <div class="secao-titulo">
+          <h2>Classes oficiais</h2>
+          <button type="button" class="botao botao-principal botao-pequeno" onclick="novaClasse()">+ Nova classe oficial</button>
+        </div>
+
+        <div class="card">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th></th>
+              </tr>
+            </thead>
+            <!-- as linhas entram aqui: função desenharClasses() -->
+            <tbody id="tabelaClasses"></tbody>
+          </table>
+        </div>
       </section>
 
     </div>
@@ -141,7 +188,7 @@
         </div>
 
         <div class="campo">
-          <label class="rotulo" for="monstroImagem">Imagem (até 3 MB)</label>
+          <label class="rotulo" for="monstroImagem">Imagem (até 2,5 MB)</label>
           <input class="input" type="file" id="monstroImagem" accept="image/*">
           <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
         </div>
@@ -184,7 +231,7 @@
         </div>
 
         <div class="campo">
-          <label class="rotulo" for="campanhaCapa">Imagem de capa (até 3 MB)</label>
+          <label class="rotulo" for="campanhaCapa">Imagem de capa (até 2,5 MB)</label>
           <input class="input" type="file" id="campanhaCapa" accept="image/*">
           <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
         </div>
@@ -193,6 +240,78 @@
         <p class="alerta" id="alertCampanha"></p>
 
         <div><button type="button" class="botao botao-principal" onclick="salvarCampanha()">Salvar</button></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JANELA DA RAÇA OFICIAL: serve para criar e para editar -->
+  <div class="modal-fundo oculto" id="janelaRaca">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloRaca">Nova raça oficial</h2>
+        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaRaca')">Fechar</button>
+      </div>
+
+      <div class="formulario">
+        <div class="campo">
+          <label class="rotulo" for="racaNome">Nome</label>
+          <input class="input" type="text" id="racaNome" maxlength="40">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="racaDescricao">Descrição</label>
+          <textarea class="input" id="racaDescricao" rows="4"></textarea>
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="racaVida">Vida máxima</label>
+          <input class="input" type="number" id="racaVida" value="8" min="1">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="racaImagem">Imagem (até 2,5 MB)</label>
+          <input class="input" type="file" id="racaImagem" accept="image/*">
+          <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
+        </div>
+
+        <!-- mensagem de erro do servidor (função salvarRaca) -->
+        <p class="alerta" id="alertRaca"></p>
+
+        <div><button type="button" class="botao botao-principal" onclick="salvarRaca()">Salvar</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JANELA DA CLASSE OFICIAL: serve para criar e para editar -->
+  <div class="modal-fundo oculto" id="janelaClasse">
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h2 id="tituloClasse">Nova classe oficial</h2>
+        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaClasse')">Fechar</button>
+      </div>
+
+      <div class="formulario">
+        <div class="campo">
+          <label class="rotulo" for="classeNome">Nome</label>
+          <input class="input" type="text" id="classeNome" maxlength="40">
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="classeDescricao">Descrição</label>
+          <textarea class="input" id="classeDescricao" rows="4"></textarea>
+        </div>
+
+        <div class="campo">
+          <label class="rotulo" for="classeImagem">Imagem (até 2,5 MB)</label>
+          <input class="input" type="file" id="classeImagem" accept="image/*">
+          <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
+        </div>
+
+        <!-- mensagem de erro do servidor (função salvarClasse) -->
+        <p class="alerta" id="alertClasse"></p>
+
+        <div><button type="button" class="botao botao-principal" onclick="salvarClasse()">Salvar</button></div>
       </div>
     </div>
   </div>
