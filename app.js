@@ -50,6 +50,20 @@ const TIPOS = {
     '.webp': 'image/webp', '.ico': 'image/x-icon', '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg'
 }
 
+// Página de erro bonita (front/html/404.html) para endereço que não existe.
+// O status continua 404 para o navegador saber que a página não existe.
+function paginaNaoEncontrada(res){
+    fs.readFile(path.join(PASTA_FRONT, 'html', '404.html'), (erro, conteudo)=>{
+        if(erro){
+            res.writeHead(404, {'Content-Type': 'text/plain; charset=utf-8'})
+            return res.end('Página não encontrada')
+        }
+
+        res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'})
+        res.end(conteudo)
+    })
+}
+
 function entregarArquivo(pathname, res){
     // o endereço puro (https://site.com/) manda a pessoa para /html/index.html.
     // Precisa ser um "redirecionamento" (302) para os links da página funcionarem.
@@ -58,7 +72,13 @@ function entregarArquivo(pathname, res){
         return res.end()
     }
 
-    var caminho = path.normalize(path.join(PASTA_FRONT, decodeURIComponent(pathname)))
+    // try/catch: um endereço quebrado (ex.: /html/%E0) faria o decodeURIComponent dar erro
+    var caminho
+    try{
+        caminho = path.normalize(path.join(PASTA_FRONT, decodeURIComponent(pathname)))
+    }catch(erro){
+        return paginaNaoEncontrada(res)
+    }
 
     // impede pedidos como /../database/config.js (sair da pasta front)
     if(caminho.indexOf(PASTA_FRONT + path.sep) != 0){
@@ -70,8 +90,7 @@ function entregarArquivo(pathname, res){
 
     fs.readFile(caminho, (erro, conteudo)=>{
         if(erro || !tipo){
-            res.writeHead(404, {'Content-Type': 'text/plain; charset=utf-8'})
-            return res.end('Página não encontrada')
+            return paginaNaoEncontrada(res)
         }
 
         res.writeHead(200, {'Content-Type': tipo})
@@ -446,8 +465,8 @@ const callback = (req, res)=>{
             })
 
         }else{
-            res.writeHead(404, {'Content-Type': 'application/json'})
-            res.end(JSON.stringify({'error': 'Rota não encontrada'}))
+            // endereço digitado errado (ex.: /lara): mostra a página 404 bonita
+            paginaNaoEncontrada(res)
         }
 
     // =====================================================

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Página não encontrada | Peak</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap">
+
+  <!-- Os caminhos começam com "/" (e não "../") porque esta página aparece
+       em QUALQUER endereço errado, por exemplo /lara ou /html/abc/xyz.html -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/erro.css">
+</head>
+<body class="pagina-erro">
+
+  <main class="erro-caixa">
+    <img class="erro-logo" src="/img/logo.png" alt="Peak">
+    <h1 class="erro-numero">404</h1>
+    <p class="erro-texto">Esta página não existe, ou o Mestre ainda não abriu este caminho.</p>
+    <a class="botao botao-principal" href="/html/index.html">Voltar para a Peak</a>
+  </main>
+<style>
+  /* erro.css: só a página 404.html (endereço que não existe)
+   O fundo pêssego com a arte desfocada já vem do style.css (igual ao resto do site). */
+
+.pagina-erro{
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+}
+
+.erro-caixa{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.erro-logo{
+    width: 64px;
+}
+
+/* o "404" gigante: clamp() deixa o tamanho entre 6rem (celular) e 12rem (computador) */
+.erro-numero{
+    font-size: clamp(6rem, 22vw, 12rem);
+    font-weight: 800;
+    line-height: 1;
+    margin: 0;
+    color: var(--rosa);
+}
+
+.erro-texto{
+    font-size: 1.25rem;
+    font-weight: 600;
+    max-width: 560px;
+    margin: 0 0 10px;
+    color: var(--tinta);
+}
+
+</style>
+</body>
+</html>
