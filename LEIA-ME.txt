@@ -1,0 +1,14 @@
+PEAK - PROJETO COMPLETO (com o visual novo e o "Esqueci minha senha")
+
+COMO COLOCAR
+1. Abra o ZIP, selecione TUDO que está dentro (Ctrl+A) e arraste para Documentos\GitHub\peak.
+   Quando o Windows perguntar, escolha "Substituir os arquivos no destino".
+   (as pastas front e database e o app.js têm que cair DIRETO dentro de peak,
+    e não numa pasta peak\peak)
+2. Faça o commit e envie (push). Espere o deploy do Render terminar.
+3. Se testar no computador: feche o servidor (Ctrl+C) e rode node app.js de novo.
+
+NÃO VEM NO ZIP (fica o seu): database/config.js, database/emailConfig.js e database/Email.js.
+O banco NÃO muda. Não rode o banco.sql.
+
+Pode apagar (não é mais usado): front/js/index.js

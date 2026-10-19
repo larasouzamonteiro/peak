@@ -155,6 +155,87 @@ class UsuariosBD{
         })
     }
 
+    // ---------- ESQUECI MINHA SENHA ----------
+    // Usa a MESMA coluna codigoEmail do cadastro (não precisou mudar o banco):
+    //   1. pedirTrocaSenha: sorteia um código, guarda em codigoEmail e manda por e-mail
+    //   2. trocarSenha: se o código bater, troca a senha e apaga o código
+
+    // dados: { email }
+    static pedirTrocaSenha(dados, callback){
+        var email = dados.email
+
+        if(!email || typeof email != 'string'){
+            return callback({'error': 'Digite o e-mail'})
+        }
+
+        var codigo = gerarCodigo()
+
+        const connection = UsuariosBD.connect()
+
+        // só conta com e-mail já confirmado (emailVerificado = 1)
+        var sql = 'update usuarios set codigoEmail = ? where email = ? and emailVerificado = 1'
+
+        connection.query(sql, [codigo, email], (error, results)=>{
+            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            connection.end()
+
+            // só manda o e-mail se achou a conta (affectedRows = quantas linhas o update mudou)
+            if(results.affectedRows > 0){
+                Email.enviarCodigo(email, codigo, 'senha')
+            }
+
+            // a resposta é a mesma achando ou não a conta: assim ninguém descobre
+            // quais e-mails têm conta na Peak
+            callback({'message': 'Se esse e-mail tiver uma conta na Peak, o código já foi enviado.'})
+        })
+    }
+
+    // dados: { email, codigo, senha }
+    static async trocarSenha(dados, callback){
+        var {email, codigo, senha} = dados
+
+        if(!email || !codigo || !senha || typeof email != 'string' || typeof codigo != 'string' || typeof senha != 'string'){
+            return callback({'error': 'Preencha o código e a senha nova'})
+        }
+
+        // as mesmas regras de senha do cadastro
+        if(senha.length < 6){
+            return callback({'error': 'A senha precisa ter pelo menos 6 caracteres'})
+        }
+
+        if(senha.length > 72){
+            return callback({'error': 'A senha pode ter no máximo 72 caracteres'})
+        }
+
+        var senhaHash = await bcrypt.hash(senha, 10)
+
+        const connection = UsuariosBD.connect()
+
+        var sql = 'select id, codigoEmail from usuarios where email = ? and emailVerificado = 1'
+
+        connection.query(sql, [email], (error, results)=>{
+            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            // codigoEmail null = ninguém pediu código
+            if(results.length == 0 || results[0].codigoEmail == null || results[0].codigoEmail != codigo){
+                connection.end()
+                return callback({'error': 'Código incorreto!'})
+            }
+
+            // troca a senha, apaga o código (só vale uma vez) e apaga o token
+            // (quem estava logado com a senha velha precisa entrar de novo)
+            var sql = 'update usuarios set senha = ?, codigoEmail = null, token = null where id = ?'
+
+            connection.query(sql, [senhaHash, results[0].id], (error, results)=>{
+                if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+                connection.end()
+                callback({'message': 'Senha trocada! Agora é só entrar com a senha nova.'})
+            })
+        })
+    }
+
     // ---------- LOGIN ----------
     // usuario: { nomeUsuario, senha }  (no lugar do nome pode vir o e-mail)
     // Se der certo, gera um TOKEN (código aleatório) e guarda no banco.

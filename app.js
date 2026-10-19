@@ -26,12 +26,6 @@ const url = require('url')
 const fs = require('fs')
 const path = require('path')
 
-// No computador, as variáveis (chave do Brevo, banco...) ficam no arquivo .env.
-// No Render não existe .env (lá elas vêm do painel), então o try/catch só ignora.
-try{
-    process.loadEnvFile(path.join(__dirname, '.env'))
-}catch(erro){}
-
 const UsuariosBD = require('./database/UsuariosBD')
 const ComunidadeBD = require('./database/ComunidadeBD')
 const FichasBD = require('./database/FichasBD')
@@ -53,7 +47,8 @@ const PASTA_FRONT = path.join(__dirname, 'front')
 const TIPOS = {
     '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
     '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.svg': 'image/svg+xml',
-    '.webp': 'image/webp', '.ico': 'image/x-icon', '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg'
+    '.webp': 'image/webp', '.ico': 'image/x-icon', '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg',
+    '.mp4': 'video/mp4', '.webm': 'video/webm'     // VISUAL: os vídeos do fundo do index
 }
 
 // Página de erro bonita (front/html/404.html) para endereço que não existe.
@@ -156,7 +151,8 @@ function conferirDados(dados){
 }
 
 // ----- 3. bloquear tentativas repetidas -----
-// Guarda quantas vezes alguém errou. Passou do limite, bloqueia por 15 minutos.
+// Guarda quantas vezes alguém errou. Passou do limite, bloqueia por 1 minuto.
+// (era 15 minutos; ficou 1 minuto para dar para mostrar na apresentação)
 // (fica na memória: se o servidor reiniciar, zera)
 var tentativas = {}
 
@@ -174,7 +170,7 @@ function contarErro(chave){
     }
 
     t.erros = t.erros + 1
-    t.ate = Date.now() + 15 * 60 * 1000
+    t.ate = Date.now() + 1 * 60 * 1000      // 1 minuto (60 segundos x 1000 milissegundos)
     tentativas[chave] = t
 }
 
@@ -528,9 +524,9 @@ const callback = (req, res)=>{
             // ----- cadastro e login (não pedem token) -----
             if(rota.pathname == '/registro'){
 
-                // no máximo 20 contas novas a cada 15 minutos do mesmo lugar (mesma internet)
+                // no máximo 20 contas novas por minuto do mesmo lugar (mesma internet)
                 if(bloqueado('registro:' + ip, 20)){
-                    return responder(res, 429, {'error': 'Muitos cadastros seguidos. Tente de novo em 15 minutos.'})
+                    return responder(res, 429, {'error': 'Muitos cadastros seguidos. Tente de novo em 1 minuto.'})
                 }
                 contarErro('registro:' + ip)
 
@@ -541,11 +537,11 @@ const callback = (req, res)=>{
 
             }else if(rota.pathname == '/registro/confirmar'){
 
-                // 5 códigos errados para o mesmo e-mail: bloqueia 15 minutos
+                // 5 códigos errados para o mesmo e-mail: bloqueia 1 minuto
                 var chaveCodigo = 'codigo:' + String(dados.email).toLowerCase()
 
                 if(bloqueado(chaveCodigo)){
-                    return responder(res, 429, {'error': 'Muitas tentativas. Tente de novo em 15 minutos.'})
+                    return responder(res, 429, {'error': 'Muitas tentativas. Tente de novo em 1 minuto.'})
                 }
 
                 UsuariosBD.confirmarCodigo(dados, (message)=>{
@@ -572,16 +568,50 @@ const callback = (req, res)=>{
                     res.end(JSON.stringify(message))
                 })
 
+            // ----- ESQUECI MINHA SENHA (página nova-senha.html) -----
+            // Usa a mesma coluna codigoEmail do cadastro: não precisa mudar o banco.
+            }else if(rota.pathname == '/senha/pedir'){
+
+                // igual ao reenviar: no máximo 1 código por minuto para cada e-mail
+                var emailSenha = String(dados.email).toLowerCase()
+
+                if(ultimoReenvio[emailSenha] && Date.now() - ultimoReenvio[emailSenha] < 60 * 1000){
+                    return responder(res, 429, {'error': 'Espere 1 minuto para pedir outro código.'})
+                }
+                ultimoReenvio[emailSenha] = Date.now()
+
+                UsuariosBD.pedirTrocaSenha(dados, (message)=>{
+                    responder(res, 200, message)
+                })
+
+            }else if(rota.pathname == '/senha/trocar'){
+
+                // 5 códigos errados para o mesmo e-mail: bloqueia 1 minuto (a mesma regra do cadastro)
+                var chaveSenha = 'senha:' + String(dados.email).toLowerCase()
+
+                if(bloqueado(chaveSenha)){
+                    return responder(res, 429, {'error': 'Muitas tentativas. Tente de novo em 1 minuto.'})
+                }
+
+                UsuariosBD.trocarSenha(dados, (message)=>{
+                    if(message.error){
+                        contarErro(chaveSenha)
+                    }else{
+                        limparErros(chaveSenha)
+                    }
+                    responder(res, 200, message)
+                })
+
             }else if(rota.pathname == '/login'){
 
-                // 5 senhas erradas para o mesmo usuário: bloqueia 15 minutos.
+                // 5 senhas erradas para o mesmo usuário: bloqueia 1 minuto.
                 // Do mesmo lugar (mesmo IP) o limite é 30, porque numa escola
                 // muita gente usa a mesma internet.
                 var chaveLogin = 'login:' + String(dados.nomeUsuario).toLowerCase()
                 var chaveIp = 'loginip:' + ip
 
                 if(bloqueado(chaveLogin) || bloqueado(chaveIp, 30)){
-                    return responder(res, 429, {'error': 'Muitas tentativas erradas. Tente de novo em 15 minutos.'})
+                    return responder(res, 429, {'error': 'Muitas tentativas erradas. Tente de novo em 1 minuto.'})
                 }
 
                 UsuariosBD.login(dados, (message)=>{

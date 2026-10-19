@@ -30,6 +30,8 @@
       <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
       <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
       <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+      <!-- VISUAL: só aparece no celular, abre o menu inteiro (abrirMais do script.js) -->
+      <button type="button" class="lateral-link botao-mais" onclick="abrirMais()"><img src="../img/icones/mais.svg" alt=""><span>Mais</span></button>
     </nav>
 
     <div class="lateral-rodape">
@@ -202,12 +204,12 @@
               <p class="ajuda">Equilibrado deixa todos em 12. Aleatório sorteia (clique de novo para sortear outra vez). Personalizado deixa você digitar.</p>
 
               <div class="linha-campos">
-                <div class="campo"><label class="rotulo" for="forca">FORÇA</label><input class="input" type="number" id="forca" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="destreza">DESTREZA</label><input class="input" type="number" id="destreza" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="constituicao">CONSTITUIÇÃO</label><input class="input" type="number" id="constituicao" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="inteligencia">INTELIGENCIA</label><input class="input" type="number" id="inteligencia" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="sabedoria">SABEDORIA</label><input class="input" type="number" id="sabedoria" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="carisma">CARISMA</label><input class="input" type="number" id="carisma" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="forca">FOR</label><input class="input" type="number" id="forca" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="destreza">DES</label><input class="input" type="number" id="destreza" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="constituicao">CON</label><input class="input" type="number" id="constituicao" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="inteligencia">INT</label><input class="input" type="number" id="inteligencia" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="sabedoria">SAB</label><input class="input" type="number" id="sabedoria" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="carisma">CAR</label><input class="input" type="number" id="carisma" value="12" readonly></div>
               </div>
             </div>
 

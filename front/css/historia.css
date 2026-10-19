@@ -424,7 +424,7 @@ html{
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--rosa), #8e3b36);
+    background: var(--degrade);
     color: #fff;
     font-size: 1.3rem;
     font-weight: 700;

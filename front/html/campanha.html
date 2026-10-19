@@ -30,6 +30,8 @@
       <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
       <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
       <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+      <!-- VISUAL: só aparece no celular, abre o menu inteiro (abrirMais do script.js) -->
+      <button type="button" class="lateral-link botao-mais" onclick="abrirMais()"><img src="../img/icones/mais.svg" alt=""><span>Mais</span></button>
     </nav>
 
     <div class="lateral-rodape">
@@ -137,52 +139,61 @@
         </div>
       </section>
 
-      <!-- ========== ABA PAINEL DO MESTRE (só o Mestre abre) ========== -->
+      <!-- ========== ABA PAINEL DO MESTRE (só o Mestre abre) ==========
+           VISUAL: duas colunas separadas (painel-coluna). Assim, quando entram mais
+           monstros, só o card dos monstros cresce, e não os outros do lado. -->
       <section class="oculto" id="abaMestre">
-        <div class="grade grade-2">
+        <div class="painel-mestre">
 
-          <div class="card">
-            <h2 class="card-titulo">Código de convite</h2>
-            <p class="card-texto">Passe este código para os jogadores. Eles digitam em Campanhas, em "Tem um código?".</p>
-            <p class="codigo-convite" id="campanhaCodigo"></p>
-          </div>
+          <!-- coluna da esquerda: código e edição -->
+          <div class="painel-coluna">
+            <div class="card">
+              <h2 class="card-titulo">Código de convite</h2>
+              <p class="card-texto">Passe este código para os jogadores. Eles digitam em Campanhas, em "Tem um código?".</p>
+              <p class="codigo-convite" id="campanhaCodigo"></p>
+            </div>
 
-          <div class="card">
-            <h2 class="card-titulo">Monstros da campanha</h2>
-            <p class="card-texto">Escolha quais monstros aparecem nesta aventura.</p>
+            <div class="card">
+              <h2 class="card-titulo">Editar campanha</h2>
 
-            <!-- os monstros já escolhidos entram aqui: função carregarMonstros() -->
-            <div class="lista" id="listaMonstros"></div>
+              <div class="formulario">
+                <div class="campo">
+                  <label class="rotulo" for="edicaoDescricao">Resumo</label>
+                  <textarea class="input" id="edicaoDescricao"></textarea>
+                </div>
 
-            <div class="campo-com-botao espaco-topo-pequeno">
-              <!-- as opções são criadas pela função carregarOpcoesDeMonstros() -->
-              <select class="input" id="monstro" aria-label="Monstro"></select>
-              <button type="button" class="botao botao-principal" onclick="adicionarMonstro()">Adicionar</button>
+                <div class="campo">
+                  <label class="rotulo" for="edicaoHistoria">História</label>
+                  <textarea class="input" id="edicaoHistoria" rows="6"></textarea>
+                </div>
+
+                <!-- VISUAL: "Excluir campanha" virou um link pequeno do lado do Salvar
+                     (continua chamando a mesma função excluirCampanha, que pergunta antes) -->
+                <div class="painel-rodape">
+                  <button type="button" class="botao botao-principal" onclick="salvarCampanha()">Salvar</button>
+                  <button type="button" class="link-perigo" onclick="excluirCampanha()">Excluir campanha</button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="card">
-            <h2 class="card-titulo">Editar campanha</h2>
+          <!-- coluna da direita: os monstros -->
+          <div class="painel-coluna">
+            <div class="card">
+              <!-- o número do lado do título é escrito pela função carregarMonstros() -->
+              <h2 class="card-titulo">Monstros da campanha <span class="contagem-monstros" id="contagemMonstros"></span></h2>
+              <p class="card-texto">Escolha quais monstros aparecem nesta aventura.</p>
 
-            <div class="formulario">
-              <div class="campo">
-                <label class="rotulo" for="edicaoDescricao">Resumo</label>
-                <textarea class="input" id="edicaoDescricao"></textarea>
+              <div class="campo-com-botao">
+                <!-- as opções são criadas pela função carregarOpcoesDeMonstros() -->
+                <select class="input" id="monstro" aria-label="Monstro"></select>
+                <button type="button" class="botao botao-principal" onclick="adicionarMonstro()">+ Adicionar</button>
               </div>
 
-              <div class="campo">
-                <label class="rotulo" for="edicaoHistoria">História</label>
-                <textarea class="input" id="edicaoHistoria" rows="6"></textarea>
-              </div>
-
-              <div><button type="button" class="botao botao-principal" onclick="salvarCampanha()">Salvar</button></div>
+              <!-- os monstros já escolhidos entram aqui: função carregarMonstros().
+                   VISUAL: a lista tem altura máxima e rola sozinha quando passa disso -->
+              <div class="lista-monstros" id="listaMonstros"></div>
             </div>
-          </div>
-
-          <div class="card">
-            <h2 class="card-titulo">Excluir campanha</h2>
-            <p class="card-texto">Apaga a campanha, as sessões e tira todos os jogadores. Não dá para desfazer.</p>
-            <button type="button" class="botao" onclick="excluirCampanha()">Excluir campanha</button>
           </div>
 
         </div>

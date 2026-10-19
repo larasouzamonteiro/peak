@@ -1,11 +1,12 @@
-// login.js  (páginas login.html e confirmar.html)
-// Entrar, criar a conta e confirmar o código que chegou no e-mail.
+// login.js  (páginas login.html, confirmar.html e nova-senha.html)
+// Entrar, criar a conta, confirmar o código que chegou no e-mail e trocar a senha esquecida.
 // No login.html ficam os dois formulários (login e cadastro) dentro da mesma caixa.
 
 // Só no login.html: o botão "criar conta" da página de propaganda abre
 // login.html?cadastro=sim, e aí a caixa já começa no cadastro
+// (aqui não chama mostrarCadastro() para o card já aparecer no lugar, sem animação)
 if(document.getElementById('caixa') != null && parametro('cadastro') == 'sim'){
-    mostrarCadastro()
+    document.body.classList.add('cadastro')
 }
 
 // Só no confirmar.html: o e-mail vem no endereço (confirmar.html?email=fulano@email.com)
@@ -45,15 +46,29 @@ function login(){
 }
 
 // ---------- TROCAR ENTRE LOGIN E CADASTRO (login.html) ----------
-// As duas funções só colocam ou tiram a classe "cadastro" de <div class="entrada-caixa" id="caixa">.
-// O que essa classe faz (as metades trocarem de lado, um formulário sumir e o outro
-// aparecer) está todo no css/entrada.css, na parte "MODO CADASTRO".
+// As duas funções só colocam ou tiram a classe "cadastro" do <body>.
+// O que essa classe faz (o card ir para o outro lado, o fundo espelhar, um
+// formulário sumir e o outro aparecer) está todo no css/entrada.css, na parte "MODO CADASTRO".
 function mostrarCadastro(){
-    document.getElementById('caixa').classList.add('cadastro')
+    document.body.classList.add('cadastro')
+    inclinarCard()
 }
 
 function mostrarLogin(){
-    document.getElementById('caixa').classList.remove('cadastro')
+    document.body.classList.remove('cadastro')
+    inclinarCard()
+}
+
+// VISUAL: enquanto o card troca de lado ele fica um pouco inclinado (efeito 3D).
+// A classe "girando" liga a animação do CSS e sai depois de 900 milissegundos.
+function inclinarCard(){
+    var caixa = document.getElementById('caixa')
+
+    caixa.classList.add('girando')
+
+    setTimeout(function(){
+        caixa.classList.remove('girando')
+    }, 900)
 }
 
 // ---------- CADASTRO (login.html, formulário "Crie sua conta") ----------
@@ -113,5 +128,55 @@ function reenviar(){
         }
 
         document.getElementById('alert').textContent = resposta.message
+    })
+}
+
+
+// ---------- ESQUECI MINHA SENHA (nova-senha.html) ----------
+// Passo 1: manda o e-mail. O servidor guarda um código e manda por e-mail (Brevo).
+function pedirCodigoSenha(){
+    var email = document.getElementById('emailSenha').value.trim()
+
+    document.getElementById('alertPedir').textContent = ''
+
+    enviar('/senha/pedir', {email: email}, function(resposta){
+
+        if(resposta.hasOwnProperty('error')){
+            document.getElementById('alertPedir').textContent = resposta.error
+            document.getElementById('alertTrocar').textContent = resposta.error
+            return
+        }
+
+        // esconde o passo 1 e mostra o passo 2
+        document.getElementById('emailMostrado').textContent = email
+        document.getElementById('passoPedir').classList.add('oculto')
+        document.getElementById('passoTrocar').classList.remove('oculto')
+        document.getElementById('alertTrocar').textContent = ''
+    })
+}
+
+// Passo 2: o código que chegou + a senha nova (duas vezes)
+function trocarSenha(){
+    var email = document.getElementById('emailSenha').value.trim()
+    var codigo = document.getElementById('codigoSenha').value.trim()
+    var senha = document.getElementById('senhaNova').value
+    var senha2 = document.getElementById('senhaNova2').value
+
+    if(senha != senha2){
+        document.getElementById('alertTrocar').textContent = 'Senhas não conferem'
+        document.getElementById('senhaNova').value = ''
+        document.getElementById('senhaNova2').value = ''
+        return
+    }
+
+    enviar('/senha/trocar', {email: email, codigo: codigo, senha: senha}, function(resposta){
+
+        if(resposta.hasOwnProperty('error')){
+            document.getElementById('alertTrocar').textContent = resposta.error
+            return
+        }
+
+        alert(resposta.message)
+        window.location.href = 'login.html'
     })
 }

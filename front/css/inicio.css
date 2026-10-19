@@ -1,146 +1,560 @@
 /* =====================================================
    INICIO.CSS - só a página inicio.html
+   (este arquivo inteiro é VISUAL)
 
-     1. Mural de campanhas
-     2. Seus personagens (a carta aberta)
-     3. Telas menores
+     1. Topo (título + bolinhas de Comunidade e perfil)
+     2. Destaques: carrossel da equipe + campanhas oficiais
+     3. Seus personagens
+     4. Novidades e Comunidade
+     5. Telas menores e celular
+     6. Modo escuro
    ===================================================== */
 
 
-/* ---------- 1. MURAL DE CAMPANHAS ---------- */
-/* um card grande na esquerda e dois menores na direita */
-.mural{
+/* ---------- 1. TOPO ---------- */
+.topo-inicio{
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.topo-inicio .titulo{
+    margin-top: 6px;
+    font-size: 4rem;
+}
+
+.topo-bolinhas{
+    display: flex;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+/* bolinha redonda (Comunidade) */
+.bolinha{
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    grid-template-rows: 200px 200px;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--cartao);
+    box-shadow: var(--sombra-pequena);
+}
+
+.bolinha img{
+    width: 22px;
+    height: 22px;
+    opacity: 0.75;
+}
+
+/* bolinha com a foto do perfil: borda coral */
+.bolinha-foto{
+    border: 3px solid var(--rosa);
+    background: var(--degrade);
+    color: #fff;
+    font-weight: 800;
+}
+
+.bolinha-foto img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+}
+
+
+/* ---------- 2. DESTAQUES ---------- */
+/* carrossel grande na esquerda, as 2 campanhas oficiais na direita */
+.destaques{
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 16px;
+    height: 420px;
+    margin-top: 18px;
+}
+
+.destaques-lado{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 16px;
+}
+
+.destaques-lado .foto-card{
+    min-height: 0;
+}
+
+.destaques-lado .foto-card .nome b{
+    margin-top: 8px;
+    font-size: 1.6rem;
+}
+
+/* ----- carrossel ----- */
+.carrossel{
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: var(--escuro);
+    color: #fff;
+    box-shadow: var(--sombra-foto);
+}
+
+/* as fotos ficam uma em cima da outra; só a que tem "on" aparece */
+.carrossel-foto{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    opacity: 0;
+    transition: opacity 700ms ease;
+}
+
+.carrossel-foto.on{
+    opacity: 1;
+}
+
+/* escurece a parte de baixo para o texto aparecer */
+.carrossel::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(40, 20, 14, 0.88), rgba(40, 20, 14, 0.1) 60%);
+}
+
+.carrossel-chips{
+    position: absolute;
+    top: 20px;
+    left: 22px;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+}
+
+.carrossel-chips span{
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(40, 20, 14, 0.45);
+    font-size: 0.78rem;
+    white-space: nowrap;
+    backdrop-filter: blur(3px);
+}
+
+/* as barrinhas no canto de cima (qual foto está aparecendo) */
+.carrossel-barras{
+    position: absolute;
+    top: 24px;
+    right: 22px;
+    z-index: 3;
+    display: flex;
+    gap: 5px;
+}
+
+.carrossel-barras i{
+    width: 26px;
+    height: 4px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.carrossel-barras i.on{
+    background: #fff;
+}
+
+.carrossel-seta{
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    color: #45191a;
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 700;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.carrossel-seta.esquerda{
+    left: 14px;
+}
+
+.carrossel-seta.direita{
+    right: 14px;
+}
+
+.carrossel-texto{
+    position: absolute;
+    left: 76px;
+    right: 76px;
+    bottom: 24px;
+    z-index: 2;
+}
+
+.carrossel-texto .selo{
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: var(--rosa);
+    color: #fff;
+}
+
+.carrossel-texto h2{
+    margin: 10px 0 6px;
+    font-size: 2.9rem;
+    font-weight: 800;
+    line-height: 1.02;
+    text-transform: uppercase;
+}
+
+.carrossel-texto p{
+    max-width: 470px;
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.carrossel-linha{
+    display: flex;
+    align-items: center;
     gap: 14px;
+    margin-top: 16px;
 }
 
-.mural .foto-card:first-child{
-    grid-row: span 2;
+.carrossel-mini{
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
 }
 
-.mural .foto-card:first-child .nome b{
-    font-size: 3rem;
+.carrossel-mini img{
+    width: 46px;
+    height: 34px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    opacity: 0.6;
+    cursor: pointer;
 }
 
-/* no card grande o painel é mais alto, porque tem título, resumo e botão */
-.mural .foto-card:first-child .nome{
-    padding: 60px 26px 24px;
+.carrossel-mini img.on{
+    border-color: #fff;
+    opacity: 1;
 }
 
-/* se só existir UM card do lado direito, ele ocupa as duas linhas */
-.mural .foto-card:nth-child(2):last-child{
-    grid-row: span 2;
+.carrossel-contador{
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-/* o botão "Usar como minha campanha" do card grande */
-.mural .nome .botao{
-    margin-top: 14px;
+/* o selo dentro do nome dos cards de foto (oficiais e novidades) */
+.destaques-lado .nome .selo,
+.novidade .nome .selo{
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: var(--rosa);
+    color: #fff;
 }
 
 
-/* ---------- 2. SEUS PERSONAGENS ---------- */
-/* Uma carta "fechada" mostra só o retrato. Na carta com a classe "aberta", o painel
-   escuro SOBE de baixo, e o nome, a raça, os atributos e a vida entram um depois do outro.
-
-   Quem coloca a classe é o js/inicio.js (função abrirCarta): a primeira carta já começa
-   aberta, e passar o mouse em outra abre ela. Ela fica aberta até o mouse passar por outra.
-
-   A animação só mexe em "transform" (posição) e "opacity" (transparência): são as duas
-   propriedades que o navegador anima sem engasgar. */
+/* ---------- 3. SEUS PERSONAGENS ---------- */
+/* 4 cartas + o quadro "Criar ficha" */
 .fila-cartas{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    align-items: start;
-    padding: 22px 0 14px;
+    grid-template-columns: repeat(4, 1fr) 200px;
+    gap: 16px;
 }
 
 .fila-cartas .carta,
 .fila-cartas .card-novo{
-    height: 320px;
+    height: 300px;
 }
 
-.fila-cartas .carta{
-    transition: transform 420ms var(--suave), box-shadow 420ms;
+
+/* ---------- 4. NOVIDADES E COMUNIDADE ---------- */
+.inicio-baixo{
+    display: grid;
+    grid-template-columns: 1fr 430px;
+    gap: 16px;
 }
 
-/* ----- fechada ----- */
-/* o painel fica escondido logo abaixo da carta (102% = a altura dele inteira e mais um pouco) */
-.fila-cartas .carta .info{
-    transform: translateY(102%);
-    transition: transform 460ms var(--suave);
+.novidades{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
 }
 
-/* cada pedaço do painel (nome, raça, atributos, vida) começa invisível e 12px mais baixo */
-.fila-cartas .carta .info > *{
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 320ms, transform 420ms var(--suave);
+.novidade{
+    height: 240px;
 }
 
-.fila-cartas .carta .topo-carta{
-    opacity: 0;
-    transition: opacity 250ms;
+.novidade .nome b{
+    margin-top: 6px;
+    font-size: 1.05rem;
 }
 
-/* ----- aberta ----- */
-.fila-cartas .carta.aberta{
+/* a etiqueta branca "NOVO" no canto */
+.novidade .novo{
+    position: absolute;
+    top: 12px;
+    right: 12px;
     z-index: 3;
-    transform: translateY(-6px) scale(1.04);
-    box-shadow: var(--sombra-forte);
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--rosa-escuro);
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
-.fila-cartas .carta.aberta .info{
-    transform: none;
+/* o convite da Comunidade: foto na esquerda, texto e botão na direita */
+.convite-comunidade{
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    grid-template-rows: minmax(0, 1fr);     /* a foto não pode passar da altura do card */
+    gap: 18px;
+    height: 240px;
+    padding: 12px;
+    border-radius: 24px;
+    background: var(--cartao);
+    color: var(--tinta);
+    box-shadow: var(--sombra-pequena);
 }
 
-.fila-cartas .carta.aberta .info > *{
-    opacity: 1;
-    transform: none;
+.convite-comunidade img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    border-radius: 18px;
 }
 
-/* "transition-delay" é o tempo de espera antes de começar: cada pedaço espera
-   um pouco mais que o anterior, e por isso eles entram em fila */
-.fila-cartas .carta.aberta .info > :nth-child(1){ transition-delay: 120ms; }    /* nome */
-.fila-cartas .carta.aberta .info > :nth-child(2){ transition-delay: 170ms; }    /* raça e classe */
-.fila-cartas .carta.aberta .info > :nth-child(3){ transition-delay: 220ms; }    /* atributos */
-.fila-cartas .carta.aberta .info > :nth-child(4){ transition-delay: 270ms; }    /* vida */
+.convite-comunidade div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-right: 8px;
+}
 
-.fila-cartas .carta.aberta .topo-carta{
-    opacity: 1;
-    transition-delay: 180ms;
+.convite-comunidade small{
+    color: var(--rosa);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.convite-comunidade b{
+    margin: 6px 0 2px;
+    color: var(--titulo);
+    font-size: 1.25rem;
+    line-height: 1.15;
+}
+
+.convite-comunidade p{
+    margin: 6px 0 10px;
+    color: var(--tinta-3);
+    font-size: 0.78rem;
 }
 
 
-/* ---------- 3. TELAS MENORES ---------- */
+/* ---------- 5. TELAS MENORES E CELULAR ---------- */
 @media (max-width: 1100px){
+    .destaques,
+    .inicio-baixo{
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .carrossel{
+        height: 380px;
+    }
+
+    .destaques-lado{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 200px;
+    }
+
     .fila-cartas{
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 760px){
-    .mural{
-        grid-template-columns: 1fr;
+    /* no celular o topo é a barra fina: a saudação e o título grande somem
+       e só ficam a logo (do style.css) e as duas bolinhas */
+    .topo-inicio{
+        align-items: center;
+    }
+
+    .topo-inicio > div:first-child{
+        display: none;
+    }
+
+    .topo-bolinhas{
+        margin: 0;
+        gap: 8px;
+    }
+
+    .bolinha{
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+    }
+
+    .bolinha img{
+        width: 17px;
+        height: 17px;
+    }
+
+    .bolinha-foto{
+        border-width: 2px;
+        border-radius: 50%;
+    }
+
+    .destaques{
+        margin-top: 14px;
+        gap: 10px;
+    }
+
+    .carrossel{
+        height: 230px;
+        border-radius: 20px;
+    }
+
+    .carrossel-chips,
+    .carrossel-seta,
+    .carrossel-texto p,
+    .carrossel-mini,
+    .carrossel-contador{
+        display: none;
+    }
+
+    .carrossel-texto{
+        left: 16px;
+        right: 16px;
+        bottom: 14px;
+    }
+
+    .carrossel-texto h2{
+        font-size: 1.5rem;
+    }
+
+    .carrossel-texto .botao{
+        min-height: 32px;
+        padding: 0 14px;
+        font-size: 0.68rem;
+    }
+
+    .carrossel-barras{
+        top: 12px;
+        right: 12px;
+    }
+
+    .carrossel-barras i{
+        width: 16px;
+        height: 3px;
+    }
+
+    .destaques-lado{
+        grid-template-rows: 120px;
+        gap: 10px;
+    }
+
+    .destaques-lado .foto-card .nome{
+        padding: 30px 10px 8px;
+    }
+
+    .destaques-lado .foto-card .nome b{
+        font-size: 0.85rem;
+    }
+
+    .destaques-lado .foto-card .nome small{
+        display: none;
+    }
+
+    /* personagens: uma fila que rola para o lado com o dedo */
+    .fila-cartas{
+        display: flex;
+        gap: 10px;
+        margin-right: -16px;
+        padding-bottom: 6px;
+        overflow-x: auto;
+    }
+
+    .fila-cartas .carta{
+        flex: none;
+        width: 150px;
+        height: 210px;
+    }
+
+    .fila-cartas .card-novo{
+        flex: none;
+        width: 110px;
+        height: 210px;
+        font-size: 0.8rem;
+    }
+
+    .fila-cartas .carta .atributos{
+        display: none;
+    }
+
+    .fila-cartas .carta h3{
+        font-size: 0.9rem;
+    }
+
+    .novidades{
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .novidade{
+        height: 130px;
+    }
+
+    .novidade .nome{
+        padding: 30px 10px 8px;
+    }
+
+    .novidade .nome small{
+        display: none;
+    }
+
+    .convite-comunidade{
+        grid-template-columns: 86px 1fr;
         grid-template-rows: auto;
+        height: auto;
+        padding: 10px;
     }
 
-    .mural .foto-card{
-        min-height: 220px;
+    .convite-comunidade img{
+        height: 86px;
     }
 
-    .mural .foto-card:first-child{
-        grid-row: auto;
-        min-height: 360px;
+    .convite-comunidade p{
+        display: none;
     }
+}
 
-    /* no celular não existe mouse: as cartas já aparecem abertas */
-    .fila-cartas .carta .topo-carta,
-    .fila-cartas .carta .info,
-    .fila-cartas .carta .info > *{
-        opacity: 1;
-        transform: none;
-    }
+
+/* ---------- 6. MODO ESCURO ---------- */
+body.escuro .bolinha img{
+    filter: invert(1);
+}
+
+body.escuro .bolinha-foto img{
+    filter: none;
+}
+
+body.escuro .carrossel-texto .botao-claro{
+    color: #6e1a26;
+}
+
+body.escuro .convite-comunidade{
+    box-shadow: none;
 }

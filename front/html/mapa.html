@@ -5,161 +5,115 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mapa e sons | Peak</title>
 
-  <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 
-  <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/campanhas.css">
+  <!-- esta página tem um CSS só dela (não usa o style.css): a mesa ocupa a tela toda -->
+  <link rel="stylesheet" href="../css/mapa.css">
 </head>
-<body>
+<!-- a classe do body diz o tema da mesa: "mapa-escuro" ou "mapa-claro" (função mudarTemaMapa) -->
+<body class="mapa-escuro">
 
-  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
-  <aside class="lateral">
-    <a class="lateral-marca" href="inicio.html">
-      <img class="logo-peak" src="../img/logo.png" alt="">
-      <span>Peak</span>
-    </a>
+  <!-- VISUAL: o fundo é o próprio mapa, borrado e escurecido, com quadradinhos por cima.
+       Por isso a cor do fundo muda junto com o mapa. -->
+  <img class="mapa-borrado" id="mapaBorrado" src="" alt="">
+  <div class="mapa-quadriculado"></div>
 
-    <nav class="lateral-grupo">
-      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
-      <a class="lateral-link ativo" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
-      <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
-      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
-      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
-      <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
-      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
-      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
-    </nav>
+  <!-- ===== EM CIMA ===== -->
+  <!-- voltar para a campanha (o js/mapa.js coloca o id e o nome da campanha) -->
+  <a class="mapa-card mapa-voltar" id="linkVoltar" href="campanhas.html">
+    <img src="../img/logo.png" alt="">
+    <span>‹ <b id="nomeCampanha">Voltar</b></span>
+  </a>
 
-    <div class="lateral-rodape">
-      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
-      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
-      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
-      <a class="lateral-conta" href="perfil.html">
-        <div class="avatar" id="menuLetra"></div>
-        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
-      </a>
+  <!-- as miniaturas dos mapas. Cada uma chama usarCenario() com o caminho da imagem.
+       O "+" é um <label> do <input type="file"> escondido: clicar nele abre a janela de escolher arquivo. -->
+  <div class="mapa-card mapa-cenas" id="cenas">
+    <button type="button" onclick="usarCenario('../img/cenas/taverna.jpg')" title="Taverna"><img src="../img/cenas/taverna.jpg" alt=""></button>
+    <button type="button" onclick="usarCenario('../img/cenas/salao.jpg')" title="Salão"><img src="../img/cenas/salao.jpg" alt=""></button>
+    <button type="button" onclick="usarCenario('../img/cenas/teatro.jpg')" title="Teatro"><img src="../img/cenas/teatro.jpg" alt=""></button>
+    <button type="button" onclick="usarCenario('../img/cenas/mina.svg')" title="Caverna"><img src="../img/cenas/mina.svg" alt=""></button>
+    <button type="button" onclick="usarCenario('../img/cenas/torre.svg')" title="Floresta"><img src="../img/cenas/torre.svg" alt=""></button>
+    <button type="button" onclick="usarCenario('../img/novas/catedral.gif')" title="Catedral"><img src="../img/novas/catedral.gif" alt=""></button>
+    <label class="mapa-enviar" for="mapaArquivo" title="Enviar o meu mapa (até 5 MB)">+</label>
+    <input class="oculto" type="file" id="mapaArquivo" accept="image/*" onchange="usarImagemEnviada()">
+  </div>
+
+  <div class="mapa-direita">
+    <!-- Claro / Escuro da mesa (guardado no navegador) -->
+    <div class="mapa-card mapa-tema">
+      <button type="button" id="botaoClaro" onclick="mudarTemaMapa('claro')">Claro</button>
+      <button type="button" id="botaoEscuro" onclick="mudarTemaMapa('escuro')">Escuro</button>
     </div>
-  </aside>
+    <button type="button" class="mapa-card mapa-cheia" onclick="telaCheia()">Tela cheia</button>
+  </div>
 
-  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
-  <header class="topo">
-    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
-  </header>
+  <!-- ===== ESQUERDA EM CIMA: INICIATIVA ===== -->
+  <div class="mapa-card mapa-iniciativa">
+    <h3>Iniciativa <small>RODADA <span id="rodada">1</span></small></h3>
+    <!-- as linhas entram aqui pela função desenharIniciativa() -->
+    <div class="ini-lista" id="listaIniciativa"></div>
+    <div class="ini-botoes">
+      <button type="button" class="ini-ordenar" onclick="ordenar()">Ordenar</button>
+      <button type="button" class="ini-proximo" onclick="proximo()">Próximo</button>
+    </div>
+  </div>
 
-  <main class="secao">
-    <div class="container">
+  <!-- ===== ESQUERDA EMBAIXO: MÚSICA E SONS ===== -->
+  <div class="mapa-card mapa-som">
+    <div class="som-topo">
+      <button type="button" class="som-play" id="botaoPlay" onclick="tocarOuPausar()" title="Tocar / pausar">▶</button>
+      <div><b id="nomeMusica">Sem música</b><small>música do mapa</small></div>
+    </div>
 
-      <div class="cabecalho-pagina">
-        <div>
-          <h1 class="titulo">Mapa e sons</h1>
-          <p class="texto-suave">Para usar na sessão compartilhando a tela. Nada aqui é salvo: ao fechar a página, tudo volta ao começo.</p>
-        </div>
-        <button type="button" class="botao cabecalho-acoes" onclick="telaCheia()">Tela cheia</button>
-      </div>
+    <div class="som-chips">
+      <button type="button" onclick="tocarMusica('../sons/musicas/taverna.wav', 'Taverna')">Taverna</button>
+      <button type="button" onclick="tocarMusica('../sons/musicas/exploracao.wav', 'Exploração')">Exploração</button>
+      <button type="button" onclick="tocarMusica('../sons/musicas/batalha.wav', 'Batalha')">Batalha</button>
+      <button type="button" onclick="tocarMusica('../sons/musicas/misterio.wav', 'Mistério')">Mistério</button>
+      <!-- uma música do computador da pessoa (usarMusicaEnviada) -->
+      <label for="musicaArquivo">+ minha</label>
+      <input class="oculto" type="file" id="musicaArquivo" accept="audio/*" onchange="usarMusicaEnviada()">
+    </div>
 
-      <!-- o js/mapa.js coloca o id da campanha neste link (mapa.html?id=3 -> campanha.html?id=3) -->
-      <p><a id="linkVoltar" href="campanhas.html">‹ Voltar para a campanha</a></p>
+    <input class="som-volume" type="range" id="volume" min="0" max="100" value="60" oninput="mudarVolume()" title="Volume">
 
-      <!-- ÁREA DO MAPA: a imagem escolhida aparece em <img id="mapaImagem">.
-           Enquanto não tem imagem, ela fica escondida e aparece o texto. -->
-      <div class="mapa-area" id="mapaArea">
-        <img class="oculto" id="mapaImagem" src="" alt="">
-        <span id="mapaTexto">Nenhuma imagem escolhida</span>
-      </div>
+    <!-- sons rápidos -->
+    <div class="som-efeitos">
+      <button type="button" onclick="tocarSom('../sons/chuva.wav')">Chuva</button>
+      <button type="button" onclick="tocarSom('../sons/vento.wav')">Vento</button>
+      <button type="button" onclick="tocarSom('../sons/fogueira.wav')">Fogueira</button>
+      <button type="button" onclick="tocarSom('../sons/passos.wav')">Passos</button>
+      <button type="button" onclick="tocarSom('../sons/porta.wav')">Porta</button>
+      <button type="button" onclick="tocarSom('../sons/espada.wav')">Espada</button>
+      <button type="button" onclick="tocarSom('../sons/magia.wav')">Magia</button>
+      <button type="button" onclick="tocarSom('../sons/moedas.wav')">Moedas</button>
+      <button type="button" onclick="tocarSom('../sons/trovao.wav')">Trovão</button>
+      <button type="button" onclick="tocarSom('../sons/rugido.wav')">Rugido</button>
+    </div>
+  </div>
 
-      <div class="grade grade-3">
-
-        <!-- ===== IMAGEM ===== -->
-        <div class="card">
-          <h2 class="card-titulo">Imagem de fundo</h2>
-          <p class="card-texto">Escolha um cenário pronto ou envie o seu mapa.</p>
-
-          <!-- cada botão chama usarCenario() com o caminho da imagem -->
-          <div class="chips">
-            <button type="button" class="chip chip-botao" onclick="usarCenario('../img/cenas/mina.svg')">Caverna</button>
-            <button type="button" class="chip chip-botao" onclick="usarCenario('../img/cenas/torre.svg')">Floresta</button>
-            <button type="button" class="chip chip-botao" onclick="usarCenario('../img/cenas/farol.svg')">Farol</button>
-            <button type="button" class="chip chip-botao" onclick="usarCenario('../img/cenas/ods.svg')">Vila</button>
-            <button type="button" class="chip chip-botao" onclick="usarCenario('../img/novas/catedral.gif')">Catedral</button>
-          </div>
-
-          <div class="campo espaco-topo-pequeno">
-            <label class="rotulo" for="mapaArquivo">Enviar imagem (até 5 MB)</label>
-            <input class="input" type="file" id="mapaArquivo" accept="image/*" onchange="usarImagemEnviada()">
-          </div>
-        </div>
-
-        <!-- ===== MÚSICA ===== -->
-        <div class="card">
-          <h2 class="card-titulo">Música</h2>
-          <p class="card-texto">Fica repetindo até você pausar.</p>
-
-          <!-- cada botão chama tocarMusica() com o arquivo da pasta sons/musicas -->
-          <div class="chips">
-            <button type="button" class="chip chip-botao" onclick="tocarMusica('../sons/musicas/taverna.wav')">Taverna</button>
-            <button type="button" class="chip chip-botao" onclick="tocarMusica('../sons/musicas/exploracao.wav')">Exploração</button>
-            <button type="button" class="chip chip-botao" onclick="tocarMusica('../sons/musicas/batalha.wav')">Batalha</button>
-            <button type="button" class="chip chip-botao" onclick="tocarMusica('../sons/musicas/misterio.wav')">Mistério</button>
-          </div>
-
-          <!-- ou uma música do computador da pessoa: usarMusicaEnviada() no mapa.js -->
-          <div class="campo espaco-topo-pequeno">
-            <label class="rotulo" for="musicaArquivo">Tocar minha música (até 20 MB)</label>
-            <input class="input" type="file" id="musicaArquivo" accept="audio/*" onchange="usarMusicaEnviada()">
-          </div>
-
-          <div class="campo espaco-topo-pequeno">
-            <label class="rotulo" for="volume">Volume</label>
-            <input type="range" id="volume" min="0" max="100" value="60" oninput="mudarVolume()">
-          </div>
-
-          <div><button type="button" class="botao" onclick="pausarMusica()">Pausar</button></div>
-        </div>
-
-        <!-- ===== SONS ===== -->
-        <div class="card">
-          <h2 class="card-titulo">Sons</h2>
-          <p class="card-texto">Sons rápidos para usar durante a cena.</p>
-
-          <!-- cada botão chama tocarSom() com o arquivo da pasta sons -->
-          <div class="chips">
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/chuva.wav')">Chuva</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/vento.wav')">Vento</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/fogueira.wav')">Fogueira</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/passos.wav')">Passos</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/porta.wav')">Porta</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/espada.wav')">Espada</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/magia.wav')">Magia</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/moedas.wav')">Moedas</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/trovao.wav')">Trovão</button>
-            <button type="button" class="chip chip-botao" onclick="tocarSom('../sons/rugido.wav')">Rugido</button>
-          </div>
-        </div>
-
-      </div>
-
+  <!-- ===== O MAPA NO MEIO ===== -->
+  <!-- as bolinhas (tokens) entram dentro de <div id="mapa"> pela função criarBolinha() -->
+  <main class="mapa-area">
+    <div class="mapa" id="mapa">
+      <img class="mapa-imagem" id="mapaImagem" src="" alt="Mapa">
     </div>
   </main>
 
-  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
-  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
-  <div class="dado-menu oculto" id="dadoMenu">
-    <p>Escolha o dado</p>
-    <div class="dado-faces">
-      <button type="button" onclick="rolarDado(4)">d4</button>
-      <button type="button" onclick="rolarDado(6)">d6</button>
-      <button type="button" onclick="rolarDado(8)">d8</button>
-      <button type="button" onclick="rolarDado(10)">d10</button>
-      <button type="button" onclick="rolarDado(12)">d12</button>
-      <button type="button" onclick="rolarDado(20)">d20</button>
-    </div>
-    <!-- o número sorteado aparece aqui (rolarDado) -->
-    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  <!-- ===== DIREITA EMBAIXO: DADOS ===== -->
+  <div class="mapa-card mapa-dados">
+    <button type="button" onclick="rolarNoMapa(4)">d4</button>
+    <button type="button" onclick="rolarNoMapa(6)">d6</button>
+    <button type="button" onclick="rolarNoMapa(8)">d8</button>
+    <button type="button" onclick="rolarNoMapa(12)">d12</button>
+    <button type="button" onclick="rolarNoMapa(20)">d20</button>
+    <span class="dado-numero" id="dadoNumero">-</span>
   </div>
 
-  <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
+  <!-- VISUAL: a bolinha que segue o mouse em cima do mapa (para o Mestre apontar) -->
+  <div class="mouse" id="mouse"></div>
+
+  <!-- script.js primeiro (buscar, verificarLogin...), depois o desta página -->
   <script src="../js/script.js"></script>
   <script src="../js/mapa.js"></script>
 </body>

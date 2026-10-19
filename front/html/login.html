@@ -13,84 +13,102 @@
 </head>
 <body class="entrada">
 
-  <a class="entrada-marca" href="index.html"><img class="logo-peak" src="../img/logo.png" alt=""> Peak</a>
-  <a class="entrada-voltar" href="index.html">Voltar ao início</a>
+  <!-- VISUAL: o fundo são 2 camadas com a mesma foto; a segunda é espelhada.
+       No modo cadastro a primeira some e a espelhada aparece (css/entrada.css). -->
+  <div class="entrada-fundo"></div>
+  <div class="entrada-fundo espelhado"></div>
 
-  <!-- A CAIXA tem duas metades: a arte e os formulários (login e cadastro, um em cima do outro).
-       Quando a caixa ganha a classe "cadastro", as metades trocam de lado e o formulário muda.
-       Quem coloca e tira essa classe: mostrarCadastro() e mostrarLogin(), no js/login.js.
-       A animação inteira está no css/entrada.css. -->
+  <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
+
+  <!-- VISUAL: o "peak." grande. Tem um para o login (na esquerda) e um para o cadastro (na direita) -->
+  <div class="entrada-frase frase-login">
+    <h2>peak<span>.</span></h2>
+    <p>O mestre cria. O grupo entra. A história começa, tudo no navegador.</p>
+    <div class="entrada-chips"><span>Fichas</span><span>Campanhas</span><span>Bestiário</span><span>Mapa e sons</span></div>
+  </div>
+  <div class="entrada-frase frase-cadastro">
+    <h2>peak<span>.</span></h2>
+    <p>Monte sua ficha, chame seu grupo e role os dados.</p>
+    <div class="entrada-chips"><span>Fichas</span><span>Campanhas</span><span>Bestiário</span><span>Mapa e sons</span></div>
+  </div>
+
+  <!-- O CARD com os dois formulários (login e cadastro, um em cima do outro).
+       Quando o <body> ganha a classe "cadastro", o card vai para o outro lado
+       e o formulário muda. Quem coloca e tira a classe: mostrarCadastro() e
+       mostrarLogin(), no js/login.js. A animação está no css/entrada.css. -->
   <div class="entrada-caixa" id="caixa">
 
-    <!-- METADE DA ARTE -->
-    <div class="entrada-arte">
-      <div class="entrada-arte-fundo"></div>
-      <!-- as duas personagens ficam no mesmo lugar: o CSS mostra uma de cada vez -->
-      <img class="arte-login" src="../img/mascote/login-personagem.png" alt="">
-      <img class="arte-cadastro" src="../img/mascote/cadastro-personagem.png" alt="">
-    </div>
+    <!-- ===== LOGIN ===== -->
+    <div class="entrada-form form-login">
+      <h1>Entrar</h1>
+      <p class="entrada-sub">Ainda não tem conta? <button type="button" class="link-trocar" onclick="mostrarCadastro()">Criar conta</button></p>
 
-    <!-- METADE DOS FORMULÁRIOS -->
-    <div class="entrada-lado">
-
-      <!-- ===== LOGIN ===== -->
-      <div class="entrada-form form-login">
-        <h1>Bem-vindo de volta</h1>
-        <p class="entrada-sub">Entre para continuar sua aventura.</p>
-
-        <div class="campo">
-          <label class="rotulo" for="nomeUsuario">Usuário ou e-mail</label>
-          <input class="input" type="text" id="nomeUsuario" autocomplete="username">
-        </div>
-
-        <div class="campo">
-          <label class="rotulo" for="senha">Senha</label>
-          <input class="input" type="password" id="senha" autocomplete="current-password">
-        </div>
-
-        <!-- mensagem de erro do servidor (função login do js/login.js) -->
-        <p class="alerta" id="alert"></p>
-
-        <button type="button" class="botao botao-principal botao-largo" onclick="login()">Entrar</button>
-
-        <p class="entrada-trocar">Ainda não tem conta? <button type="button" class="link-trocar" onclick="mostrarCadastro()">Criar conta</button></p>
+      <!-- VISUAL: as duas abas fazem o mesmo que os links -->
+      <div class="entrada-abas">
+        <button type="button" class="ativo">Entrar</button>
+        <button type="button" onclick="mostrarCadastro()">Criar conta</button>
       </div>
 
-      <!-- ===== CADASTRO ===== -->
-      <div class="entrada-form form-cadastro">
-        <h1>Crie sua conta</h1>
-        <p class="entrada-sub">Monte sua ficha e chame seu grupo.</p>
-
-        <div class="campo">
-          <label class="rotulo" for="nomeCadastro">Nome de usuário</label>
-          <input class="input" type="text" id="nomeCadastro" maxlength="30" placeholder="Ex.: luna.art" autocomplete="username">
-        </div>
-
-        <div class="campo">
-          <label class="rotulo" for="emailCadastro">E-mail</label>
-          <input class="input" type="email" id="emailCadastro" maxlength="80" placeholder="voce@email.com" autocomplete="email">
-        </div>
-
-        <div class="linha-campos">
-          <div class="campo">
-            <label class="rotulo" for="senhaCadastro">Senha</label>
-            <input class="input" type="password" id="senhaCadastro" autocomplete="new-password">
-          </div>
-          <div class="campo">
-            <label class="rotulo" for="senha2Cadastro">Confirmar senha</label>
-            <input class="input" type="password" id="senha2Cadastro" autocomplete="new-password">
-          </div>
-        </div>
-
-        <!-- mensagem de erro (função cadastrar do js/login.js) -->
-        <p class="alerta" id="alertCadastro"></p>
-
-        <button type="button" class="botao botao-principal botao-largo" onclick="cadastrar()">Criar conta</button>
-
-        <p class="entrada-trocar">Já tem conta? <button type="button" class="link-trocar" onclick="mostrarLogin()">Entrar</button></p>
+      <div class="campo">
+        <label class="rotulo" for="nomeUsuario">Usuário ou e-mail</label>
+        <input class="input" type="text" id="nomeUsuario" autocomplete="username">
       </div>
 
+      <div class="campo">
+        <label class="rotulo" for="senha">Senha</label>
+        <input class="input" type="password" id="senha" autocomplete="current-password">
+      </div>
+
+      <!-- abre a página de trocar a senha (nova-senha.html) -->
+      <a class="entrada-esqueci" href="nova-senha.html">Esqueci minha senha</a>
+
+      <!-- mensagem de erro do servidor (função login do js/login.js) -->
+      <p class="alerta" id="alert"></p>
+
+      <button type="button" class="botao botao-principal botao-largo" onclick="login()">Entrar na mesa</button>
+
+      <p class="entrada-rodape">Bem-vinda de volta, aventureira.</p>
     </div>
+
+    <!-- ===== CADASTRO ===== -->
+    <div class="entrada-form form-cadastro">
+      <h1>Criar conta</h1>
+      <p class="entrada-sub">Já tem uma conta? <button type="button" class="link-trocar" onclick="mostrarLogin()">Entrar</button></p>
+
+      <div class="entrada-abas">
+        <button type="button" onclick="mostrarLogin()">Entrar</button>
+        <button type="button" class="ativo">Criar conta</button>
+      </div>
+
+      <div class="campo">
+        <label class="rotulo" for="nomeCadastro">Nome de usuário</label>
+        <input class="input" type="text" id="nomeCadastro" maxlength="30" placeholder="Ex.: luna.art" autocomplete="username">
+      </div>
+
+      <div class="campo">
+        <label class="rotulo" for="emailCadastro">E-mail</label>
+        <input class="input" type="email" id="emailCadastro" maxlength="80" placeholder="voce@email.com" autocomplete="email">
+      </div>
+
+      <div class="linha-campos">
+        <div class="campo">
+          <label class="rotulo" for="senhaCadastro">Senha</label>
+          <input class="input" type="password" id="senhaCadastro" autocomplete="new-password">
+        </div>
+        <div class="campo">
+          <label class="rotulo" for="senha2Cadastro">Confirmar senha</label>
+          <input class="input" type="password" id="senha2Cadastro" autocomplete="new-password">
+        </div>
+      </div>
+
+      <!-- mensagem de erro (função cadastrar do js/login.js) -->
+      <p class="alerta" id="alertCadastro"></p>
+
+      <button type="button" class="botao botao-principal botao-largo" onclick="cadastrar()">Criar minha conta</button>
+
+      <p class="entrada-rodape">Você vai receber um código de 6 números no e-mail.</p>
+    </div>
+
   </div>
 
   <script src="../js/script.js"></script>

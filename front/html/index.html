@@ -3,200 +3,277 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Peak</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap">
+  <title>Peak | Mesa de RPG</title>
 
-  <!-- esta página tem um CSS só dela (não usa o style.css) -->
+  <!-- fontes: Poppins (textos e "peak.") e Lora (o menu com letras espaçadas) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@400;600;800&display=swap">
+
+  <!-- esta página tem um CSS só dela (não usa o style.css). É todo VISUAL. -->
   <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
 
-    <!-- PÁGINA DE PROPAGANDA: é a primeira coisa que o visitante vê.
-         O JS (js/index.js) só faz a boneca seguir o mouse, as pétalas caírem
-         e trocar a classe da vitrine. -->
+  <!-- =====================================================
+       CAPA (VISUAL): menu estilo jogo.
+       Passar o mouse num item do menu troca o fundo, o texto de baixo
+       e o "Capítulo". Clicar abre a página. Tudo no <script> do fim desta página.
+       ===================================================== -->
+  <section class="capa">
 
-    <!-- MENU -->
-    <header class="nav" style="font-family:poppins">
-        <div class="nav-left">
-            <a class="brand" href="index.html"><img src="../img/editorial/logo.png" alt="">peak.</a>
-            <nav class="nav-links">
-                <a href="#mural">o que tem</a><a href="#classes">classes</a><a href="#blocos">comunidade</a><a href="historia.html">história</a>
-            </nav>
-        </div>
-        <div class="nav-right">
-            <a href="login.html">entrar</a>
-            <a class="btn-dark" href="login.html?cadastro=sim">criar conta</a>
-        </div>
-    </header>
+    <!-- ===== FUNDOS DO COMPUTADOR =====
+         São 3 versões. Só UMA pode ficar sem comentário (comentário = o que está entre os sinais de abrir e fechar comentário do HTML).
+         Cada versão tem 6 fundos, um para cada item do menu, na mesma ordem. -->
+    <div class="fundos-pc">
 
-    <!-- CAPA -->
-    <section class="hero" id="hero">
-        <div class="bg-doll" id="bg-doll"></div>
-        <div class="dot-overlay"></div>
-        <div class="corner tl"></div>
-        <div class="corner br"></div>
-        <div class="bg-marquee">PEAK ✶ CAMPANHAS ✶ BESTIÁRIO ✶ FICHAS ✶ DADOS ✶</div>
-        <canvas id="petals-canvas"></canvas>
+      <!-- VERSÃO VÍDEOS (é a que está valendo) -->
+      <video class="fundo" poster="../img/index/videos/v1.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v1.webm" type="video/webm"><source src="../img/index/videos/v1.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v2.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v2.webm" type="video/webm"><source src="../img/index/videos/v2.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v3.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v3.webm" type="video/webm"><source src="../img/index/videos/v3.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v4.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v4.webm" type="video/webm"><source src="../img/index/videos/v4.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v5.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v5.webm" type="video/webm"><source src="../img/index/videos/v5.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v6.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v6.webm" type="video/webm"><source src="../img/index/videos/v6.mp4" type="video/mp4"></video>
 
-        <div class="left-panel">
-            <p class="hero-quote">
-                O mestre cria. O grupo entra. A história começa.
-                <span>Uma mesa de RPG que cabe no navegador.</span>
-            </p>
+      <!-- VERSÃO FOTOS 1 (dragão)
+           Para usar: coloque os 6 <video> acima dentro de um comentário
+           e tire o comentário destas 6 linhas.
+      <img class="fundo" src="../img/index/fotos1/1.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/2.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/3.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/4.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/5.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/6.jpg" alt="">
+      -->
 
-            <div class="title-wrap" id="title-layer">
-                <div class="title-float">
-                    <span class="kicker">MESA VIRTUAL DE RPG</span>
-                    <h1 class="main-title">peak.</h1>
-                    <span class="tagline">ONDE AS LENDAS NASCEM</span>
-                </div>
-                <div class="badge">TUDO QUE SUA MESA PRECISA</div>
-            </div>
-
-            <div class="left-footer">
-                <p class="scroll-hint">ROLE A PÁGINA ↓</p>
-                <a class="tag-pill" href="login.html?cadastro=sim">CRIAR CONTA</a>
-            </div>
-        </div>
-
-        <div class="center-panel">
-            <div class="art-window">
-                <div class="glass-lines">
-                    <span>CRIE SUA CAMPANHA</span>
-                    <span>REÚNA SEU GRUPO</span>
-                    <span>ROLE OS DADOS</span>
-                    <div class="pulse-bar"></div>
-                </div>
-            </div>
-            <div class="character-root" id="character-layer">
-                <div class="character-img" role="img" aria-label="Personagem da capa"></div>
-            </div>
-        </div>
-
-        <aside class="right-panel">
-            <div class="pill-box">RPG</div>
-            <div class="vertical-wrap">
-                <span class="v-title">PEAK</span>
-                <span class="v-sub">MESA</span>
-                <span class="star">✶</span>
-                <span class="v-sub">VIRTUAL</span>
-            </div>
-            <p class="micro-text">PEAK · 2026</p>
-        </aside>
-    </section>
-
-    <!-- FAIXA -->
-    <div class="strip">
-        <div class="strip-track">
-            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
-            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
-            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
-            <span>fichas</span><i>✶</i><span>campanhas</span><i>✶</i><span>bestiário</span><i>✶</i><span>comunidade</span><i>✶</i><span>mapa e sons</span><i>✶</i><span>dados</span><i>✶</i>
-        </div>
+      <!-- VERSÃO FOTOS 2 (personagens)
+           Para usar: coloque os 6 <video> acima dentro de um comentário
+           e tire o comentário destas 6 linhas.
+      <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/2.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/3.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/4.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/5.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/6.jpg" alt="">
+      -->
     </div>
 
+    <!-- ===== FUNDOS DO CELULAR (sempre fotos; os vídeos nem carregam no celular) ===== -->
+    <div class="fundos-cel">
 
-    <!-- (01) MURAL: as partes do site como fotos penduradas (o "torto" é só CSS: transform: rotate) -->
-    <section class="mural" id="mural">
-      <div class="nota">psiu! a mirela procura jogador pra sexta</div>
-      <h2>A mesa inteira,<br><em>no seu mural.</em></h2>
-      <p>Fichas, campanhas, monstros e o grupo, tudo num lugar só. Passe o mouse nas fotos.</p>
-      <div class="fotos">
-      <div class="pol"><span class="fita"></span><img src="../img/classes/mago.jpg" alt=""><b>Fichas</b><small>monte seu personagem</small></div>
-      <div class="pol"><span class="fita"></span><img src="../img/livros/campanhas.jpg" alt=""><b>Campanhas</b><small>o mestre cria, o grupo entra</small></div>
-      <div class="pol"><span class="fita"></span><img src="../img/monstros/lich.jpg" alt=""><b>Bestiário</b><small>monstros pra toda mesa</small></div>
-      <div class="pol"><span class="fita"></span><img src="../img/retratos/r10.jpg" alt=""><b>Comunidade</b><small>ache sua parceria</small></div>
-      <div class="pol"><span class="fita"></span><img src="../img/livros/o-que-e-rpg.jpg" alt=""><b>História</b><small>aprenda a jogar</small></div>
+      <!-- FOTOS 1 (está valendo no celular) -->
+      <img class="fundo" src="../img/index/fotos1/1.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/2.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/3.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/4.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/5.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos1/6.jpg" alt="">
+
+      <!-- FOTOS 2: para usar, comente as 6 de cima e tire o comentário destas
+      <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/2.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/3.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/4.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/5.jpg" alt="">
+      <img class="fundo" src="../img/index/fotos2/6.jpg" alt="">
+      -->
+    </div>
+
+    <!-- véu escuro por cima do fundo, para o texto aparecer -->
+    <div class="veu"></div>
+
+    <img class="flor" src="../img/index/flor.png" alt="">
+
+    <div class="logo"><small>MESA DE RPG</small>peak<span>.</span></div>
+
+    <!-- o número e o nome do capítulo mudam junto com o menu -->
+    <div class="capitulo"><span id="capNumero">CAPÍTULO I</span><b id="capTitulo">O início</b></div>
+    <div class="pontos"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <!-- o texto do item escolhido -->
+    <div class="descricao" id="descricao"></div>
+
+    <ul class="menu">
+      <li onclick="clicar(0)" onmouseenter="passar(0)">INÍCIO</li>
+      <li onclick="clicar(1)" onmouseenter="passar(1)">CAMPANHAS</li>
+      <li onclick="clicar(2)" onmouseenter="passar(2)">COMUNIDADE</li>
+      <li onclick="clicar(3)" onmouseenter="passar(3)">FICHAS</li>
+      <li onclick="clicar(4)" onmouseenter="passar(4)">SOBRE NÓS</li>
+      <li onclick="clicar(5)" onmouseenter="passar(5)">ENTRAR</li>
+    </ul>
+
+    <div class="dica"><i>↑</i><i>↓</i> ESCOLHER &nbsp; <i>ENTER</i> CONFIRMAR &nbsp; ou clique</div>
+    <a class="rolar" href="#conhecer">ROLE PARA CONHECER<br>⌄</a>
+  </section>
+
+
+  <!-- =====================================================
+       DEPOIS DA CAPA: classes, campanhas e raças (VISUAL, só HTML e CSS)
+       ===================================================== -->
+  <main id="conhecer">
+
+    <!-- CLASSES: 6 cartas, uma mais alta e outra mais baixa (o "sobe e desce" é só CSS) -->
+    <section class="bloco">
+      <div class="bloco-topo">
+        <h2>Classes</h2>
+        <p>Escolha quem você vai ser. Cada classe tem seu jeito de lutar, curar ou enganar.</p>
+      </div>
+      <div class="classes">
+        <div class="classe"><img src="../img/classes/guerreiro.jpg" alt=""><b>Guerreiro</b></div>
+        <div class="classe"><img src="../img/classes/mago.jpg" alt=""><b>Mago</b></div>
+        <div class="classe"><img src="../img/classes/ladrao.jpg" alt=""><b>Ladrão</b></div>
+        <div class="classe"><img src="../img/classes/clerigo.jpg" alt=""><b>Clérigo</b></div>
+        <div class="classe"><img src="../img/classes/paladino.jpg" alt=""><b>Paladino</b></div>
+        <div class="classe"><img src="../img/classes/barbaro.jpg" alt=""><b>Bárbaro</b></div>
       </div>
     </section>
 
-    <div class="clara">
+    <!-- OBJETIVO -->
+    <section class="objetivo">
+      <img src="../img/logo.png" alt="">
+      <p>Nosso objetivo é levar o RPG de mesa para qualquer pessoa, com histórias que falam do nosso mundo.</p>
+    </section>
 
-    <!-- (02) VITRINE DE CLASSES: as 6 classes já estão aqui no HTML.
-         Só a escolhida aparece; as outras têm a classe "oculto".
-         Clicar numa miniatura chama mostrarClasse() no js/index.js. -->
-    <section class="vit" id="classes">
-      <div class="vit-arte" id="classeFoto1"><img src="../img/classes/guerreiro.jpg" alt=""></div>
-      <div class="vit-arte oculto" id="classeFoto2"><img src="../img/classes/paladino.jpg" alt=""></div>
-      <div class="vit-arte oculto" id="classeFoto3"><img src="../img/classes/barbaro.jpg" alt=""></div>
-      <div class="vit-arte oculto" id="classeFoto4"><img src="../img/classes/ladrao.jpg" alt=""></div>
-      <div class="vit-arte oculto" id="classeFoto5"><img src="../img/classes/clerigo.jpg" alt=""></div>
-      <div class="vit-arte oculto" id="classeFoto6"><img src="../img/classes/mago.jpg" alt=""></div>
-      <div class="vit-txt">
-        <div id="classeTexto1">
-          <p class="label">(02) escolha sua classe — 01/06</p>
-          <h2>Guerreiro<em>.</em></h2>
-          <p>Especialista em combate corpo a corpo. Usa qualquer arma e armadura, e é o primeiro a entrar na briga.</p>
-        </div>
-        <div class="oculto" id="classeTexto2">
-          <p class="label">(02) escolha sua classe — 02/06</p>
-          <h2>Paladino<em>.</em></h2>
-          <p>Cavaleiro sagrado que junta espada e fé. Protege o grupo e cura com as mãos.</p>
-        </div>
-        <div class="oculto" id="classeTexto3">
-          <p class="label">(02) escolha sua classe — 03/06</p>
-          <h2>Bárbaro<em>.</em></h2>
-          <p>Guerreiro selvagem movido pela fúria. Quanto mais apanha, mais forte bate.</p>
-        </div>
-        <div class="oculto" id="classeTexto4">
-          <p class="label">(02) escolha sua classe — 04/06</p>
-          <h2>Ladrão<em>.</em></h2>
-          <p>Ágil e discreto, abre fechaduras, desarma armadilhas e some nas sombras.</p>
-        </div>
-        <div class="oculto" id="classeTexto5">
-          <p class="label">(02) escolha sua classe — 05/06</p>
-          <h2>Clérigo<em>.</em></h2>
-          <p>Servo de uma divindade. Cura os aliados e enfrenta os mortos-vivos.</p>
-        </div>
-        <div class="oculto" id="classeTexto6">
-          <p class="label">(02) escolha sua classe — 06/06</p>
-          <h2>Mago<em>.</em></h2>
-          <p>Estudioso das artes arcanas. Lança magias poderosas lidas do seu grimório.</p>
-        </div>
-        <div class="vit-lista">
-          <button type="button" class="ativo" id="classeBotao1" onclick="mostrarClasse(1)"><img src="../img/classes/guerreiro.jpg" alt="">Guerreiro</button>
-          <button type="button" id="classeBotao2" onclick="mostrarClasse(2)"><img src="../img/classes/paladino.jpg" alt="">Paladino</button>
-          <button type="button" id="classeBotao3" onclick="mostrarClasse(3)"><img src="../img/classes/barbaro.jpg" alt="">Bárbaro</button>
-          <button type="button" id="classeBotao4" onclick="mostrarClasse(4)"><img src="../img/classes/ladrao.jpg" alt="">Ladrão</button>
-          <button type="button" id="classeBotao5" onclick="mostrarClasse(5)"><img src="../img/classes/clerigo.jpg" alt="">Clérigo</button>
-          <button type="button" id="classeBotao6" onclick="mostrarClasse(6)"><img src="../img/classes/mago.jpg" alt="">Mago</button>
-        </div>
+    <!-- CAMPANHAS: uma faixa grande e 3 quadrados -->
+    <section class="bloco">
+      <a class="faixa-campanhas" href="login.html">
+        <img src="../img/editorial/grupo-cor.jpg" alt="">
+        <b>CAMPANHAS</b>
+      </a>
+      <div class="quadrados">
+        <a class="quadrado alto" href="login.html"><img src="../img/monstros/devorador.jpg" alt=""><b>Bestiário<br>vivo</b></a>
+        <a class="quadrado" href="login.html"><img src="../img/mascote/fundo-login-escuro.jpg" alt=""><b>Mapa<br>da mesa</b></a>
+        <a class="quadrado" href="login.html"><img src="../img/editorial/mestra-flor.jpg" alt=""><b>Comunidade</b></a>
       </div>
     </section>
 
-    <!-- (03) BLOCOS: o que dá para fazer na Peak -->
-    <section class="blocos" id="blocos">
-      <h2>Tudo que a sua mesa precisa.</h2>
-      <div class="bl grande"><img src="../img/editorial/grupo-cor.jpg" alt=""><p class="label">(03) campanhas</p><h3>O mestre cria.<br>O grupo entra.</h3><p>Um código de convite, uma ficha escolhida, e a campanha começa.</p></div>
-      <div class="bl"><img src="../img/monstros/devorador.jpg" alt=""><p class="label">(04) bestiário</p><h3>Monstros</h3></div>
-      <div class="bl coral"><div class="rostos"><img src="../img/retratos/r10.jpg" alt=""><img src="../img/retratos/r03.jpg" alt=""><img src="../img/retratos/r05.jpg" alt=""></div><p class="label" style="color:var(--cacau)">(05) comunidade</p><h3>Ache sua parceria</h3><span class="selo">combina</span></div>
-      <div class="bl"><img src="../img/livros/o-que-e-rpg.jpg" alt=""><p class="label">(06) história</p><h3>Aprenda a jogar</h3></div>
-      <div class="bl"><img src="../img/mascote/fundo-login-escuro.jpg" alt=""><p class="label">(07) mapa</p><h3>Mapa, música e sons</h3></div>
+    <!-- RAÇAS: fotos em arco -->
+    <section class="bloco">
+      <div class="bloco-topo">
+        <h2>Raças</h2>
+        <p>Do humano ao centauro. Ou crie a sua.</p>
+      </div>
+      <div class="racas">
+        <div class="raca"><small>HUMANO</small><img src="../img/racas/humano.jpg" alt=""></div>
+        <div class="raca"><small>ELFO</small><img src="../img/racas/elfo.jpg" alt=""></div>
+        <div class="raca"><small>FADA</small><img src="../img/racas/fada.jpg" alt=""></div>
+        <div class="raca"><small>GOBLIN</small><img src="../img/racas/goblin.jpg" alt=""></div>
+        <div class="raca"><small>HALFLING</small><img src="../img/racas/halfling.jpg" alt=""></div>
+        <div class="raca"><small>CENTAURO</small><img src="../img/racas/centauro.jpg" alt=""></div>
+      </div>
     </section>
 
-    <!-- (04) CHAMADA FINAL -->
+    <!-- CHAMADA FINAL -->
     <section class="chamada">
-      <img src="../img/editorial/dragao.jpg" alt="">
-      <div>
-        <p class="label">(08) sua vez</p>
-        <h2>Chama o grupo.<br>A mesa <em>tá pronta.</em></h2>
-        <a class="btn-coral" href="login.html?cadastro=sim">criar conta</a>
-      </div>
+      <h2>Chama o grupo.<br>A mesa <em>tá pronta.</em></h2>
+      <a class="botao-coral" href="login.html?cadastro=sim">criar conta</a>
     </section>
 
-    </div>
+  </main>
 
-    <!-- RODAPÉ -->
-    <footer class="footer">
-        <div class="footer-logo">peak.</div>
-        <div class="footer-row">
-            <span>mesa virtual de rpg · projeto escolar 2026</span>
-            <span>campanhas — bestiário — comunidade — história</span>
-            <span><a href="login.html">entrar</a> / <a href="login.html?cadastro=sim">criar conta</a></span>
-        </div>
-    </footer>
+  <footer class="rodape">
+    <b>peak<span>.</span></b>
+    <span>Projeto Integrador · Info 1 · Senac</span>
+    <span><a href="login.html">entrar</a> / <a href="login.html?cadastro=sim">criar conta</a></span>
+  </footer>
 
 
-    <script src="../js/index.js"></script>
+  <script>
+    // =====================================================
+    // MENU DA CAPA (VISUAL)
+    // =====================================================
+
+    // um item por linha do menu, na mesma ordem:
+    // [título pequeno, texto, número do capítulo, nome do capítulo, página que abre]
+    var textos = [
+        ['BEM-VINDA À PEAK', 'Uma mesa de RPG no navegador: o mestre cria, o grupo entra e a história começa.', 'CAPÍTULO I', 'O início', 'inicio.html'],
+        ['CAMPANHAS', 'Crie a sua ou use uma oficial. O grupo entra com um código e joga com mapa, música e dados.', 'CAPÍTULO II', 'A mesa', 'campanhas.html'],
+        ['COMUNIDADE', 'Encontre jogadores, mestres e artistas que gostam das mesmas coisas que você.', 'CAPÍTULO III', 'O grupo', 'comunidade.html'],
+        ['FICHAS', 'Monte seu personagem com raças e classes prontas, retrato e itens. Ou crie a sua própria raça.', 'CAPÍTULO IV', 'Quem você é', 'fichas.html'],
+        ['SOBRE NÓS', 'Quatro alunas do Senac, um projeto, e histórias ligadas aos ODS e a artistas parceiros.', 'CAPÍTULO V', 'A equipe', 'livro-equipe.html'],
+        ['ENTRAR', 'Já tem conta? Volte para a sua mesa. Ainda não tem? Crie em 1 minuto.', 'FIM', 'Entrar', 'login.html']
+    ]
+
+    // celular (tela de até 700px) usa as fotos da div .fundos-cel; computador usa a .fundos-pc
+    var celular = window.innerWidth <= 700
+    var fundos
+
+    if(celular){
+        fundos = document.querySelectorAll('.fundos-cel .fundo')
+    }else{
+        fundos = document.querySelectorAll('.fundos-pc .fundo')
+    }
+
+    var itens = document.querySelectorAll('.menu li')
+    var pontos = document.querySelectorAll('.pontos i')
+    var atual = 0
+
+    // Mostra o item i: acende o item do menu, o fundo e o pontinho (classe "on")
+    // e escreve o texto e o capítulo
+    function escolher(i){
+        atual = i
+
+        for(var k = 0; k < itens.length; k++){
+            if(k == i){
+                itens[k].classList.add('on')
+                fundos[k].classList.add('on')
+                pontos[k].classList.add('on')
+            }else{
+                itens[k].classList.remove('on')
+                fundos[k].classList.remove('on')
+                pontos[k].classList.remove('on')
+            }
+
+            // só vídeo tem play e pause; se o fundo for foto, não faz nada
+            if(fundos[k].tagName == 'VIDEO'){
+                if(k == i){
+                    fundos[k].currentTime = 0
+                    fundos[k].play()
+                }else{
+                    fundos[k].pause()
+                }
+            }
+        }
+
+        document.getElementById('descricao').innerHTML = '<b>' + textos[i][0] + '</b>' + textos[i][1]
+        document.getElementById('capNumero').textContent = textos[i][2]
+        document.getElementById('capTitulo').textContent = textos[i][3]
+    }
+
+    // computador: passar o mouse já troca
+    function passar(i){
+        if(!celular){
+            escolher(i)
+        }
+    }
+
+    // clique: no computador abre a página na hora.
+    // no celular, o 1º toque escolhe e o 2º toque no mesmo item abre.
+    function clicar(i){
+        if(celular && i != atual){
+            escolher(i)
+        }else{
+            window.location.href = textos[i][4]
+        }
+    }
+
+    // teclado: setas para cima e para baixo escolhem, Enter abre
+    // (só quando a capa está na tela; mais para baixo as setas rolam a página normalmente)
+    document.addEventListener('keydown', function(evento){
+        if(window.scrollY > window.innerHeight / 2){
+            return
+        }
+
+        if(evento.key == 'ArrowDown' && atual < itens.length - 1){
+            evento.preventDefault()
+            escolher(atual + 1)
+        }else if(evento.key == 'ArrowUp' && atual > 0){
+            evento.preventDefault()
+            escolher(atual - 1)
+        }else if(evento.key == 'Enter'){
+            window.location.href = textos[atual][4]
+        }
+    })
+
+    escolher(0)
+  </script>
 </body>
 </html>

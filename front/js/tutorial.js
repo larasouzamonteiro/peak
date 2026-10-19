@@ -11,12 +11,12 @@
 // (alvo = o href do link, ex.: 'fichas.html'. Vazio = nenhum.)
 var falas = [
     {alvo: '', texto: 'Olá! Eu sou a Zero. É a sua primeira vez por aqui, né? Deixa eu te mostrar como a Peak funciona antes da sua primeira aventura.'},
-    {alvo: 'inicio.html', texto: 'Este é o Início, a primeira tela que você vê. Aqui ficam a campanha principal da Peak, as campanhas em que você joga e os seus personagens.'},
+    {alvo: 'inicio.html', texto: 'Este é o Início, a primeira tela que você vê. Aqui ficam as fotos da equipe, as campanhas oficiais da Peak, os seus personagens e as novidades do site.'},
     {alvo: 'campanhas.html', texto: 'Em Campanhas você vê as suas mesas, cria uma nova ou entra na de um amigo com o código de convite. Se for o Mestre, lá também ficam as sessões e o mapa com sons.'},
     {alvo: 'fichas.html', texto: 'Em Fichas você cria personagens na Oficina: identidade, raça, classe, combate, itens, atributos e história. Também dá para inventar as suas próprias raças e classes.'},
     {alvo: 'monstros.html', texto: 'O Bestiário tem os monstros da Peak, os de cada campanha oficial e os da comunidade. Você pode criar os seus e colocar nas suas campanhas.'},
     {alvo: 'comunidade.html', texto: 'Na Comunidade você encontra pessoas com os mesmos interesses e parcerias: quem desenha, quem mestra, quem escreve. Quando aparece "Combina", é porque a pessoa é o que você procura.'},
-    {alvo: 'perfil.html?aba=configuracoes', texto: 'Aqui embaixo ficam o seu perfil e as configurações: foto, capa, "sobre mim", contato, interesses e parcerias.'},
+    {alvo: 'perfil.html?aba=configuracoes', texto: 'Aqui embaixo ficam o seu perfil e as configurações: foto, capa, "sobre mim", contato, interesses, parcerias e o modo escuro.'},
     {alvo: '', texto: 'Pronto, agora é com você! Crie a sua primeira ficha, chame os seus amigos e boa aventura!'}
 ]
 

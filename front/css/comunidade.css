@@ -140,6 +140,31 @@
 }
 
 
+/* VISUAL: botão "Mostrar mais 12" embaixo das pessoas */
+.mostrar-mais{
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 16px;
+    background: var(--vidro);
+    color: var(--rosa-escuro);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: var(--sombra-pequena);
+}
+
+.mostrar-mais small{
+    display: block;
+    color: var(--tinta-3);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+
 /* ---------- 3. TELAS MENORES ---------- */
 @media (max-width: 1100px){
     .comunidade{
@@ -151,8 +176,31 @@
     }
 }
 
+/* VISUAL: celular: 2 pessoas por linha, cards menores */
 @media (max-width: 520px){
     .pessoas{
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .pessoa-card{
+        height: 220px;
+    }
+
+    .pessoa-card h3{
+        font-size: 0.9rem;
+    }
+
+    .pessoa-card small{
+        font-size: 0.65rem;
+    }
+
+    /* os chips de interesse não cabem no card pequeno */
+    .pessoa-card .info .chip{
+        display: none;
+    }
+
+    .pessoa-card .info{
+        padding: 30px 10px 10px;
     }
 }

@@ -304,3 +304,36 @@ function rolarDado(lados){
     resultado.innerHTML = '<b>' + numero + '</b><small>d' + lados + '</small>'
     resultado.classList.remove('oculto')
 }
+
+
+// =====================================================
+// 7. VISUAL: MODO ESCURO E MENU DO CELULAR
+// =====================================================
+// O tema fica guardado no localStorage (no navegador), igual o token.
+//   'escuro' -> o <body> ganha a classe "escuro" (as cores estão no style.css, parte "MODO ESCURO")
+//   qualquer outra coisa (ou nada) -> claro
+// O botão para trocar fica em Perfil > Configurações (perfil.html).
+
+function aplicarTema(){
+    var tema = localStorage.getItem('tema')
+
+    if(tema == 'escuro'){
+        document.body.classList.add('escuro')
+    }else{
+        document.body.classList.remove('escuro')
+    }
+}
+
+// tema: 'claro' ou 'escuro'
+function mudarTema(tema){
+    localStorage.setItem('tema', tema)
+    aplicarTema()
+}
+
+// roda em toda página que carrega o script.js
+aplicarTema()
+
+// Celular: o botão "Mais" da barra de baixo abre e fecha o menu inteiro
+function abrirMais(){
+    document.querySelector('.lateral').classList.toggle('mais-aberto')
+}

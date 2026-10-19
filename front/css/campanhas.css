@@ -1,11 +1,11 @@
 /* =====================================================
    CAMPANHAS.CSS - campanhas.html, criar-campanha.html,
-                   campanha.html e mapa.html
+                   e campanha.html (o mapa.html tem o mapa.css)
 
      1. Lista de campanhas (campanhas.html)
      2. Criar campanha
      3. Campanha aberta (campanha.html)
-     4. Mapa e sons (mapa.html)
+     4. Painel do Mestre (campanha.html)
      5. Telas menores
    ===================================================== */
 
@@ -134,41 +134,132 @@
 }
 
 
-/* ---------- 4. MAPA E SONS ---------- */
-/* o quadro escuro onde a imagem do mapa aparece */
-.mapa-area{
+/* ---------- 4. PAINEL DO MESTRE (VISUAL) ---------- */
+/* Duas colunas. "align-items: start" faz cada coluna ter só a altura do que tem dentro:
+   antes os cards eram esticados para ficar da mesma altura e cresciam juntos
+   quando entravam mais monstros. */
+.painel-mestre{
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.painel-coluna{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* o número de monstros do lado do título */
+.contagem-monstros{
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 9px;
+    border-radius: 999px;
+    background: var(--degrade);
+    color: #fff;
+    font-size: 0.7rem;
+    vertical-align: 2px;
+}
+
+.contagem-monstros:empty{
+    display: none;
+}
+
+/* os monstros em quadrinhos, 3 por linha. Passou da altura máxima, a lista rola. */
+.lista-monstros{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-height: 300px;
+    margin-top: 14px;
+    padding-right: 4px;
+    overflow-y: auto;
+}
+
+.lista-monstros .texto-suave{
+    grid-column: 1 / -1;
+}
+
+.monstro-item{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 30px 8px 8px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 14px;
+    background: var(--vidro-leve);
+}
+
+.monstro-item .foto{
+    flex: none;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    border-radius: 10px;
+    font-size: 1.2rem;
+}
+
+.monstro-item strong{
+    display: block;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+.monstro-item small{
+    color: var(--tinta-3);
+    font-size: 0.7rem;
+}
+
+/* o "×" pequeno no canto de cada monstro */
+.remover-x{
+    position: absolute;
+    top: 6px;
+    right: 6px;
     display: grid;
     place-items: center;
-    height: 420px;
-    margin-bottom: 18px;
-    overflow: hidden;
-    border-radius: var(--raio);
-    background: var(--escuro);
-    box-shadow: var(--sombra-foto);
-    color: #c9aaa3;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cartao-2);
+    color: var(--rosa-escuro);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.remover-x:hover{
+    background: var(--rosa);
+    color: #fff;
+}
+
+/* Salvar + o link "Excluir campanha" na mesma linha */
+.painel-rodape{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.link-perigo{
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--rosa-escuro);
+    font: inherit;
+    font-size: 0.8rem;
     font-weight: 600;
+    cursor: pointer;
 }
 
-.mapa-area img{
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* em tela cheia (botão "Tela cheia") a imagem aparece inteira, sem cortar */
-.mapa-area:fullscreen{
-    height: 100vh;
-}
-
-.mapa-area:fullscreen img{
-    object-fit: contain;
-}
-
-/* controle de volume */
-input[type="range"]{
-    width: 100%;
-    accent-color: var(--rosa);
+.link-perigo:hover{
+    text-decoration: underline;
 }
 
 
@@ -182,7 +273,18 @@ input[type="range"]{
         font-size: 2rem;
     }
 
-    .mapa-area{
-        height: 260px;
+    /* VISUAL: no celular o painel fica numa coluna só, e os monstros 2 por linha */
+    .painel-mestre{
+        grid-template-columns: 1fr;
+    }
+
+    .lista-monstros{
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 761px) and (max-width: 1100px){
+    .painel-mestre{
+        grid-template-columns: 1fr;
     }
 }

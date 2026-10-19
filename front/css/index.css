@@ -1,537 +1,740 @@
 /* =====================================================
-   INDEX.CSS - a página de propaganda (index.html)
-   É a única página que não usa o style.css: tem cores e
-   letras próprias.
-   Ordem: menu, capa (a boneca), faixa, mural, vitrine de
-   classes, blocos, chamada e rodapé.
+   INDEX.CSS - só a página index.html (a primeira página do site)
+   Este arquivo inteiro é VISUAL.
+
+     1. Cores e base
+     2. Capa: fundos (vídeo ou foto) e véu
+     3. Capa: logo, flor, capítulo
+     4. Capa: menu estilo jogo e texto de baixo
+     5. Depois da capa: classes, objetivo, campanhas, raças
+     6. Chamada final e rodapé
+     7. Celular
    ===================================================== */
-:root {
-    /* as bonecas da capa (troque os links aqui) */
-    --boneca-frente: url('../img/index/capa-boneca-frente.png');
-    --boneca-fundo: url('../img/index/capa-rosto-fundo.png');
 
-    /* paleta Peak */
-    --creme: #f6ece3;
-    --creme-capa: #eadbcd;
-    --vinho: #5c0f2b;
-    --terracota: #e16a5c;
-    --cacau: #1d1416;
 
-    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace;
+/* ---------- 1. CORES E BASE ---------- */
+:root{
+    --coral-claro: #ffb59a;
+    --coral: #f57f6c;
+    --coral-escuro: #cf4f55;
+    --fundo: #140c0c;
+    --texto: #f1d6cd;
+    --texto-suave: #c99e91;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    background: var(--creme);
-    color: var(--cacau);
-    font-family: var(--sans);
-    overflow-x: hidden;
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-a { color: inherit; text-decoration: none; }
-img { display: block; }
-
-/* ---------- MENU ---------- */
-.nav {
-    height: 75px;
-    padding: 0 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--creme);
+html{
+    scroll-behavior: smooth;        /* o "ROLE PARA CONHECER" desce devagar */
 }
-.nav-left { display: flex; align-items: center; gap: 56px; }
-.brand { display: flex; align-items: center; gap: 8px; font-size: 27px; font-weight: 700; letter-spacing: -0.06em; }
-.brand img { width: 40px; height: 44px; object-fit: contain; }
-.nav-links { display: flex; gap: 28px; font-size: 15px; }
-.nav-right { display: flex; align-items: center; gap: 26px; font-size: 15px; }
-.btn-dark { background: var(--cacau); color: var(--creme); padding: 10px 18px; font-weight: 700; font-size: 14px; }
 
-/* ---------- CAPA ---------- */
-.hero {
+body{
+    background: var(--fundo);
+    color: #fff;
+    font-family: "Poppins", Arial, sans-serif;
+}
+
+a{
+    color: inherit;
+    text-decoration: none;
+}
+
+img{
+    display: block;
+}
+
+
+/* ---------- 2. CAPA: FUNDOS E VÉU ---------- */
+/* a capa ocupa a tela inteira (100vh = 100% da altura da janela) */
+.capa{
     position: relative;
-    height: calc(100vh - 75px);
-    min-height: 620px;
-    display: grid;
-    grid-template-columns: 45% 42% 13%;
-    grid-template-rows: 100%;
+    height: 100vh;
+    min-height: 600px;
     overflow: hidden;
-    font-size: clamp(12px, 1.333vw, 22px);   /* tudo dentro da capa cresce junto com a tela */
-    background-color: var(--creme-capa);
-    background-image: radial-gradient(ellipse at 40% 38%, #f3e8de 0%, #eadbcd 45%, #dcc8b8 100%);
 }
 
-/* bordas esfumaçadas */
-.hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle, transparent 45%, rgba(196, 170, 151, 0.6) 100%);
-    z-index: 12;
-    pointer-events: none;
-}
-
-/* boneca de fundo (rosto grande) */
-.bg-doll {
-    position: absolute;
-    left: -11.8%;
-    top: -6.5%;
-    width: 107.3%;
-    height: 119%;
-    background: var(--boneca-fundo) center / 100% 100% no-repeat;
-    opacity: 0.82;
-    filter: contrast(1.05);
-    -webkit-mask-image: radial-gradient(ellipse 62% 64% at 47% 42%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
-    mask-image: radial-gradient(ellipse 62% 64% at 47% 42%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
-    z-index: 0;
-    pointer-events: none;
-    will-change: transform;
-}
-
-.dot-overlay {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(rgba(92, 15, 43, 0.05) 15%, transparent 16%);
-    background-size: 6px 6px;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.corner {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    border: 2px solid rgba(92, 15, 43, 0.3);
-    z-index: 13;
-    pointer-events: none;
-}
-.corner.tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
-.corner.br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
-
-/* texto gigante passando no fundo */
-.bg-marquee {
-    position: absolute;
-    width: 200%;
-    top: 45%;
-    left: 0;
-    transform: translateY(-50%);
-    font-size: 14em;
-    font-weight: 700;
-    color: rgba(92, 15, 43, 0.035);
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-    z-index: 1;
-    pointer-events: none;
-    user-select: none;
-    animation: move-marquee 35s linear infinite;
-}
-
-#petals-canvas {
+/* os 6 fundos ficam um em cima do outro; só o que tem "on" aparece */
+.fundo{
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 11;
-    pointer-events: none;
+    object-fit: cover;          /* cobre a tela sem esticar a imagem */
+    opacity: 0;
+    transform: scale(1.08);
+    transition: opacity 0.8s, transform 6s;     /* aparece devagar e dá um "zoom" bem lento */
 }
 
-/* painel esquerdo */
-.left-panel {
-    padding: 5% 7%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    z-index: 5;
-    background: linear-gradient(90deg, rgba(234, 219, 206, 0.95) 0%, rgba(230, 213, 199, 0.55) 75%, rgba(234, 219, 206, 0) 100%);
+.fundo.on{
+    opacity: 1;
+    transform: scale(1);
 }
 
-.hero-quote {
-    font-size: 0.75em;
-    font-weight: 700;
-    color: #3a2226;
-    letter-spacing: 0.16em;
-    line-height: 1.5;
-    text-transform: uppercase;
-    border-left: 3px solid var(--terracota);
-    padding-left: 10px;
-}
-.hero-quote span {
-    display: block;
-    margin-top: 4px;
-    font-size: 0.87em;
-    color: #8f746d;
-    letter-spacing: 0.08em;
-    text-transform: none;
+/* no computador o celular não aparece, e vice-versa (ver parte 8) */
+.fundos-cel{
+    display: none;
 }
 
-/* título: a camada de fora segue o mouse, a de dentro flutua */
-.title-wrap { will-change: transform; }
-.title-float { animation: title-float 6s ease-in-out -2s infinite; }
-
-.kicker {
-    display: block;
-    font-size: 0.95em;
-    font-weight: 700;
-    letter-spacing: 0.4em;
-    color: var(--vinho);
-}
-
-.main-title {
-    display: inline-block;
-    font-size: 12em;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.07em;
-    padding: 0 0.09em 0.1em 0;
-    margin: -0.04em 0 0 -0.04em;
-    /* cor vinho + faixa de luz que atravessa as letras */
-    color: var(--vinho);
+/* escurece a esquerda (onde fica o menu) e a parte de baixo */
+.veu{
+    position: absolute;
+    inset: 0;
     background:
-        linear-gradient(105deg, rgba(255,255,255,0) 38%, rgba(255, 240, 232, 0.9) 50%, rgba(255,255,255,0) 62%) no-repeat,
-        linear-gradient(var(--vinho), var(--vinho));
-    background-size: 45% 100%, 100% 100%;
-    background-position: -150% 0, 0 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0.05em 0.1em rgba(92, 15, 43, 0.22));
-    animation: sheen 6s ease-in-out infinite;
+        linear-gradient(90deg, rgba(20, 10, 10, 0.92) 0%, rgba(20, 10, 10, 0.65) 32%, transparent 60%),
+        linear-gradient(0deg, rgba(20, 10, 10, 0.6), transparent 30%);
 }
 
-.tagline {
-    display: block;
-    font-size: 0.8em;
-    font-weight: 700;
-    letter-spacing: 0.6em;
-    color: rgba(92, 15, 43, 0.82);
-    margin-top: 0.2em;
-}
 
-.badge {
-    display: inline-block;
-    background: var(--vinho);
-    color: var(--creme);
-    padding: 0.4em 1.2em;
-    font-size: 0.8em;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    margin-top: 1.6em;
-    box-shadow: 0 4px 15px rgba(92, 15, 43, 0.25);
-}
-
-.left-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    border-top: 1px solid rgba(92, 15, 43, 0.15);
-    padding-top: 15px;
-}
-.scroll-hint { font-size: 0.65em; color: #9a7f78; font-weight: 700; letter-spacing: 0.2em; }
-.tag-pill {
-    border: 1px solid rgba(29, 20, 22, 0.45);
-    padding: 0.5em 1.4em;
-    font-size: 0.62em;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    white-space: nowrap;
-    transition: background 0.2s, color 0.2s;
-}
-.tag-pill:hover { background: var(--vinho); color: var(--creme); border-color: var(--vinho); }
-
-/* painel do meio */
-.center-panel {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 4;
-}
-
-.art-window {
-    width: 92%;
-    height: 90%;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(225, 106, 92, 0.07) 100%);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(92, 15, 43, 0.12);
-}
-/* linha de luz descendo */
-.art-window::after {
-    content: '';
+/* ---------- 3. CAPA: LOGO, FLOR, CAPÍTULO ---------- */
+.logo{
     position: absolute;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(225, 106, 92, 0.45), rgba(92, 15, 43, 0.4), rgba(225, 106, 92, 0.45), transparent);
-    top: 0;
-    animation: laser-scan 4s linear infinite;
-}
-
-.glass-lines {
-    position: absolute;
-    right: 25px;
-    top: 25%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.8em;
-    color: rgba(29, 20, 22, 0.45);
-    font: 0.55em var(--mono);
-    letter-spacing: 0.06em;
-    z-index: 3;
-}
-.pulse-bar { width: 40px; height: 2px; background: var(--terracota); animation: bar-stretch 1.2s infinite ease-in-out; }
-
-/* boneca da frente (segue o mouse) */
-.character-root {
-    position: absolute;
-    width: 175%;
-    height: 90.8%;
-    bottom: -8.5%;
-    left: -16%;
-    z-index: 10;
-    pointer-events: none;
-    will-change: transform;
-}
-.character-img {
-    width: 100%;
-    height: 100%;
-    background: var(--boneca-frente) bottom center / contain no-repeat;
-    filter: drop-shadow(0 15px 30px rgba(92, 15, 43, 0.28)) drop-shadow(0 0 50px rgba(225, 106, 92, 0.15));
-    animation: float-character 6s ease-in-out infinite;
-}
-
-/* painel direito */
-.right-panel {
-    padding: 2.5em 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 15;
-    background: linear-gradient(-90deg, rgba(234, 219, 206, 0.6) 0%, transparent 100%);
-}
-.pill-box {
-    border: 1px solid rgba(29, 20, 22, 0.3);
-    border-radius: 20px;
-    padding: 0.35em 1.5em;
-    font-size: 0.65em;
-    letter-spacing: 0.2em;
-    font-weight: 700;
-    background: rgba(255, 255, 255, 0.25);
-}
-.vertical-wrap { display: flex; flex-direction: column; align-items: center; gap: 1em; }
-.v-title {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    font-size: 2.2em;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1;
-    color: var(--vinho);
-}
-.v-sub { writing-mode: vertical-rl; font-size: 0.7em; letter-spacing: 0.5em; color: rgba(29, 20, 22, 0.5); }
-.star { color: var(--terracota); font-size: 0.8em; animation: pulse-glow 2s infinite ease-in-out; }
-.micro-text {
-    font-size: 0.45em;
-    letter-spacing: 0.4em;
-    color: rgba(29, 20, 22, 0.4);
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-}
-
-/* ---------- FAIXA ---------- */
-.strip { background: var(--terracota); height: 62px; overflow: hidden; display: flex; align-items: center; }
-.strip-track {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    animation: strip-move 30s linear infinite;
-}
-.strip-track span { padding: 0 30px; }
-.strip-track i { font-style: normal; font-size: 20px; }
-
-/* ---------- RODAPÉ ---------- */
-.footer { background: var(--vinho); color: var(--creme); padding: 0 48px 30px; }
-.footer-logo { font-size: clamp(120px, 21.1vw, 304px); font-weight: 700; letter-spacing: -0.075em; line-height: 1; margin-left: 14px; padding-top: 20px; margin-bottom: 6px; }
-.footer-row { border-top: 1px solid rgba(246, 236, 227, 0.35); padding-top: 26px; display: flex; justify-content: space-between; font: 13px var(--mono); }
-
-/* ---------- TELAS MENORES ---------- */
-@media (max-width: 760px) {
-    .nav { padding: 0 20px; }
-    .nav-links { display: none; }
-
-    .hero { grid-template-columns: 100%; font-size: 13px; }
-    .left-panel { padding: 28px 24px; z-index: 11; background: linear-gradient(180deg, rgba(234, 219, 206, 0.9) 0%, rgba(234, 219, 206, 0) 60%); justify-content: flex-start; gap: 34px; }
-    .left-footer { display: none; }
-    .main-title { font-size: 9.6em; }
-    .center-panel { position: absolute; inset: 0; }
-    .art-window { display: none; }
-    .character-root { width: 190%; height: 60%; left: -28%; bottom: -5%; }
-    .right-panel { display: none; }
-    .bg-doll { left: -75%; width: 250%; top: 8%; height: 85%; }
-
-    .footer { padding: 0 20px 24px; }
-    .footer-logo { margin-left: 0; }
-    .footer-row { flex-direction: column; gap: 8px; }
-}
-
-/* quem pede menos movimento no sistema vê a página parada */
-@media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; }
-}
-
-/* ---------- ANIMAÇÕES ---------- */
-@keyframes move-marquee { 0% { transform: translate(0, -50%); } 100% { transform: translate(-50%, -50%); } }
-@keyframes strip-move { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-@keyframes float-character { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-@keyframes title-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-@keyframes sheen { 0% { background-position: -150% 0, 0 0; } 60%, 100% { background-position: 250% 0, 0 0; } }
-@keyframes laser-scan { 0% { top: 0%; opacity: 0; } 5%, 95% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
-@keyframes bar-stretch { 0%, 100% { width: 15px; } 50% { width: 45px; } }
-@keyframes pulse-glow { 0%, 100% { opacity: 0.3; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
-
-/* ---------- (01) MURAL: as fotos penduradas ---------- */
-.mural{
-    position: relative;
-    overflow: hidden;
-    padding: 100px 48px 110px;
-    background: #efe2d3;
-    background-image: radial-gradient(rgba(29, 20, 22, 0.06) 1px, transparent 1px);   /* os pontinhos do fundo */
-    background-size: 18px 18px;
-}
-.mural h2{
-    font-family: "Playfair Display", Georgia, serif;
-    font-size: clamp(44px, 5.6vw, 84px);
+    left: 6vw;
+    top: 8vh;
+    font-size: 96px;
     font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    text-align: center;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    text-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
-.mural h2 em{ font-style: italic; font-weight: 600; color: var(--vinho); }
-.mural > p{
-    max-width: 520px;
-    margin: 18px auto 60px;
-    color: #5a4a46;
-    font-size: 17px;
-    line-height: 1.55;
-    text-align: center;
-}
-.fotos{ display: flex; flex-wrap: wrap; justify-content: center; gap: 26px; }
 
-/* cada foto é um "polaroid": fundo branco, um pouco torto */
-.pol{
+/* o pontinho do "peak." */
+.logo span{
+    color: var(--coral-claro);
+}
+
+/* "MESA DE RPG" pequeno, em cima do peak. */
+.logo small{
+    display: block;
+    margin-bottom: 14px;
+    padding-left: 6px;
+    color: #e9b8a8;
+    font-family: "Lora", serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.6em;
+    text-shadow: none;
+}
+
+.flor{
+    position: absolute;
+    top: 4vh;
+    right: 3vw;
+    width: 120px;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
+}
+
+.capitulo{
+    position: absolute;
+    right: 4vw;
+    bottom: 5vh;
+    color: #e9b8a8;
+    font-family: "Lora", serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-align: right;
+}
+
+.capitulo b{
+    display: block;
+    color: #fff;
+    font-size: 44px;
+    letter-spacing: 0.05em;
+}
+
+/* os tracinhos de qual capítulo está aparecendo: só aparecem no celular */
+.pontos{
+    display: none;
+}
+
+
+/* ---------- 4. CAPA: MENU E TEXTO ---------- */
+.menu{
+    position: absolute;
+    top: 36vh;
+    left: calc(6vw + 30px);
+    list-style: none;
+    font-family: "Lora", serif;
+    font-size: 16px;
+    letter-spacing: 0.3em;
+}
+
+.menu li{
     position: relative;
-    width: 220px;
-    padding: 12px 12px 16px;
-    background: #fff;
-    box-shadow: 0 18px 40px rgba(60, 30, 20, 0.22);
+    padding: 11px 0;
+    color: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu li.on{
+    color: #fff;
+    letter-spacing: 0.42em;         /* o escolhido "abre" um pouco as letras */
+}
+
+/* o losango do item escolhido */
+.menu li.on::before{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -34px;
+    width: 10px;
+    height: 10px;
+    background: var(--coral);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* a linha fininha embaixo do item escolhido */
+.menu li.on::after{
+    content: "";
+    position: absolute;
+    left: -60px;
+    right: -20px;
+    bottom: 4px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--coral), transparent);
+}
+
+/* o texto do item escolhido, embaixo do menu */
+.descricao{
+    position: absolute;
+    left: 6vw;
+    bottom: 13vh;
+    width: 440px;
+    min-height: 70px;
+    color: var(--texto);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.descricao b{
+    display: block;
+    margin-bottom: 6px;
+    color: var(--coral-claro);
+    font-family: "Lora", serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+}
+
+.dica{
+    position: absolute;
+    left: 6vw;
+    bottom: 5vh;
+    color: var(--texto-suave);
+    font-family: "Lora", serif;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+}
+
+/* as teclinhas desenhadas */
+.dica i{
+    display: inline-block;
+    margin: 0 4px;
+    padding: 1px 7px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-style: normal;
+    letter-spacing: 0;
+}
+
+.rolar{
+    position: absolute;
+    bottom: 2.5vh;
+    left: 50%;
+    color: #b98a7e;
+    font-family: "Lora", serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-align: center;
+    transform: translateX(-50%);
+}
+
+
+/* ---------- 5. DEPOIS DA CAPA ---------- */
+main{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 70px 34px 20px;
+}
+
+.bloco{
+    margin-bottom: 70px;
+}
+
+.bloco-topo{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.bloco-topo h2{
+    color: var(--coral-claro);
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.bloco-topo p{
+    max-width: 380px;
+    color: var(--texto-suave);
+    font-size: 14px;
+    text-align: right;
+}
+
+/* ----- classes: 6 cartas, as pares mais baixas ----- */
+.classes{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+
+.classe{
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 22px;
     transition: transform 0.3s;
 }
-.pol img{ width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
-.pol b{ display: block; margin-top: 12px; font-family: "Playfair Display", Georgia, serif; font-size: 22px; }
-.pol small{ font: 12px var(--mono); color: #7a6660; }
-.pol:nth-child(1){ transform: rotate(-6deg) translateY(16px); }
-.pol:nth-child(2){ transform: rotate(3deg); }
-.pol:nth-child(3){ transform: rotate(-2deg) translateY(28px); }
-.pol:nth-child(4){ transform: rotate(5deg) translateY(6px); }
-.pol:nth-child(5){ transform: rotate(-4deg) translateY(20px); }
-.pol:hover{ z-index: 3; transform: rotate(0) scale(1.05); }   /* com o mouse em cima, a foto endireita */
 
-/* a fita que "segura" a foto */
-.fita{
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    width: 90px;
-    height: 26px;
-    margin-left: -45px;
-    background: rgba(225, 106, 92, 0.55);
-    transform: rotate(-3deg);
-}
-/* o bilhete amarelo */
-.nota{
-    position: absolute;
-    top: 120px;
-    right: 7%;
-    width: 200px;
-    padding: 18px;
-    background: #ffe9a8;
-    box-shadow: 0 10px 24px rgba(60, 30, 20, 0.18);
-    font: 15px/1.4 "Segoe Print", "Comic Sans MS", cursive;
-    transform: rotate(4deg);
+/* nth-child(even) = a 2ª, 4ª e 6ª carta: descem um pouco */
+.classe:nth-child(even){
+    margin-top: 24px;
 }
 
-/* ---------- (02) VITRINE DE CLASSES (parte clara) ---------- */
-.clara{ background: var(--creme); color: var(--cacau); }
-.clara .label{ color: #7a6660; }
-.vit{ display: grid; grid-template-columns: 1.15fr 1fr; height: 600px; }
-.vit-arte{ position: relative; overflow: hidden; }
-.vit-arte img{ width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
-.vit-arte::after{
+.classe:hover{
+    transform: translateY(-6px);
+}
+
+.classe img,
+.quadrado img,
+.faixa-campanhas img,
+.raca img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.classe b{
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ----- objetivo ----- */
+.objetivo{
+    max-width: 760px;
+    margin: 10px auto 70px;
+    text-align: center;
+}
+
+.objetivo img{
+    width: 64px;
+    margin: 0 auto 18px;
+    filter: invert(1);              /* a logo é escura: invert deixa clara no fundo escuro */
+}
+
+.objetivo p{
+    color: var(--coral-claro);
+    font-family: "Lora", serif;
+    font-size: 22px;
+    line-height: 1.5;
+}
+
+/* ----- campanhas: faixa grande + 3 quadrados ----- */
+.faixa-campanhas{
+    position: relative;
+    display: block;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 24px;
+}
+
+.faixa-campanhas b{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-50%);
+}
+
+.quadrados{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 190px 190px;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.quadrado{
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+}
+
+/* o primeiro quadrado ocupa as duas linhas */
+.quadrado.alto{
+    grid-row: span 2;
+}
+
+.quadrado::after{
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(246, 236, 227, 0) 55%, var(--creme) 100%);
+    background: linear-gradient(0deg, rgba(20, 10, 10, 0.75), transparent 60%);
 }
-.vit-txt{ display: flex; flex-direction: column; padding: 70px 56px 50px 30px; }
-.vit-txt h2{ margin: 30px 0 18px; font-size: clamp(60px, 8vw, 118px); line-height: 0.9; letter-spacing: -0.06em; }
-.vit-txt h2 em{ font-style: normal; color: var(--terracota); }
-.vit-txt p{ max-width: 430px; color: #5a4a46; font-size: 18px; line-height: 1.55; }
 
-/* as 6 miniaturas: a escolhida tem a classe "ativo" */
-.vit-lista{ display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: auto; padding-top: 30px; }
-.vit-lista button{ padding: 0; border: 0; background: none; color: #7a6660; font: 12px var(--mono); text-align: left; cursor: pointer; }
-.vit-lista img{ width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center 15%; margin-bottom: 6px; border: 2px solid transparent; opacity: 0.6; transition: opacity 0.2s; }
-.vit-lista button:hover img{ opacity: 0.85; }
-.vit-lista button.ativo{ color: var(--cacau); font-weight: 700; }
-.vit-lista button.ativo img{ border-color: var(--terracota); opacity: 1; }
+.quadrado b{
+    position: absolute;
+    left: 22px;
+    bottom: 18px;
+    z-index: 1;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
 
-/* ---------- (03) BLOCOS ---------- */
-.blocos{ display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: auto 250px 250px; gap: 14px; padding: 70px 48px 90px; }
-.blocos h2{ grid-column: 1 / -1; font-size: clamp(34px, 4.2vw, 60px); line-height: 1; letter-spacing: -0.055em; }
-.bl{ position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; background: #2a1e20; color: var(--creme); }
-.bl img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.bl::before{ content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(29, 20, 22, 0) 35%, rgba(29, 20, 22, 0.92)); }
-.bl > *:not(img){ position: relative; z-index: 2; }
-.bl h3{ margin-top: 6px; font-size: 28px; line-height: 1; letter-spacing: -0.04em; }
-.bl p{ max-width: 360px; margin-top: 8px; color: rgba(246, 236, 227, 0.75); font-size: 14px; }
-.bl.grande{ grid-column: span 2; grid-row: span 2; }
-.bl.grande h3{ font-size: 46px; }
-.bl.coral{ background: var(--terracota); color: var(--cacau); }
-.bl .label{ color: rgba(246, 236, 227, 0.75); }
-.bl.coral::before{ display: none; }
-.rostos{ display: flex; margin-bottom: auto; }
-.rostos img{ position: static; width: 64px; height: 64px; margin-right: -14px; border: 3px solid var(--terracota); border-radius: 50%; }
-.selo{ align-self: flex-start; margin-top: 12px; padding: 5px 9px; background: var(--cacau); color: var(--creme); font: 700 11px var(--mono); }
+/* ----- raças: fotos com o topo em arco ----- */
+.racas{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+}
 
-/* ---------- (04) CHAMADA FINAL ---------- */
-.chamada{ position: relative; display: flex; align-items: center; min-height: 420px; padding: 0 48px; overflow: hidden; }
-.chamada img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: right 30%; }
-.chamada::before{ content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--creme) 32%, rgba(246, 236, 227, 0) 72%); }
-.chamada div{ position: relative; z-index: 2; }
-.chamada h2{ font-size: clamp(40px, 5vw, 72px); line-height: 0.95; letter-spacing: -0.06em; }
-.chamada h2 em{ font-style: normal; color: var(--terracota); }
-.btn-coral{ display: inline-block; margin-top: 28px; padding: 16px 30px; background: var(--terracota); color: var(--cacau); font-weight: 700; }
+.raca small{
+    display: block;
+    margin-bottom: 8px;
+    color: var(--coral);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-align: center;
+}
 
-/* esconde o que não está sendo mostrado */
-.oculto{ display: none !important; }
+.raca img{
+    height: 240px;
+    border-radius: 999px 999px 18px 18px;      /* em cima bem redondo = arco */
+}
 
-@media (max-width: 760px){
-    .mural{ padding: 60px 20px; }
-    .nota{ display: none; }
-    .vit{ grid-template-columns: 100%; height: auto; }
-    .vit-arte{ height: 380px; }
-    .vit-txt{ padding: 30px 20px; }
-    .vit-lista{ grid-template-columns: repeat(3, 1fr); }
-    .blocos{ grid-template-columns: 1fr 1fr; grid-template-rows: auto; grid-auto-rows: 200px; padding: 50px 20px; }
-    .chamada{ padding: 0 20px; }
+
+/* ---------- 6. CHAMADA FINAL E RODAPÉ ---------- */
+.chamada{
+    margin-bottom: 60px;
+    padding: 60px 20px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--coral-claro), var(--coral) 55%, var(--coral-escuro));
+    text-align: center;
+}
+
+.chamada h2{
+    margin-bottom: 22px;
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.05;
+}
+
+.chamada em{
+    font-family: "Lora", serif;
+    font-weight: 600;
+}
+
+.botao-coral{
+    display: inline-block;
+    padding: 14px 30px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--coral-escuro);
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.rodape{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 26px 34px 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--texto-suave);
+    font-size: 13px;
+}
+
+.rodape b{
+    color: #fff;
+    font-size: 28px;
+    letter-spacing: -0.04em;
+}
+
+.rodape b span{
+    color: var(--coral-claro);
+}
+
+
+/* ---------- 7. CELULAR ---------- */
+/* No celular a foto fica na parte de cima, e o menu embaixo, em linhas separadas.
+   Os vídeos ficam escondidos (display: none) e só aparecem as fotos. */
+@media (max-width: 700px){
+    .capa{
+        min-height: 640px;
+        background: #120909;
+    }
+
+    .fundos-pc{
+        display: none;
+    }
+
+    /* a foto ocupa 60% de cima da tela */
+    .fundos-cel{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: block;
+        height: 60vh;
+        overflow: hidden;
+    }
+
+    .fundos-cel .fundo{
+        object-position: center 20%;
+    }
+
+    /* escurece em cima (logo) e vai fechando embaixo até virar o fundo da página */
+    .veu{
+        background: linear-gradient(180deg, rgba(18, 9, 9, 0.75) 0%, transparent 24%, transparent 34%, rgba(18, 9, 9, 0.85) 52%, #120909 60%);
+    }
+
+    .logo{
+        top: 46px;
+        left: 24px;
+        font-size: 58px;
+    }
+
+    .logo small{
+        margin-bottom: 8px;
+        color: #fff;
+        font-size: 10px;
+        letter-spacing: 0.5em;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    .flor{
+        top: 38px;
+        right: 18px;
+        width: 60px;
+    }
+
+    /* capítulo, tracinhos e texto ficam logo acima do menu */
+    .capitulo{
+        top: calc(60vh - 172px);
+        left: 24px;
+        right: 24px;
+        bottom: auto;
+        font-size: 10px;
+        text-align: left;
+    }
+
+    .capitulo b{
+        margin-top: 2px;
+        font-size: 32px;
+    }
+
+    .pontos{
+        position: absolute;
+        top: calc(60vh - 112px);
+        left: 24px;
+        display: flex;
+        gap: 6px;
+    }
+
+    .pontos i{
+        width: 16px;
+        height: 3px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.25);
+        transition: 0.3s;
+    }
+
+    .pontos i.on{
+        width: 34px;
+        background: var(--coral);
+    }
+
+    .descricao{
+        top: calc(60vh - 90px);
+        left: 24px;
+        right: 24px;
+        bottom: auto;
+        width: auto;
+        min-height: 0;
+        color: #e8cfc6;
+        font-size: 12.5px;
+        line-height: 1.55;
+    }
+
+    .descricao b{
+        display: none;
+    }
+
+    /* o menu vira uma lista com linhas separadas */
+    .menu{
+        top: calc(60vh + 2px);
+        left: 24px;
+        right: 24px;
+        font-size: 13px;
+    }
+
+    .menu li{
+        padding: 12px 0 12px 22px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        letter-spacing: 0.32em;
+    }
+
+    .menu li.on{
+        letter-spacing: 0.32em;
+        background: linear-gradient(90deg, rgba(245, 127, 108, 0.16), transparent 75%);
+    }
+
+    .menu li.on::before{
+        left: 6px;
+        width: 7px;
+        height: 7px;
+    }
+
+    /* no celular, a linha de baixo vira o "ABRIR ›" do lado direito */
+    .menu li.on::after{
+        content: "ABRIR ›";
+        top: 50%;
+        left: auto;
+        right: 10px;
+        bottom: auto;
+        height: auto;
+        background: none;
+        color: var(--coral-claro);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        transform: translateY(-50%);
+    }
+
+    .dica{
+        display: none;
+    }
+
+    .rolar{
+        bottom: 14px;
+        font-size: 10px;
+    }
+
+    /* depois da capa */
+    main{
+        padding: 50px 16px 10px;
+    }
+
+    .bloco{
+        margin-bottom: 46px;
+    }
+
+    .bloco-topo{
+        display: block;
+    }
+
+    .bloco-topo h2{
+        font-size: 34px;
+    }
+
+    .bloco-topo p{
+        margin-top: 6px;
+        text-align: left;
+    }
+
+    /* classes e raças: uma fila que rola para o lado */
+    .classes,
+    .racas{
+        display: flex;
+        gap: 10px;
+        margin-right: -16px;
+        padding-bottom: 6px;
+        overflow-x: auto;
+    }
+
+    .classe{
+        flex: none;
+        width: 140px;
+        height: 210px;
+    }
+
+    .raca{
+        flex: none;
+        width: 120px;
+    }
+
+    .raca img{
+        height: 170px;
+    }
+
+    .objetivo p{
+        font-size: 17px;
+    }
+
+    .faixa-campanhas{
+        height: 180px;
+    }
+
+    .faixa-campanhas b{
+        font-size: 38px;
+    }
+
+    .quadrados{
+        grid-template-rows: 130px 130px;
+        gap: 10px;
+    }
+
+    .quadrado b{
+        left: 14px;
+        bottom: 12px;
+        font-size: 17px;
+    }
+
+    .chamada{
+        padding: 40px 16px;
+    }
+
+    .chamada h2{
+        font-size: 30px;
+    }
+
+    .rodape{
+        flex-direction: column;
+        padding: 24px 16px 34px;
+        text-align: center;
+    }
+}
+
+/* celular baixinho: menos espaço entre os itens */
+@media (max-width: 700px) and (max-height: 700px){
+    .rolar{
+        display: none;
+    }
+
+    .menu li{
+        padding: 10px 0 10px 22px;
+    }
 }

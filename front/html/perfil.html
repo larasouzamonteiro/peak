@@ -30,6 +30,8 @@
       <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
       <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
       <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+      <!-- VISUAL: só aparece no celular, abre o menu inteiro (abrirMais do script.js) -->
+      <button type="button" class="lateral-link botao-mais" onclick="abrirMais()"><img src="../img/icones/mais.svg" alt=""><span>Mais</span></button>
     </nav>
 
     <div class="lateral-rodape">
@@ -171,6 +173,16 @@
 
               <p class="rotulo espaco-topo-pequeno">Procuro</p>
               <div class="chips" id="opcoesProcuro"></div>
+            </div>
+
+            <!-- VISUAL: MODO ESCURO. mudarTema() está no script.js e guarda a escolha no navegador -->
+            <div class="card">
+              <h2 class="card-titulo">Aparência</h2>
+              <p class="card-texto">Escolha como o site aparece para você.</p>
+              <div class="filtros">
+                <button type="button" class="filtro" id="temaClaro" onclick="escolherTema('claro')">Claro</button>
+                <button type="button" class="filtro" id="temaEscuro" onclick="escolherTema('escuro')">Escuro</button>
+              </div>
             </div>
 
             <div class="card">

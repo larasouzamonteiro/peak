@@ -13,6 +13,7 @@ var parcerias = []
 
 var filtroInteresse = ''   // '' = todos | ou o nome de um interesse
 var soCombina = false      // true = mostrar só quem combina comigo
+var quantosMostrar = 12    // quantas pessoas aparecem; o botão "Mostrar mais 12" soma mais 12
 
 if(verificarLogin()){
     carregarPessoas()
@@ -194,8 +195,9 @@ function desenharPessoas(){
     var meusInteresses = interessesDe(eu.id)
     var oQueProcuro = parceriasDe(eu.id, 'procuro')
 
-    var htmlCombinam = ''
-    var htmlOutros = ''
+    // as listas guardam o HTML de cada card (uma posição por pessoa)
+    var listaCombinam = []
+    var listaOutros = []
     var totalCombinam = 0
 
     for(var i = 0; i < pessoas.length; i++){
@@ -228,13 +230,20 @@ function desenharPessoas(){
         }
 
         if(combina){
-            htmlCombinam += htmlPessoa(p, emComum, true)
+            listaCombinam.push(htmlPessoa(p, emComum, true))
         }else{
-            htmlOutros += htmlPessoa(p, emComum, false)
+            listaOutros.push(htmlPessoa(p, emComum, false))
         }
     }
 
-    var html = htmlCombinam + htmlOutros
+    // quem combina vem primeiro: junta as duas listas (concat = uma depois da outra)
+    var todos = listaCombinam.concat(listaOutros)
+    var html = ''
+
+    // só as primeiras "quantosMostrar" pessoas (começa com 12)
+    for(var j = 0; j < todos.length && j < quantosMostrar; j++){
+        html += todos[j]
+    }
 
     if(html == ''){
         html = '<p class="texto-suave">Ninguém encontrado com esse filtro.</p>'
@@ -242,9 +251,25 @@ function desenharPessoas(){
 
     document.getElementById('listaPessoas').innerHTML = html
 
+    // o botão "Mostrar mais 12" só aparece se ainda tem gente escondida
+    var botaoMais = document.getElementById('botaoMais')
+
+    if(todos.length > quantosMostrar){
+        botaoMais.classList.remove('oculto')
+        document.getElementById('textoMais').textContent = 'mostrando ' + quantosMostrar + ' de ' + todos.length
+    }else{
+        botaoMais.classList.add('oculto')
+    }
+
     if(totalCombinam == 1){
         document.getElementById('contagemCombina').innerHTML = '<b>1</b> combina com você'
     }else{
         document.getElementById('contagemCombina').innerHTML = '<b>' + totalCombinam + '</b> combinam com você'
     }
+}
+
+// Botão "Mostrar mais 12": aumenta o limite e desenha de novo
+function mostrarMais(){
+    quantosMostrar = quantosMostrar + 12
+    desenharPessoas()
 }

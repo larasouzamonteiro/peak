@@ -206,13 +206,15 @@ function carregarMonstros(){
         for(var i = 0; i < monstros.length; i++){
             var m = monstros[i]
 
+            // VISUAL: cada monstro é um quadrinho com foto, e o "×" no canto remove
             html += `
-                <div class="item">
-                    <div class="item-info">
+                <div class="monstro-item">
+                    ${htmlFoto(m.imagem, m.nome)}
+                    <div>
                         <strong>${seguro(m.nome)}</strong>
-                        <span class="texto-suave">Vida ${m.vidaMaxima} · Defesa ${m.defesa}</span>
+                        <small>Vida ${m.vidaMaxima} · Defesa ${m.defesa}</small>
                     </div>
-                    <button type="button" class="botao botao-pequeno" onclick="removerMonstro(${m.linhaId})">Remover</button>
+                    <button type="button" class="remover-x" onclick="removerMonstro(${m.linhaId})" title="Remover">×</button>
                 </div>`
         }
 
@@ -221,6 +223,7 @@ function carregarMonstros(){
         }
 
         document.getElementById('listaMonstros').innerHTML = html
+        document.getElementById('contagemMonstros').textContent = monstros.length
     })
 }
 

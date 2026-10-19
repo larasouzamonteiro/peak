@@ -30,6 +30,8 @@
       <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
       <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
       <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+      <!-- VISUAL: só aparece no celular, abre o menu inteiro (abrirMais do script.js) -->
+      <button type="button" class="lateral-link botao-mais" onclick="abrirMais()"><img src="../img/icones/mais.svg" alt=""><span>Mais</span></button>
     </nav>
 
     <div class="lateral-rodape">
@@ -79,6 +81,12 @@
 
           <!-- os cards das pessoas entram aqui: função desenharPessoas() -->
           <div class="pessoas" id="listaPessoas"></div>
+
+          <!-- aparece quando tem mais de 12 pessoas (desenharPessoas); clicar chama mostrarMais() -->
+          <button type="button" class="mostrar-mais oculto" id="botaoMais" onclick="mostrarMais()">
+            Mostrar mais 12
+            <small id="textoMais"></small>
+          </button>
         </div>
 
         <!-- ===== COLUNA DA DIREITA: a minha parceria ===== -->

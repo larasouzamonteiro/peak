@@ -57,7 +57,7 @@
 }
 
 .perfil-foto .sem-foto{
-    background: linear-gradient(135deg, var(--rosa), #8e3b36);
+    background: var(--degrade);
     color: #fff;
     font-size: 3rem;
 }

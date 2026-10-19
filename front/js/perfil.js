@@ -36,6 +36,19 @@ if(verificarLogin()){
     }
 }
 
+// VISUAL: botões Claro / Escuro da aba Configurações.
+// Troca o tema (mudarTema do script.js) e marca o botão escolhido com a classe "ativo".
+function escolherTema(tema){
+    mudarTema(tema)
+    document.getElementById('temaClaro').classList.toggle('ativo', tema != 'escuro')
+    document.getElementById('temaEscuro').classList.toggle('ativo', tema == 'escuro')
+}
+
+// ao abrir a página, marca o botão do tema que já está salvo
+if(meuPerfil){
+    escolherTema(localStorage.getItem('tema') || 'claro')
+}
+
 // ABAS: mostra <div id="abaPersonagens">, "abaCampanhas" ou "abaConfiguracoes" e esconde as outras
 function mostrarAba(nome){
     var abas = ['Personagens', 'Campanhas', 'Configuracoes']

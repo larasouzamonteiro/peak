@@ -35,7 +35,7 @@
     z-index: 1;
     background: #fffaf5;
     color: var(--tinta);
-    box-shadow: 0 0 0 3px #d98a72;
+    box-shadow: 0 0 0 3px #f57f6c;
     pointer-events: none;
 }
 
@@ -59,7 +59,7 @@
     z-index: 62;
     min-height: 150px;
     padding: 34px 40px 26px 330px;
-    border: 2px solid #b0514a;
+    border: 2px solid #cf4f55;
     border-radius: 18px;
     background: #fffbf6;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
@@ -83,7 +83,7 @@
     left: 316px;
     padding: 6px 22px;
     border-radius: 10px;
-    background: #b0514a;
+    background: #cf4f55;
     color: #fff;
     font-weight: 700;
 }
@@ -130,7 +130,7 @@
 .tut-proximo{
     padding: 9px 20px;
     border-radius: 10px;
-    background: #b0514a;
+    background: #cf4f55;
     color: #fff;
     font-weight: 600;
 }

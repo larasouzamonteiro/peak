@@ -12,43 +12,40 @@
 </head>
 <body class="entrada">
 
-  <a class="entrada-marca" href="index.html"><img class="logo-peak" src="../img/logo.png" alt=""> Peak</a>
-  <a class="entrada-voltar" href="login.html">Voltar ao login</a>
+  <!-- VISUAL: o mesmo fundo e o mesmo "peak." do login -->
+  <div class="entrada-fundo"></div>
+  <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
+  <div class="entrada-frase frase-login">
+    <h2>peak<span>.</span></h2>
+    <p>Falta pouco: confirme o seu e-mail para liberar a conta.</p>
+  </div>
 
   <!-- Depois do cadastro a pessoa cai aqui (confirmar.html?email=...) para digitar
        o código de 6 números que chegou no e-mail. -->
   <div class="entrada-caixa">
+    <div class="entrada-form">
+      <h1>Confirme seu e-mail</h1>
+      <p class="entrada-sub">Enviamos um código de 6 números. Digite ele aqui para liberar a sua conta.</p>
 
-    <div class="entrada-arte">
-      <div class="entrada-arte-fundo"></div>
-      <img class="arte-login" src="../img/mascote/login-personagem.png" alt="">
-    </div>
-
-    <div class="entrada-lado">
-      <div class="entrada-form">
-        <h1>Confirme seu e-mail</h1>
-        <p class="entrada-sub">Enviamos um código de 6 números. Digite ele aqui para liberar a sua conta.</p>
-
-        <div class="campo">
-          <label class="rotulo" for="email">E-mail</label>
-          <!-- o js/login.js já escreve aqui o e-mail que veio no endereço da página -->
-          <input class="input" type="email" id="email">
-        </div>
-
-        <div class="campo">
-          <label class="rotulo" for="codigo">Código</label>
-          <input class="input" type="text" id="codigo" maxlength="6" placeholder="000000">
-        </div>
-
-        <!-- mensagens do servidor (funções confirmar e reenviar do js/login.js) -->
-        <p class="alerta" id="alert"></p>
-
-        <button type="button" class="botao botao-principal botao-largo" onclick="confirmar()">Confirmar</button>
-
-        <p class="entrada-trocar">Não chegou? <button type="button" class="link-trocar" onclick="reenviar()">Enviar outro código</button></p>
+      <div class="campo">
+        <label class="rotulo" for="email">E-mail</label>
+        <!-- o js/login.js já escreve aqui o e-mail que veio no endereço da página -->
+        <input class="input" type="email" id="email">
       </div>
-    </div>
 
+      <div class="campo">
+        <label class="rotulo" for="codigo">Código</label>
+        <input class="input" type="text" id="codigo" maxlength="6" placeholder="000000">
+      </div>
+
+      <!-- mensagens do servidor (funções confirmar e reenviar do js/login.js) -->
+      <p class="alerta" id="alert"></p>
+
+      <button type="button" class="botao botao-principal botao-largo" onclick="confirmar()">Confirmar</button>
+
+      <p class="entrada-sub espaco-topo-pequeno">Não chegou? <button type="button" class="link-trocar" onclick="reenviar()">Enviar outro código</button></p>
+      <p class="entrada-rodape"><a href="login.html">Voltar ao login</a></p>
+    </div>
   </div>
 
   <script src="../js/script.js"></script>

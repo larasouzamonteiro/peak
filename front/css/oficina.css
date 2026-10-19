@@ -289,7 +289,7 @@
 /* a raça (ou classe) escolhida: o js/criar-ficha.js coloca a classe "selecionado" */
 .oficina .galeria-card.selecionado{
     border-color: var(--rosa);
-    box-shadow: 0 0 0 4px rgba(232, 135, 90, 0.3);
+    box-shadow: 0 0 0 4px rgba(245, 127, 108, 0.3);
 }
 
 .oficina .galeria-img .foto{
