@@ -26,12 +26,6 @@ const url = require('url')
 const fs = require('fs')
 const path = require('path')
 
-// No computador, as variáveis (chave do Brevo, banco...) ficam no arquivo .env.
-// No Render não existe .env (lá elas vêm do painel), então o try/catch só ignora.
-try{
-    process.loadEnvFile(path.join(__dirname, '.env'))
-}catch(erro){}
-
 const UsuariosBD = require('./database/UsuariosBD')
 const ComunidadeBD = require('./database/ComunidadeBD')
 const FichasBD = require('./database/FichasBD')

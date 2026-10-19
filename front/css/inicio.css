@@ -6,8 +6,9 @@
      2. Destaques: carrossel da equipe + campanhas oficiais
      3. Seus personagens
      4. Novidades e Comunidade
-     5. Telas menores e celular
-     6. Modo escuro
+     5. Monitor grande
+     6. Telas menores e celular
+     7. Modo escuro
    ===================================================== */
 
 
@@ -363,7 +364,43 @@
 }
 
 
-/* ---------- 5. TELAS MENORES E CELULAR ---------- */
+/* ---------- 5. MONITOR GRANDE ---------- */
+@media (min-width: 1600px){
+    .topo-inicio .titulo{
+        font-size: 5.2rem;
+    }
+
+    .destaques{
+        grid-template-columns: 1fr 480px;
+        height: 560px;
+    }
+
+    .carrossel-texto h2{
+        font-size: 4rem;
+    }
+
+    .carrossel-texto p{
+        max-width: 620px;
+        font-size: 1.05rem;
+    }
+
+    .destaques-lado .foto-card .nome b{
+        font-size: 2rem;
+    }
+
+    .fila-cartas .carta,
+    .fila-cartas .card-novo{
+        height: 380px;
+    }
+
+    .novidade,
+    .convite-comunidade{
+        height: 300px;
+    }
+}
+
+
+/* ---------- 6. TELAS MENORES E CELULAR ---------- */
 @media (max-width: 1100px){
     .destaques,
     .inicio-baixo{
@@ -542,7 +579,7 @@
 }
 
 
-/* ---------- 6. MODO ESCURO ---------- */
+/* ---------- 7. MODO ESCURO ---------- */
 body.escuro .bolinha img{
     filter: invert(1);
 }
