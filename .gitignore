@@ -1,4 +1,5 @@
 # não sobe para o GitHub:
 node_modules/
 .env
+*.env
 *.log

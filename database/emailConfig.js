@@ -10,11 +10,12 @@
 //
 // No seu computador também dá para usar o Gmail como antes:
 //   EMAIL_GMAIL e SENHA_APP_GMAIL
+//   (no computador, coloque essas variáveis no arquivo .env; o app.js lê ele)
 
 module.exports = {
     remetente: process.env.EMAIL_REMETENTE || '',
     brevoChave: process.env.BREVO_API_KEY || '',
-    siteUrl: process.env.SITE_URL || '',
+    siteUrl: (process.env.SITE_URL || '').replace(/\/+$/, ''),  // tira a "/" do final, se tiver
 
     email: process.env.EMAIL_GMAIL || '',
     senha: process.env.SENHA_APP_GMAIL || ''
