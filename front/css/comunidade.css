@@ -164,17 +164,6 @@
     font-weight: 500;
 }
 
-/* VISUAL: monitor grande: 4 pessoas por linha */
-@media (min-width: 1600px){
-    .pessoas{
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .pessoa-card{
-        height: 360px;
-    }
-}
-
 
 /* ---------- 3. TELAS MENORES ---------- */
 @media (max-width: 1100px){

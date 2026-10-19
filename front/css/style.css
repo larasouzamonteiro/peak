@@ -1438,53 +1438,6 @@ button.foto-card{
 
 
 /* =====================================================
-   VISUAL: MONITOR GRANDE (1600px ou mais)
-   Tudo um pouco maior para a tela não ficar "esticada".
-   ===================================================== */
-@media (min-width: 1600px){
-    :root{
-        --lateral: 350px;
-    }
-
-    .lateral{
-        padding: 30px 18px;
-    }
-
-    .lateral-marca{
-        font-size: 1.75rem;
-        padding-bottom: 40px;
-    }
-
-    .logo-peak{
-        height: 52px;
-    }
-
-    .lateral-link{
-        gap: 18px;
-        padding: 15px 18px;
-        font-size: 1.12rem;
-    }
-
-    .lateral-link img{
-        width: 24px;
-        height: 24px;
-    }
-
-    .container{
-        max-width: 1640px;
-    }
-
-    .titulo{
-        font-size: 5.2rem;
-    }
-
-    .topo-oi{
-        font-size: 1.2rem;
-    }
-}
-
-
-/* =====================================================
    VISUAL: MODO ESCURO
    Liga quando o <body> ganha a classe "escuro"
    (função aplicarTema do script.js; o botão fica em Perfil > Configurações).

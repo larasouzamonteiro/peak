@@ -8,8 +8,7 @@
      4. Capa: menu estilo jogo e texto de baixo
      5. Depois da capa: classes, objetivo, campanhas, raças
      6. Chamada final e rodapé
-     7. Monitor grande
-     8. Celular
+     7. Celular
    ===================================================== */
 
 
@@ -490,41 +489,7 @@ main{
 }
 
 
-/* ---------- 7. MONITOR GRANDE ---------- */
-@media (min-width: 1600px){
-    .logo{
-        font-size: 120px;
-    }
-
-    .menu{
-        font-size: 19px;
-    }
-
-    .descricao{
-        width: 520px;
-        font-size: 16px;
-    }
-
-    .capitulo b{
-        font-size: 56px;
-    }
-
-    main,
-    .rodape{
-        max-width: 1500px;
-    }
-
-    .classe{
-        height: 380px;
-    }
-
-    .raca img{
-        height: 300px;
-    }
-}
-
-
-/* ---------- 8. CELULAR ---------- */
+/* ---------- 7. CELULAR ---------- */
 /* No celular a foto fica na parte de cima, e o menu embaixo, em linhas separadas.
    Os vídeos ficam escondidos (display: none) e só aparecem as fotos. */
 @media (max-width: 700px){
