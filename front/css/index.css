@@ -27,9 +27,27 @@
     margin: 0;
     padding: 0;
 }
+/* Remove a barra de rolagem da página inteira */
+html, body {
+    /* Oculta no Firefox */
+    scrollbar-width: none; 
+    
+    /* Oculta no IE e Edge antigo */
+    -ms-overflow-style: none; 
+}
+/* ATENÇÃO: Use apenas para testar se funciona! */
+* {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+*::-webkit-scrollbar {
+    display: none !important;
+}
 
-html{
-    scroll-behavior: smooth;        /* o "ROLE PARA CONHECER" desce devagar */
+/* Oculta no Chrome, Safari e Edge moderno */
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar {
+    display: none !important;
 }
 
 body{
