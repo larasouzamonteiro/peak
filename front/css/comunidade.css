@@ -1,0 +1,206 @@
+/* =====================================================
+   COMUNIDADE.CSS - só a página comunidade.html
+
+     1. As duas colunas
+     2. Card de uma pessoa
+     3. Telas menores
+   ===================================================== */
+
+
+/* ---------- 1. AS DUAS COLUNAS ---------- */
+/* pessoas na esquerda, "Sua parceria" na direita */
+.comunidade{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 22px;
+    align-items: start;
+}
+
+.lado-caixas{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.lado-caixas .rotulo{
+    margin-bottom: 6px;
+}
+
+/* na coluna da direita os chips são só informação, não botões */
+.lado-caixas .chip{
+    cursor: default;
+}
+
+
+/* ---------- 2. CARD DE UMA PESSOA ---------- */
+/* os cards são criados pela função htmlPessoa() do js/comunidade.js */
+.pessoas{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+/* o aviso "Ninguém encontrado" ocupa a linha toda */
+.pessoas p{
+    grid-column: 1 / -1;
+}
+
+.pessoa-card{
+    position: relative;
+    display: block;
+    height: 300px;
+    overflow: hidden;
+    border-radius: var(--raio);
+    background: var(--escuro);
+    color: #fff;
+    box-shadow: var(--sombra-foto);
+    transition: transform 240ms var(--suave), box-shadow 240ms;
+}
+
+/* o card levanta um pouco quando o mouse passa */
+.pessoa-card:hover{
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-forte);
+}
+
+/* a foto ocupa o card inteiro; os textos ficam por cima, no painel de baixo */
+.pessoa-card .foto{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-position: center 18%;
+}
+
+/* painel escuro de baixo (o mesmo degradê dos outros cards de foto) */
+.pessoa-card .info{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 40px 14px 14px;
+    background: var(--painel-foto);
+}
+
+.pessoa-card h3{
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.pessoa-card small{
+    color: var(--rosa-claro);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.pessoa-card .chip{
+    margin-top: 6px;
+    padding: 3px 9px;
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.14);
+    color: #f1e2dd;
+    font-size: 0.7rem;
+    box-shadow: none;
+}
+
+/* "2 em comum": etiqueta branca no canto de cima */
+.pessoa-card .em-comum{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #fff;
+    color: #2b1719;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* "Combina": etiqueta rosa no outro canto. Só aparece quando a pessoa É algo que eu PROCURO. */
+.selo-combina{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--rosa);
+    color: #fff;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+
+/* VISUAL: botão "Mostrar mais 12" embaixo das pessoas */
+.mostrar-mais{
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 16px;
+    background: var(--vidro);
+    color: var(--rosa-escuro);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: var(--sombra-pequena);
+}
+
+.mostrar-mais small{
+    display: block;
+    color: var(--tinta-3);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+
+/* ---------- 3. TELAS MENORES ---------- */
+@media (max-width: 1100px){
+    .comunidade{
+        grid-template-columns: 1fr;
+    }
+
+    .pessoas{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* VISUAL: celular: 2 pessoas por linha, cards menores */
+@media (max-width: 520px){
+    .pessoas{
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .pessoa-card{
+        height: 220px;
+    }
+
+    .pessoa-card h3{
+        font-size: 0.9rem;
+    }
+
+    .pessoa-card small{
+        font-size: 0.65rem;
+    }
+
+    /* os chips de interesse não cabem no card pequeno */
+    .pessoa-card .info .chip{
+        display: none;
+    }
+
+    .pessoa-card .info{
+        padding: 30px 10px 10px;
+    }
+}

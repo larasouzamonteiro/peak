@@ -1,0 +1,161 @@
+/* =====================================================
+   TUTORIAL.CSS - tutorial da Zero (só no inicio.html)
+
+   O js/tutorial.js só coloca e tira três classes:
+     .oculto        em <div id="tutorial">      -> mostra/esconde o tutorial
+     .tut-ativo     no menu lateral (.lateral)  -> apaga os links do menu
+     .tut-destaque  em UM link do menu          -> acende o link que a Zero está explicando
+   Todo o resto (cores, posições, tamanhos) está aqui.
+   ===================================================== */
+
+/* véu escuro por cima da página inteira */
+.tut-veu{
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(20, 12, 16, 0.62);
+}
+
+/* enquanto o tutorial está aberto, o menu sobe para a frente do véu (z-index maior)
+   e ganha um véu só dele, para os links ficarem apagados e ninguém clicar... */
+.lateral.tut-ativo{
+    z-index: 61;
+}
+
+.lateral.tut-ativo::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 12, 16, 0.62);
+}
+
+/* ...menos o link que a Zero está explicando: ele fica por cima do véu, bem claro */
+.lateral.tut-ativo .lateral-link.tut-destaque{
+    position: relative;
+    z-index: 1;
+    background: #fffaf5;
+    color: var(--tinta);
+    box-shadow: 0 0 0 3px #c0566b;
+    pointer-events: none;
+}
+
+/* a Zero, na frente da caixa de fala */
+.tut-zero{
+    position: fixed;
+    bottom: 36px;
+    left: calc(var(--lateral) + 8px);
+    z-index: 63;
+    height: 380px;
+    max-width: none;
+    pointer-events: none;
+}
+
+/* caixa de fala */
+.tut-caixa{
+    position: fixed;
+    right: 60px;
+    bottom: 34px;
+    left: calc(var(--lateral) + 28px);
+    z-index: 62;
+    min-height: 150px;
+    padding: 34px 40px 26px 330px;
+    border: 2px solid #8c2a40;
+    border-radius: 18px;
+    background: #fffbf6;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    color: #2a2224;
+}
+
+/* a linha fina por dentro da borda */
+.tut-caixa::before{
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(176, 81, 74, 0.25);
+    border-radius: 13px;
+    pointer-events: none;
+}
+
+/* a plaquinha "Zero" em cima da caixa */
+.tut-nome{
+    position: absolute;
+    top: -18px;
+    left: 316px;
+    padding: 6px 22px;
+    border-radius: 10px;
+    background: #8c2a40;
+    color: #fff;
+    font-weight: 700;
+}
+
+.tut-texto{
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* "2 de 8", Pular tutorial e Próximo */
+.tut-rodape{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 14px;
+    color: #8a7c7a;
+    font-size: 0.85rem;
+}
+
+.tut-pular,
+.tut-proximo{
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.tut-pular{
+    margin-left: auto;
+    background: none;
+    color: #8a7c7a;
+}
+
+.tut-pular:hover{
+    color: #2a2224;
+}
+
+/* quando o "Pular" some (última fala), o "Próximo" continua na direita */
+.tut-pular.oculto + .tut-proximo{
+    margin-left: auto;
+}
+
+.tut-proximo{
+    padding: 9px 20px;
+    border-radius: 10px;
+    background: #8c2a40;
+    color: #fff;
+    font-weight: 600;
+}
+
+.tut-proximo:hover{
+    filter: brightness(1.08);
+}
+
+/* telas menores: sem a Zero, e a caixa ocupa a largura toda */
+@media (max-width: 1000px){
+    .tut-zero{
+        display: none;
+    }
+
+    .tut-caixa{
+        right: 16px;
+        left: 16px;
+        padding: 34px 22px 20px;
+    }
+
+    .tut-nome{
+        left: 18px;
+    }
+
+    .tut-veu{
+        left: 0;
+    }
+}
