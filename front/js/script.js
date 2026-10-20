@@ -337,3 +337,20 @@ aplicarTema()
 function abrirMais(){
     document.querySelector('.lateral').classList.toggle('mais-aberto')
 }
+
+// Botão de olho dos campos de senha: mostra ou esconde o que foi digitado.
+// O botão fica dentro de <div class="campo-senha"> junto com o input.
+function verSenha(botao){
+    var caixa = botao.parentElement
+    var input = caixa.querySelector('input')
+
+    if(input.type == 'password'){
+        input.type = 'text'
+        caixa.classList.add('mostrando')
+        botao.setAttribute('aria-label', 'Esconder senha')
+    }else{
+        input.type = 'password'
+        caixa.classList.remove('mostrando')
+        botao.setAttribute('aria-label', 'Mostrar senha')
+    }
+}
