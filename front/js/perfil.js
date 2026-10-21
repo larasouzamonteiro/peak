@@ -20,6 +20,7 @@ if(verificarLogin()){
     carregarParcerias()
     carregarFichas()
     carregarCampanhas()
+    carregarCompanheiros()
 
     if(meuPerfil){
         // mostra o que é só do dono do perfil (os elementos com a classe "so-meu")
@@ -57,6 +58,9 @@ function mostrarAba(nome){
         document.getElementById('aba' + abas[i]).classList.toggle('oculto', abas[i] != nome)
         document.getElementById('botaoAba' + abas[i]).classList.toggle('ativo', abas[i] == nome)
     }
+
+    // o "sobre mim" some na aba Configurações
+    document.querySelector('.perfil-sobre').classList.toggle('oculto', nome == 'Configuracoes')
 }
 
 
@@ -77,6 +81,7 @@ function carregarPessoa(){
         }
 
         document.getElementById('perfilNome').textContent = pessoa.nomeUsuario
+        document.getElementById('perfilArroba').textContent = '@' + pessoa.nomeUsuario
         document.getElementById('perfilBio').textContent = pessoa.bio || 'Ainda não escreveu nada.'
         document.getElementById('perfilContato').textContent = pessoa.contato || 'Não informou um contato.'
 
@@ -99,13 +104,14 @@ function carregarPessoa(){
 // Os interesses da pessoa viram chips em <div id="perfilInteresses">
 function carregarInteresses(){
     buscar('/usuario/interesses?id=' + perfilId, function(lista){
-        var html = ''
+        // VISUAL: os interesses numa linha só, separados por " | " (ex.: RPG | D&D | Anime)
+        var nomes = []
 
         for(var i = 0; i < lista.length; i++){
-            html += '<span class="chip">' + seguro(lista[i].nome) + '</span> '
+            nomes.push(seguro(lista[i].nome))
         }
 
-        document.getElementById('perfilInteresses').innerHTML = html || '<span class="texto-suave">Nenhum interesse marcado.</span>'
+        document.getElementById('perfilInteresses').innerHTML = nomes.join(' <i>|</i> ') || 'Nenhum interesse marcado.'
 
         // no meu perfil, monta também as caixinhas das Configurações
         if(meuPerfil){
@@ -165,20 +171,48 @@ function carregarCombina(parceriasDela){
 // ABAS PERSONAGENS E CAMPANHAS
 // =====================================================
 
-// As fichas da pessoa viram cartas em <div id="perfilFichas">
+// VISUAL: cada ficha vira uma LINHA (foto | nome e dados | atributos e vida)
+// em <div id="perfilFichas">. O retrato da ÚLTIMA ficha criada aparece no "sobre mim".
 function carregarFichas(){
     buscar('/usuario/fichas?id=' + perfilId, function(fichas){
         var html = ''
 
         for(var i = 0; i < fichas.length; i++){
-            html += htmlCarta(fichas[i], '')
+            var f = fichas[i]
+
+            html += `
+                <a class="perfil-linha" href="ficha.html?id=${f.id}">
+                    <div class="perfil-linha-foto">${htmlFoto(f.retrato, f.nome)}</div>
+                    <div class="perfil-linha-dados">
+                        <b>${seguro(f.nome)}</b>
+                        <span><small>Raça</small>${seguro(f.raca)}</span>
+                        <span><small>Classe</small>${seguro(f.classe)}</span>
+                        <span><small>Nível</small>${f.nivel}</span>
+                    </div>
+                    <div class="perfil-linha-dados">
+                        <b>Atributos</b>
+                        <span><small>FOR ${f.forca} · DES ${f.destreza} · CON ${f.constituicao}</small></span>
+                        <span><small>INT ${f.inteligencia} · SAB ${f.sabedoria} · CAR ${f.carisma}</small></span>
+                        <span><small>Vida</small>${f.vidaAtual} / ${f.vidaMaxima}</span>
+                    </div>
+                </a>`
         }
 
         document.getElementById('perfilFichas').innerHTML = html || '<p class="texto-suave">Nenhum personagem ainda.</p>'
+        document.getElementById('numFichas').textContent = fichas.length
+
+        // a imagem do lado do "sobre mim": o retrato da última ficha que a pessoa fez
+        // (as fichas vêm em ordem de id, então a última da lista é a mais nova)
+        var ultima = fichas[fichas.length - 1]
+
+        if(fichas.length > 0 && ultima.retrato){
+            document.getElementById('perfilSobreImagem').src = ultima.retrato
+            document.getElementById('perfilSobreImagem').classList.remove('oculto')
+        }
     })
 }
 
-// As campanhas da pessoa viram cards em <div id="perfilCampanhas">
+// VISUAL: cada campanha vira uma LINHA em <div id="perfilCampanhas">
 function carregarCampanhas(){
     buscar('/usuario/campanhas?id=' + perfilId, function(campanhas){
         var html = ''
@@ -188,15 +222,116 @@ function carregarCampanhas(){
             var mestre = (c.usuarioMestreId == perfilId)
 
             html += `
-                <div class="foto-card">
-                    ${htmlFoto(c.imagemCapa, c.nome)}
-                    <div class="etiquetas"><span class="selo ${mestre ? 'selo-escuro' : ''}">${mestre ? 'Mestre' : 'Jogando'}</span></div>
-                    <div class="nome"><b>${seguro(c.nome)}</b><small>mestre: ${seguro(c.mestre)}</small></div>
+                <div class="perfil-linha">
+                    <div class="perfil-linha-foto">${htmlFoto(c.imagemCapa, c.nome)}</div>
+                    <div class="perfil-linha-dados">
+                        <b>${seguro(c.nome)}</b>
+                        <span><small>Papel</small>${mestre ? 'Mestre' : 'Jogador'}</span>
+                        <span><small>Mestre</small>${seguro(c.mestre)}</span>
+                    </div>
+                    <div class="perfil-linha-dados perfil-linha-texto">
+                        <b>Resumo</b>
+                        <p>${seguro(c.descricao || 'Sem resumo.')}</p>
+                    </div>
                 </div>`
         }
 
         document.getElementById('perfilCampanhas').innerHTML = html || '<p class="texto-suave">Nenhuma campanha ainda.</p>'
+        document.getElementById('numCampanhas').textContent = campanhas.length
     })
+}
+
+
+// =====================================================
+// COMPANHEIROS DE MESA
+// =====================================================
+// Não existe tabela de amigos, então usa o que já tem no banco:
+// quem é Mestre ou jogador nas mesmas campanhas que a pessoa do perfil.
+//   1. /usuario/campanhas  -> as campanhas da pessoa (cada uma diz quem é o Mestre)
+//   2. /campanha/jogadores -> quem joga em cada campanha
+//      (o servidor só mostra os jogadores das campanhas em que EU também estou;
+//       nas outras ele devolve uma lista vazia, e tudo bem)
+// A lista "companheiros" guarda {id, nome} e não deixa ninguém repetido.
+var companheiros = []
+
+function adicionarCompanheiro(id, nome){
+    // a própria pessoa do perfil não entra
+    if(id == perfilId){
+        return
+    }
+
+    for(var i = 0; i < companheiros.length; i++){
+        if(companheiros[i].id == id){
+            return      // já está na lista
+        }
+    }
+
+    companheiros.push({id: id, nome: nome})
+}
+
+function carregarCompanheiros(){
+    buscar('/usuario/campanhas?id=' + perfilId, function(campanhas){
+        var faltam = campanhas.length
+
+        if(faltam == 0){
+            desenharCompanheiros()
+            return
+        }
+
+        for(var i = 0; i < campanhas.length; i++){
+            adicionarCompanheiro(campanhas[i].usuarioMestreId, campanhas[i].mestre)
+
+            buscar('/campanha/jogadores?id=' + campanhas[i].id, function(jogadores){
+                if(Array.isArray(jogadores)){
+                    for(var j = 0; j < jogadores.length; j++){
+                        adicionarCompanheiro(jogadores[j].usuarioId, jogadores[j].jogador)
+                    }
+                }
+
+                // quando a última campanha responder, desenha
+                faltam = faltam - 1
+
+                if(faltam == 0){
+                    desenharCompanheiros()
+                }
+            })
+        }
+    })
+}
+
+// Escreve em <div id="perfilCompanheiros"> TODOS os amigos: a foto redonda e o nome embaixo.
+// A foto vem depois (busca no /usuario); enquanto isso aparece a primeira letra do nome.
+function desenharCompanheiros(){
+    var lugar = document.getElementById('perfilCompanheiros')
+
+    document.getElementById('numCompanheiros').textContent = companheiros.length
+
+    if(companheiros.length == 0){
+        lugar.innerHTML = '<p class="texto-suave">Ainda não jogou com ninguém.</p>'
+        return
+    }
+
+    var html = ''
+
+    for(var i = 0; i < companheiros.length; i++){
+        var c = companheiros[i]
+
+        html += `
+            <a class="companheiro" href="perfil.html?id=${c.id}" title="${seguro(c.nome)}">
+                <span class="companheiro-foto" id="fotoCompanheiro${c.id}">${seguro(String(c.nome).charAt(0).toUpperCase())}</span>
+                <span class="companheiro-nome">${seguro(c.nome)}</span>
+            </a>`
+    }
+
+    lugar.innerHTML = html
+
+    for(var k = 0; k < companheiros.length; k++){
+        buscar('/usuario?id=' + companheiros[k].id, function(pessoa){
+            if(pessoa.fotoPerfil){
+                document.getElementById('fotoCompanheiro' + pessoa.id).innerHTML = '<img src="' + seguro(pessoa.fotoPerfil) + '" alt="">'
+            }
+        })
+    }
 }
 
 

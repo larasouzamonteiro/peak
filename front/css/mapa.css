@@ -138,7 +138,7 @@ a{
 }
 
 .mapa-escuro .mapa-voltar img{
-    filter: invert(1);
+    filter: brightness(0) invert(1);
 }
 
 /* as miniaturas, no meio em cima */
@@ -412,7 +412,7 @@ a{
     color: var(--texto);
     font: 700 13px "Poppins", sans-serif;
     text-align: center;
-    -moz-appearance: textfield;
+
 }
 
 /* tira as setinhas de subir e descer do campo de número */

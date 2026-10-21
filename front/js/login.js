@@ -77,6 +77,7 @@ function cadastrar(){
     var email = document.getElementById('emailCadastro').value.trim()
     var senha = document.getElementById('senhaCadastro').value
     var senha2 = document.getElementById('senha2Cadastro').value
+    var telefone = document.getElementById('telefoneCadastro').value.trim()
 
     if(senha != senha2){
         document.getElementById('alertCadastro').textContent = 'Senhas não conferem'
@@ -85,7 +86,7 @@ function cadastrar(){
         return
     }
 
-    enviar('/registro', {nomeUsuario: nome, email: email, senha: senha}, function(dados){
+    enviar('/registro', {nomeUsuario: nome, email: email, senha: senha, telefone: telefone}, function(dados){
 
         if(dados.hasOwnProperty('error')){
             document.getElementById('alertCadastro').textContent = dados.error

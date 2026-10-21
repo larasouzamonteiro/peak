@@ -1,23 +1,31 @@
 /* =====================================================
    PERFIL.CSS - só a página perfil.html
+   (este arquivo inteiro é VISUAL)
 
-     1. Capa
-     2. Coluna da esquerda (foto, nome, sobre mim...)
-     3. Coluna da direita (abas)
-     4. Telas menores
+   Parecido com um perfil de rede social: a capa grande em cima,
+   a foto redonda "pendurada" nela, as abas numa faixa branca
+   e, embaixo, duas colunas (quem é a pessoa | o painel branco).
+
+     1. Capa, foto e abas
+     2. Coluna da esquerda
+     3. Painel da direita (sobre mim e as linhas)
+     4. Modo escuro
+     5. Telas menores
    ===================================================== */
 
 
-/* ---------- 1. CAPA ---------- */
-/* sem imagem de capa, fica um vidro dourado */
-.perfil-capa{
-    height: 230px;
+/* ---------- 1. CAPA, FOTO E ABAS ---------- */
+.perfil-topo{
     overflow: hidden;
-    border: 1px solid var(--vidro-borda);
-    border-radius: var(--raio);
-    background: linear-gradient(120deg, rgba(214, 170, 104, 0.55), rgba(240, 214, 170, 0.4) 55%, rgba(196, 150, 110, 0.5));
-    box-shadow: var(--sombra), var(--brilho);
-    backdrop-filter: var(--desfoque);
+    border-radius: 22px;
+    background: var(--cartao);
+    box-shadow: var(--sombra);
+}
+
+/* sem imagem de capa, fica um degradê vinho clarinho */
+.perfil-capa{
+    height: 260px;
+    background: linear-gradient(120deg, #f0c9d1, #e7b3bf 50%, #d898a8);
 }
 
 .perfil-capa img{
@@ -28,47 +36,119 @@
     object-position: center 30%;
 }
 
-
-/* ---------- 2. COLUNA DA ESQUERDA ---------- */
-.perfil-grade{
+/* a faixa branca embaixo da capa: espaço da foto na esquerda e as abas na direita */
+.perfil-faixa{
     display: grid;
-    grid-template-columns: 300px minmax(0, 1fr);
-    gap: 26px;
-    align-items: start;
+    grid-template-columns: 300px 1fr;
+    align-items: center;
+    height: 58px;
 }
 
-/* a coluna sobe 70px para a foto ficar por cima da capa */
-.perfil-lado{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: -70px;
-    padding-left: 14px;
+/* a foto sobe 120px e fica por cima da capa */
+.perfil-foto{
+    align-self: start;
+    margin: -120px 0 0 36px;
 }
 
-/* a foto redonda (ou a bolinha com a primeira letra do nome) */
 .perfil-foto .foto{
-    width: 140px;
-    height: 140px;
-    border: 5px solid rgba(255, 255, 255, 0.9);
+    width: 176px;
+    height: 176px;
+    border: 6px solid var(--cartao);
     border-radius: 50%;
-    box-shadow: var(--sombra);
+    box-shadow: var(--sombra-foto);
 }
 
 .perfil-foto .sem-foto{
     background: var(--degrade);
     color: #fff;
-    font-size: 3rem;
+    font-size: 3.4rem;
+}
+
+.perfil-abas{
+    display: flex;
+    gap: 34px;
+    padding-left: 6px;
+}
+
+.perfil-abas button{
+    position: relative;
+    padding: 18px 0;
+    border: 0;
+    background: none;
+    color: var(--tinta-2);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* a aba escolhida: cor vinho e um traço embaixo */
+.perfil-abas button.ativo{
+    color: var(--rosa);
+}
+
+.perfil-abas button.ativo::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--rosa);
+}
+
+
+/* ---------- 2. COLUNA DA ESQUERDA ---------- */
+.perfil-grade{
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+    margin-top: 22px;
+}
+
+.perfil-lado{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
 .perfil-nome{
-    margin: 0;
-    font-size: 2.2rem;
+    margin: 4px 0 0;
+    color: var(--titulo);
+    font-size: 2rem;
     font-weight: 800;
+    letter-spacing: -0.03em;
     line-height: 1;
-    text-transform: uppercase;
     overflow-wrap: anywhere;
+}
+
+.perfil-arroba{
+    margin: -8px 0 0;
+    color: var(--tinta-3);
+    font-size: 0.9rem;
+}
+
+/* "RPG | D&D | Anime" */
+.perfil-gostos{
+    margin: 0;
+    color: var(--tinta-2);
+    font-size: 0.88rem;
+}
+
+.perfil-gostos i{
+    margin: 0 4px;
+    color: var(--rosa);
+    font-style: normal;
+}
+
+.perfil-numeros{
+    margin: -4px 0 0;
+    color: var(--tinta-3);
+    font-size: 0.85rem;
 }
 
 #perfilCombina{
@@ -80,20 +160,105 @@
     color: #fff;
 }
 
-.perfil-lado .card{
-    padding: 16px;
+/* as caixinhas brancas (Companheiros, Parcerias, Contato) */
+.perfil-caixa{
+    padding: 18px;
+    border-radius: 16px;
+    background: var(--cartao);
+    box-shadow: var(--sombra-pequena);
 }
 
-.perfil-lado .rotulo{
+.perfil-caixa h2{
+    margin: 0 0 12px;
+    color: var(--titulo);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.perfil-caixa .rotulo{
     margin-bottom: 6px;
 }
 
-/* aqui os chips são só informação, não botões */
-.perfil-lado .chip{
+.perfil-caixa .chip{
     cursor: default;
 }
 
-/* respeita as quebras de linha que a pessoa digitou */
+/* o número do lado de "Amigos" */
+.perfil-contagem{
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 9px;
+    border-radius: 999px;
+    background: var(--cartao-2);
+    color: var(--rosa);
+    font-size: 0.75rem;
+    vertical-align: 3px;
+}
+
+.perfil-ajuda{
+    margin: -8px 0 12px;
+    color: var(--tinta-3);
+    font-size: 0.75rem;
+}
+
+/* os amigos: 3 por linha, a foto redonda e o nome embaixo */
+.companheiros{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 8px;
+}
+
+.companheiros .texto-suave{
+    grid-column: 1 / -1;
+}
+
+.companheiro{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: var(--tinta);
+    text-align: center;
+}
+
+.companheiro-foto{
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    overflow: hidden;
+    border: 3px solid var(--cartao);
+    border-radius: 50%;
+    background: var(--degrade);
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 800;
+    box-shadow: 0 0 0 2px var(--rosa-claro);
+    transition: box-shadow 200ms;
+}
+
+.companheiro:hover .companheiro-foto{
+    box-shadow: 0 0 0 2px var(--rosa);
+}
+
+.companheiro-foto img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.companheiro-nome{
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;   /* nome grande vira "nome gra..." */
+}
+
+
 .perfil-bio{
     margin: 0;
     white-space: pre-line;
@@ -101,9 +266,12 @@
 }
 
 
-/* ---------- 3. COLUNA DA DIREITA ---------- */
-.perfil-abas{
-    margin: 18px 0;
+/* ---------- 3. PAINEL DA DIREITA ---------- */
+.perfil-conteudo{
+    padding: 26px;
+    border-radius: 20px;
+    background: var(--cartao);
+    box-shadow: var(--sombra-pequena);
 }
 
 .perfil-conteudo .card{
@@ -114,24 +282,197 @@
     margin-bottom: 6px;
 }
 
-.perfil-conteudo .grade-campanhas{
-    grid-template-columns: repeat(2, 1fr);
+/* ":: sobre mim" com a imagem do lado */
+.perfil-sobre{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 22px;
+    align-items: start;
+    margin-bottom: 22px;
+}
+
+.perfil-sobre h2{
+    margin: 0 0 8px;
+    color: var(--titulo);
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.perfil-sobre .perfil-bio{
+    color: var(--tinta-2);
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+.perfil-sobre img{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    object-position: center 15%;
+    border-radius: 14px;
+}
+
+/* a faixa "PERSONAGENS" / "CAMPANHAS" antes da lista */
+.perfil-faixa-titulo{
+    margin: 0 0 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--cartao-2);
+    color: var(--rosa);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+/* uma linha (personagem ou campanha): foto | dados | dados */
+.perfil-linha{
+    display: grid;
+    grid-template-columns: 110px 1fr 1fr;
+    gap: 16px;
+    padding: 10px 0;
+    color: var(--tinta);
+}
+
+.perfil-linha + .perfil-linha{
+    border-top: 1px solid var(--linha);
+}
+
+.perfil-linha-foto{
+    width: 110px;
+    height: 110px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.perfil-linha-foto .foto{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+}
+
+.perfil-linha-foto .sem-foto{
+    font-size: 2.4rem;
+}
+
+.perfil-linha-dados{
+    display: flex;
+    flex-direction: column;
+}
+
+/* o título de cada coluna: faixa com a cor vinho clarinha, como uma tabela */
+.perfil-linha-dados b{
+    margin-bottom: 4px;
+    padding: 4px 10px;
+    border-left: 3px solid var(--rosa);
+    background: var(--cartao-2);
+    color: var(--titulo);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.perfil-linha-dados span{
+    display: flex;
+    gap: 10px;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--linha);
+    font-size: 0.85rem;
+}
+
+.perfil-linha-dados small{
+    min-width: 46px;
+    color: var(--tinta-3);
+    font-size: 0.78rem;
+}
+
+.perfil-linha-texto p{
+    margin: 2px 10px 0;
+    color: var(--tinta-2);
+    font-size: 0.84rem;
+}
+
+a.perfil-linha:hover .perfil-linha-dados b{
+    background: var(--rosa);
+    color: #fff;
 }
 
 
-/* ---------- 4. TELAS MENORES ---------- */
+/* ---------- 4. MODO ESCURO ---------- */
+body.escuro .perfil-capa{
+    background: linear-gradient(120deg, #4a2a32, #3a2228 50%, #2a1a1e);
+}
+
+body.escuro .perfil-linha-dados b,
+body.escuro .perfil-faixa-titulo{
+    background: rgba(255, 255, 255, 0.06);
+}
+
+
+/* ---------- 5. TELAS MENORES ---------- */
 @media (max-width: 1000px){
     .perfil-grade{
         grid-template-columns: 1fr;
     }
-
-    .perfil-lado{
-        padding-left: 0;
-    }
 }
 
 @media (max-width: 760px){
-    .perfil-conteudo .grade-campanhas{
+    .perfil-capa{
+        height: 160px;
+    }
+
+    .perfil-faixa{
         grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .perfil-foto{
+        margin: -70px auto 0;
+    }
+
+    .perfil-foto .foto{
+        width: 120px;
+        height: 120px;
+    }
+
+    .perfil-abas{
+        justify-content: center;
+        gap: 20px;
+        padding: 0;
+    }
+
+    .perfil-lado{
+        text-align: center;
+    }
+
+    .perfil-caixa{
+        text-align: left;
+    }
+
+    .perfil-conteudo{
+        padding: 16px;
+    }
+
+    .perfil-sobre{
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-sobre img{
+        display: none;
+    }
+
+    .perfil-linha{
+        grid-template-columns: 80px 1fr;
+    }
+
+    .perfil-linha-foto{
+        width: 80px;
+        height: 80px;
+    }
+
+    .perfil-linha-dados:last-child{
+        grid-column: 1 / -1;
     }
 }

@@ -144,6 +144,29 @@ img{
     font-size: 44px;
     letter-spacing: 0.05em;
 }
+/* Para Chrome, Edge e Safari */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Para Firefox */
+body {
+  scrollbar-width: none;
+}
+
+/* Para Internet Explorer e Edge antigo */
+body {
+  -ms-overflow-style: none;
+}
+/* Remove a barra visual em todos os navegadores mas mantém o scroll */
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE e Edge antigo */
+}
+
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari e Edge */
+}
 
 /* os tracinhos de qual capítulo está aparecendo: só aparecem no celular */
 .pontos{

@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const conexao = require('./conexao')
 const Email = require('./Email')
+const Sms = require('./Sms')
 
 // A senha nunca é guardada como o usuário digitou.
 // No cadastro:  bcrypt.hash(senha, 10)           -> gera o hash que vai para o banco
@@ -14,6 +15,19 @@ const Email = require('./Email')
 // (versão servidor: crypto.randomInt é um sorteio seguro, que não dá para adivinhar)
 function gerarCodigo(){
     return String(crypto.randomInt(0, 1000000)).padStart(6, '0')
+}
+
+// Celular: '(48) 99999-8888' vira '5548999998888' (o jeito que o Brevo pede: 55 + DDD + número).
+// replace(/\D/g, '') tira tudo que não é número (parênteses, espaço, traço).
+// Devolve null se não for um celular válido (o DDD + número têm que dar 10 ou 11 números).
+function limparTelefone(texto){
+    var numeros = String(texto || '').replace(/\D/g, '')
+
+    if(numeros.length == 10 || numeros.length == 11){
+        return '55' + numeros
+    }
+
+    return null
 }
 
 // Data e hora de agora menos "dias", no formato do MySQL ('2026-10-14 13:05:00')
@@ -31,10 +45,21 @@ class UsuariosBD{
     }
 
     // ---------- CADASTRO ----------
-    // usuario: { nomeUsuario, email, senha }
+    // usuario: { nomeUsuario, email, senha, telefone }   (telefone é opcional)
     // A conta é criada com emailVerificado = 0 e um código é enviado para o e-mail.
     static async addUsuario(usuario, callback){
         var {nomeUsuario, email, senha} = usuario
+
+        // celular (opcional): se digitou alguma coisa, tem que ser um celular válido
+        var telefone = null
+
+        if(usuario.telefone){
+            telefone = limparTelefone(usuario.telefone)
+
+            if(telefone == null){
+                return callback({'error': 'Digite o celular com DDD, ex.: (48) 99999-8888'})
+            }
+        }
 
         if(!nomeUsuario || !email || !senha){
             return callback({'error': 'Insira os dados corretamente'})
@@ -84,7 +109,7 @@ class UsuariosBD{
                 return callback({'error': 'Esse nome de usuário ou e-mail já está cadastrado!'})
             }
 
-            var novo = {nomeUsuario: nomeUsuario, email: email, senha: senhaHash, codigoEmail: codigo}
+            var novo = {nomeUsuario: nomeUsuario, email: email, senha: senhaHash, codigoEmail: codigo, telefone: telefone}
 
             connection.query('insert into usuarios set ?', novo, (error, results)=>{
                 if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
@@ -157,10 +182,11 @@ class UsuariosBD{
 
     // ---------- ESQUECI MINHA SENHA ----------
     // Usa a MESMA coluna codigoEmail do cadastro (não precisou mudar o banco):
-    //   1. pedirTrocaSenha: sorteia um código, guarda em codigoEmail e manda por e-mail
+    //   1. pedirTrocaSenha: sorteia um código, guarda em codigoEmail e manda por e-mail ou SMS
     //   2. trocarSenha: se o código bater, troca a senha e apaga o código
+    //      (o código é o mesmo tipo nos dois casos, por isso o trocarSenha não muda)
 
-    // dados: { email }
+    // dados: { email, via }   via: 'email' ou 'sms'
     static pedirTrocaSenha(dados, callback){
         var email = dados.email
 
@@ -173,21 +199,36 @@ class UsuariosBD{
         const connection = UsuariosBD.connect()
 
         // só conta com e-mail já confirmado (emailVerificado = 1)
-        var sql = 'update usuarios set codigoEmail = ? where email = ? and emailVerificado = 1'
+        var sql = 'select id, telefone from usuarios where email = ? and emailVerificado = 1'
 
-        connection.query(sql, [codigo, email], (error, results)=>{
+        connection.query(sql, [email], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
-
-            connection.end()
-
-            // só manda o e-mail se achou a conta (affectedRows = quantas linhas o update mudou)
-            if(results.affectedRows > 0){
-                Email.enviarCodigo(email, codigo, 'senha')
-            }
 
             // a resposta é a mesma achando ou não a conta: assim ninguém descobre
             // quais e-mails têm conta na Peak
-            callback({'message': 'Se esse e-mail tiver uma conta na Peak, o código já foi enviado.'})
+            var resposta = {'message': 'Se esse e-mail tiver uma conta na Peak, o código já foi enviado.'}
+
+            if(results.length == 0){
+                connection.end()
+                return callback(resposta)
+            }
+
+            var pessoa = results[0]
+
+            connection.query('update usuarios set codigoEmail = ? where id = ?', [codigo, pessoa.id], (error, results)=>{
+                if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+                connection.end()
+
+                // escolheu SMS e tem celular salvo: vai por SMS. Se não, vai por e-mail.
+                if(dados.via == 'sms' && pessoa.telefone){
+                    Sms.enviarCodigo(pessoa.telefone, codigo)
+                }else{
+                    Email.enviarCodigo(email, codigo, 'senha')
+                }
+
+                callback(resposta)
+            })
         })
     }
 

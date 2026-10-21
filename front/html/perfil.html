@@ -53,69 +53,91 @@
   <main class="secao">
     <div class="container">
 
-      <!-- CAPA DO PERFIL: a imagem é colocada pela função carregarPessoa() do js/perfil.js.
-           Sem capa, a imagem fica escondida e sobra a faixa escura. -->
-      <div class="perfil-capa">
-        <img class="oculto" id="perfilCapa" src="" alt="">
-      </div>
+      <!-- VISUAL: CABEÇALHO DO PERFIL = a capa grande e, embaixo dela, a faixa branca com as abas.
+           A imagem da capa é colocada pela função carregarPessoa() do js/perfil.js
+           (sem capa, fica um degradê). -->
+      <section class="perfil-topo">
+        <div class="perfil-capa">
+          <img class="oculto" id="perfilCapa" src="" alt="">
+        </div>
+
+        <div class="perfil-faixa">
+          <!-- a foto redonda fica "pendurada" em cima da capa -->
+          <div class="perfil-foto" id="perfilFoto"></div>
+
+          <!-- a função mostrarAba() mostra uma aba e esconde as outras.
+               A aba Configurações tem a classe "so-meu": só aparece no MEU perfil. -->
+          <nav class="perfil-abas">
+            <button type="button" class="ativo" id="botaoAbaPersonagens" onclick="mostrarAba('Personagens')">Personagens</button>
+            <button type="button" id="botaoAbaCampanhas" onclick="mostrarAba('Campanhas')">Campanhas</button>
+            <button type="button" class="so-meu oculto" id="botaoAbaConfiguracoes" onclick="mostrarAba('Configuracoes')">Configurações</button>
+          </nav>
+        </div>
+      </section>
 
       <div class="perfil-grade">
 
         <!-- ===== COLUNA DA ESQUERDA: quem é a pessoa ===== -->
         <aside class="perfil-lado">
-          <!-- a foto (ou a primeira letra do nome): função carregarPessoa() -->
-          <div class="perfil-foto" id="perfilFoto"></div>
-
           <h1 class="perfil-nome" id="perfilNome"></h1>
+          <p class="perfil-arroba" id="perfilArroba"></p>
+
+          <!-- "RPG | D&D | Anime": os interesses numa linha só (função carregarInteresses) -->
+          <p class="perfil-gostos" id="perfilInteresses"></p>
+
+          <!-- "3 fichas · 2 campanhas" (funções carregarFichas e carregarCampanhas) -->
+          <p class="perfil-numeros"><span id="numFichas">0</span> fichas · <span id="numCampanhas">0</span> campanhas</p>
 
           <!-- só aparece no perfil de OUTRA pessoa, quando ela é algo que eu procuro (função carregarCombina) -->
           <p class="oculto" id="perfilCombina"><span class="selo">Combina com você</span></p>
 
-          <section class="card">
-            <h2 class="card-titulo">Sobre mim</h2>
-            <p class="perfil-bio" id="perfilBio"></p>
-          </section>
-
-          <section class="card">
-            <h2 class="card-titulo">Contato</h2>
+          <section class="perfil-caixa">
+            <h2>Contato</h2>
             <p class="perfil-bio" id="perfilContato"></p>
           </section>
-
-          <section class="card">
-            <h2 class="card-titulo">Interesses</h2>
-            <!-- preenchido pela função carregarInteresses() -->
-            <div class="chips" id="perfilInteresses"></div>
+          <!-- AMIGOS (companheiros de mesa): quem joga nas mesmas campanhas (função carregarCompanheiros).
+               Não precisou de tabela nova: usa as campanhas e os jogadores que já existem. -->
+          <section class="perfil-caixa">
+            <!-- o número do lado do título é escrito pela função desenharCompanheiros -->
+            <h2>Amigos <span class="perfil-contagem" id="numCompanheiros"></span></h2>
+            <p class="perfil-ajuda">quem joga nas mesmas campanhas</p>
+            <div class="companheiros" id="perfilCompanheiros"></div>
           </section>
 
-          <section class="card">
-            <h2 class="card-titulo">Parcerias</h2>
+          <section class="perfil-caixa">
+            <h2>Parcerias</h2>
             <p class="rotulo">Sou</p>
             <!-- preenchidos pela função carregarParcerias() -->
             <div class="chips" id="perfilSou"></div>
             <p class="rotulo espaco-topo-pequeno">Procuro</p>
             <div class="chips" id="perfilProcuro"></div>
           </section>
+
         </aside>
 
-        <!-- ===== COLUNA DA DIREITA: abas ===== -->
+        <!-- ===== COLUNA DA DIREITA: o painel branco ===== -->
         <section class="perfil-conteudo">
 
-          <!-- a função mostrarAba() mostra uma aba e esconde as outras.
-               A aba Configurações tem a classe "so-meu": só aparece no MEU perfil. -->
-          <nav class="filtros perfil-abas">
-            <button type="button" class="filtro ativo" id="botaoAbaPersonagens" onclick="mostrarAba('Personagens')">Personagens</button>
-            <button type="button" class="filtro" id="botaoAbaCampanhas" onclick="mostrarAba('Campanhas')">Campanhas</button>
-            <button type="button" class="filtro so-meu oculto" id="botaoAbaConfiguracoes" onclick="mostrarAba('Configuracoes')">Configurações</button>
-          </nav>
-
-          <!-- ABA PERSONAGENS: as cartas entram aqui (função carregarFichas) -->
-          <div id="abaPersonagens">
-            <div class="grade-cartas" id="perfilFichas"></div>
+          <!-- :: sobre mim (função carregarPessoa). A imagem do lado é o retrato
+               do primeiro personagem (função carregarFichas); sem personagem, ela some. -->
+          <div class="perfil-sobre">
+            <div>
+              <h2>:: sobre mim</h2>
+              <p class="perfil-bio" id="perfilBio"></p>
+            </div>
+            <img class="oculto" id="perfilSobreImagem" src="" alt="">
           </div>
 
-          <!-- ABA CAMPANHAS: os cards entram aqui (função carregarCampanhas) -->
+          <!-- ABA PERSONAGENS: uma linha por ficha (função carregarFichas) -->
+          <div id="abaPersonagens">
+            <p class="perfil-faixa-titulo">Personagens</p>
+            <div id="perfilFichas"></div>
+          </div>
+
+          <!-- ABA CAMPANHAS: uma linha por campanha (função carregarCampanhas) -->
           <div class="oculto" id="abaCampanhas">
-            <div class="grade-campanhas" id="perfilCampanhas"></div>
+            <p class="perfil-faixa-titulo">Campanhas</p>
+            <div id="perfilCampanhas"></div>
           </div>
 
           <!-- ABA CONFIGURAÇÕES (só no meu perfil) -->

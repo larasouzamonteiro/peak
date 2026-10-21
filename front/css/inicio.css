@@ -3,10 +3,10 @@
    (este arquivo inteiro é VISUAL)
 
      1. Topo (título + bolinhas de Comunidade e perfil)
-     2. Destaques: carrossel da equipe + campanhas oficiais
+     2. Destaques: banner da equipe e as campanhas oficiais
      3. Seus personagens
      4. Novidades e Comunidade
-     5. Telas menores e celular
+     5. Notebook, telas menores e celular
      6. Modo escuro
    ===================================================== */
 
@@ -28,27 +28,27 @@
     margin-bottom: 6px;
 }
 
-/* bolinha redonda (Comunidade) */
 .bolinha{
     display: grid;
     place-items: center;
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
     overflow: hidden;
-    border-radius: 50%;
+    border-radius: 14px;
     background: var(--cartao);
     box-shadow: var(--sombra-pequena);
 }
 
 .bolinha img{
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     opacity: 0.75;
 }
 
-/* bolinha com a foto do perfil: borda coral */
+/* a foto do perfil: redonda, com borda vinho */
 .bolinha-foto{
     border: 3px solid var(--rosa);
+    border-radius: 50%;
     background: var(--degrade);
     color: #fff;
     font-weight: 800;
@@ -63,7 +63,7 @@
 
 
 /* ---------- 2. DESTAQUES ---------- */
-/* carrossel grande na esquerda, as 2 campanhas oficiais na direita */
+/* o card grande na esquerda; na direita, o card da equipe em cima e a outra oficial embaixo */
 .destaques{
     display: grid;
     grid-template-columns: 1fr 400px;
@@ -78,17 +78,8 @@
     gap: 16px;
 }
 
-.destaques-lado .foto-card{
-    min-height: 0;
-}
-
-.destaques-lado .foto-card .nome b{
-    margin-top: 8px;
-    font-size: 1.6rem;
-}
-
-/* ----- carrossel ----- */
-.carrossel{
+/* ----- a campanha grande ----- */
+.destaque-grande{
     position: relative;
     overflow: hidden;
     border-radius: 24px;
@@ -97,8 +88,92 @@
     box-shadow: var(--sombra-foto);
 }
 
-/* as fotos ficam uma em cima da outra; só a que tem "on" aparece */
-.carrossel-foto{
+.destaque-grande .foto{
+    position: absolute;
+    inset: 0;
+    object-position: center 30%;
+}
+
+/* escurece embaixo para o texto aparecer */
+.destaque-grande::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(40, 14, 20, 0.9), rgba(40, 14, 20, 0.1) 62%);
+}
+
+.destaque-chips{
+    position: absolute;
+    top: 20px;
+    left: 22px;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+}
+
+.destaque-chips span{
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(40, 14, 20, 0.45);
+    font-size: 0.78rem;
+    backdrop-filter: blur(3px);
+}
+
+.destaque-texto{
+    position: absolute;
+    left: 26px;
+    right: 26px;
+    bottom: 24px;
+    z-index: 2;
+}
+
+.destaque-texto .selo,
+.destaques-lado .selo,
+.novidade .selo{
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: var(--rosa);
+    color: #fff;
+}
+
+.destaque-texto h2{
+    max-width: 560px;
+    margin: 10px 0 6px;
+    font-size: 2.9rem;
+    font-weight: 800;
+    line-height: 1.02;
+    text-transform: uppercase;
+}
+
+.destaque-texto p{
+    max-width: 470px;
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.92;
+}
+
+.destaque-botoes{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.destaque-bt{
+    display: inline-block;
+    padding: 11px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--tinta);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* ----- as fotos do banner: uma em cima da outra; só a que tem "on" aparece ----- */
+.banner-foto{
     position: absolute;
     inset: 0;
     width: 100%;
@@ -109,153 +184,42 @@
     transition: opacity 700ms ease;
 }
 
-.carrossel-foto.on{
+.banner-foto.on{
     opacity: 1;
 }
 
-/* escurece a parte de baixo para o texto aparecer */
-.carrossel::after{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(0deg, rgba(40, 20, 14, 0.88), rgba(40, 20, 14, 0.1) 60%);
-}
-
-.carrossel-chips{
-    position: absolute;
-    top: 20px;
-    left: 22px;
-    z-index: 2;
-    display: flex;
-    gap: 8px;
-}
-
-.carrossel-chips span{
-    padding: 5px 14px;
-    border-radius: 999px;
-    background: rgba(40, 20, 14, 0.45);
-    font-size: 0.78rem;
-    white-space: nowrap;
-    backdrop-filter: blur(3px);
-}
-
-/* as barrinhas no canto de cima (qual foto está aparecendo) */
-.carrossel-barras{
+/* os tracinhos no canto de cima */
+.banner-pontos{
     position: absolute;
     top: 24px;
-    right: 22px;
+    right: 24px;
     z-index: 3;
     display: flex;
-    gap: 5px;
+    gap: 6px;
 }
 
-.carrossel-barras i{
+.banner-pontos i{
+    width: 8px;
+    height: 7px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: width 300ms;
+}
+
+.banner-pontos i.on{
     width: 26px;
-    height: 4px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.4);
-}
-
-.carrossel-barras i.on{
     background: #fff;
 }
 
-.carrossel-seta{
-    position: absolute;
-    top: 50%;
-    z-index: 3;
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.85);
-    color: #45191a;
-    font: inherit;
-    font-size: 1.4rem;
-    font-weight: 700;
-    transform: translateY(-50%);
-    cursor: pointer;
+/* ----- as campanhas oficiais ----- */
+.destaques-lado .foto-card{
+    min-height: 0;
 }
 
-.carrossel-seta.esquerda{
-    left: 14px;
-}
-
-.carrossel-seta.direita{
-    right: 14px;
-}
-
-.carrossel-texto{
-    position: absolute;
-    left: 76px;
-    right: 76px;
-    bottom: 24px;
-    z-index: 2;
-}
-
-.carrossel-texto .selo{
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    background: var(--rosa);
-    color: #fff;
-}
-
-.carrossel-texto h2{
-    margin: 10px 0 6px;
-    font-size: 2.9rem;
-    font-weight: 800;
-    line-height: 1.02;
-    text-transform: uppercase;
-}
-
-.carrossel-texto p{
-    max-width: 470px;
-    margin: 0;
-    font-size: 0.9rem;
-    opacity: 0.9;
-}
-
-.carrossel-linha{
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-top: 16px;
-}
-
-.carrossel-mini{
-    display: flex;
-    gap: 6px;
-    margin-left: auto;
-}
-
-.carrossel-mini img{
-    width: 46px;
-    height: 34px;
-    object-fit: cover;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    opacity: 0.6;
-    cursor: pointer;
-}
-
-.carrossel-mini img.on{
-    border-color: #fff;
-    opacity: 1;
-}
-
-.carrossel-contador{
-    font-size: 0.78rem;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-/* o selo dentro do nome dos cards de foto (oficiais e novidades) */
-.destaques-lado .nome .selo,
-.novidade .nome .selo{
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    background: var(--rosa);
-    color: #fff;
+.destaques-lado .foto-card .nome b{
+    margin-top: 8px;
+    font-size: 1.6rem;
 }
 
 
@@ -267,57 +231,82 @@
     gap: 16px;
 }
 
-.fila-cartas .carta,
-.fila-cartas .card-novo{
+.fila-cartas .carta{
     height: 300px;
+}
+
+/* a vida em tracinhos arredondados */
+.fila-cartas .gomos{
+    gap: 3px;
+}
+
+.fila-cartas .gomos i{
+    height: 5px;
+    border-radius: 3px;
+}
+
+/* "Criar ficha": quadro tracejado com a estrela */
+.criar-ficha{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    border: 2px dashed rgba(90, 40, 50, 0.3);
+    border-radius: 22px;
+    background: var(--vidro-leve);
+    color: var(--tinta-2);
+    text-align: center;
+}
+
+/* a estrela do "Criar ficha" (o ✦ que está no inicio.js) */
+.criar-ficha span{
+    margin-bottom: 12px;
+    color: var(--rosa);
+    font-size: 3.2rem;
+    line-height: 1;
+}
+
+.criar-ficha b{
+    font-size: 1rem;
+}
+
+.criar-ficha small{
+    color: var(--tinta-3);
+    font-size: 0.75rem;
 }
 
 
 /* ---------- 4. NOVIDADES E COMUNIDADE ---------- */
 .inicio-baixo{
     display: grid;
-    grid-template-columns: 1fr 430px;
+    grid-template-columns: 1fr 360px;
     gap: 16px;
 }
 
+/* 3 cards: o primeiro um pouco mais largo */
 .novidades{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1.3fr 1fr 1fr;
     gap: 14px;
 }
 
 .novidade{
-    height: 240px;
+    height: 210px;
 }
 
 .novidade .nome b{
     margin-top: 6px;
-    font-size: 1.05rem;
-}
-
-/* a etiqueta branca "NOVO" no canto */
-.novidade .novo{
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 3;
-    padding: 3px 9px;
-    border-radius: 999px;
-    background: #fff;
-    color: var(--rosa-escuro);
-    font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 1.15rem;
 }
 
 /* o convite da Comunidade: foto na esquerda, texto e botão na direita */
 .convite-comunidade{
     display: grid;
-    grid-template-columns: 170px 1fr;
-    grid-template-rows: minmax(0, 1fr);     /* a foto não pode passar da altura do card */
-    gap: 18px;
-    height: 240px;
+    grid-template-columns: 140px 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 16px;
+    height: 210px;
     padding: 12px;
     border-radius: 24px;
     background: var(--cartao);
@@ -330,7 +319,7 @@
     height: 100%;
     object-fit: cover;
     object-position: center 30%;
-    border-radius: 18px;
+    border-radius: 16px;
 }
 
 .convite-comunidade div{
@@ -338,7 +327,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding-right: 8px;
 }
 
 .convite-comunidade small{
@@ -350,42 +338,47 @@
 }
 
 .convite-comunidade b{
-    margin: 6px 0 2px;
+    margin: 4px 0;
     color: var(--titulo);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     line-height: 1.15;
 }
 
 .convite-comunidade p{
-    margin: 6px 0 10px;
+    margin: 0 0 10px;
     color: var(--tinta-3);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
+}
+
+.convite-bt{
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--degrade);
+    color: #fff;
+    font-size: 0.76rem;
+    font-weight: 700;
+    box-shadow: 0 8px 18px rgba(110, 26, 47, 0.3);
 }
 
 
-/* ---------- 5. TELAS MENORES E CELULAR ---------- */
-/* notebook (tela baixa): carrossel e cartas mais baixos */
+/* ---------- 5. NOTEBOOK, TELAS MENORES E CELULAR ---------- */
 @media (min-width: 761px) and (max-height: 800px){
     .topo-inicio .titulo{
         font-size: 3.2rem;
     }
 
     .destaques{
-        height: clamp(300px, 56vh, 420px);      /* 56% da altura da tela, entre 300px e 420px */
+        height: clamp(320px, 58vh, 420px);
         margin-top: 12px;
     }
 
-    .carrossel-texto h2{
+    .destaque-texto h2{
         font-size: 2.3rem;
     }
 
-    .destaques-lado .foto-card .nome b{
-        font-size: 1.3rem;
-    }
-
     .fila-cartas .carta,
-    .fila-cartas .card-novo{
-        height: 260px;
+    .criar-ficha{
+        height: 270px;
     }
 }
 
@@ -396,7 +389,7 @@
         height: auto;
     }
 
-    .carrossel{
+    .destaque-grande{
         height: 380px;
     }
 
@@ -411,8 +404,7 @@
 }
 
 @media (max-width: 760px){
-    /* no celular o topo é a barra fina: a saudação e o título grande somem
-       e só ficam a logo (do style.css) e as duas bolinhas */
+    /* no celular o topo é a barra fina: a saudação e o título somem */
     .topo-inicio{
         align-items: center;
     }
@@ -447,48 +439,48 @@
         gap: 10px;
     }
 
-    .carrossel{
-        height: 230px;
+    .destaque-grande{
+        height: 260px;
         border-radius: 20px;
     }
 
-    .carrossel-chips,
-    .carrossel-seta,
-    .carrossel-texto p,
-    .carrossel-mini,
-    .carrossel-contador{
+    .destaque-chips,
+    .destaque-texto p{
         display: none;
     }
 
-    .carrossel-texto{
+    .destaque-texto{
         left: 16px;
         right: 16px;
         bottom: 14px;
     }
 
-    .carrossel-texto h2{
+    .destaque-texto h2{
         font-size: 1.5rem;
     }
 
-    .carrossel-texto .botao{
-        min-height: 32px;
-        padding: 0 14px;
-        font-size: 0.68rem;
+    .destaques-lado{
+        grid-template-rows: 150px;
+        gap: 10px;
     }
 
-    .carrossel-barras{
+    .banner-pontos{
         top: 12px;
         right: 12px;
     }
 
-    .carrossel-barras i{
-        width: 16px;
-        height: 3px;
+    .convite-comunidade{
+        grid-template-columns: 86px 1fr;
+        height: auto;
+        padding: 10px;
     }
 
-    .destaques-lado{
-        grid-template-rows: 120px;
-        gap: 10px;
+    .convite-comunidade img{
+        height: 86px;
+    }
+
+    .convite-comunidade p{
+        display: none;
     }
 
     .destaques-lado .foto-card .nome{
@@ -496,7 +488,7 @@
     }
 
     .destaques-lado .foto-card .nome b{
-        font-size: 0.85rem;
+        font-size: 0.9rem;
     }
 
     .destaques-lado .foto-card .nome small{
@@ -518,11 +510,10 @@
         height: 210px;
     }
 
-    .fila-cartas .card-novo{
+    .criar-ficha{
         flex: none;
-        width: 110px;
+        width: 120px;
         height: 210px;
-        font-size: 0.8rem;
     }
 
     .fila-cartas .carta .atributos{
@@ -549,35 +540,30 @@
     .novidade .nome small{
         display: none;
     }
-
-    .convite-comunidade{
-        grid-template-columns: 86px 1fr;
-        grid-template-rows: auto;
-        height: auto;
-        padding: 10px;
-    }
-
-    .convite-comunidade img{
-        height: 86px;
-    }
-
-    .convite-comunidade p{
-        display: none;
-    }
 }
 
 
 /* ---------- 6. MODO ESCURO ---------- */
 body.escuro .bolinha img{
-    filter: invert(1);
+    filter: brightness(0) invert(1);     /* branco (só invert ficava verde) */
 }
 
 body.escuro .bolinha-foto img{
     filter: none;
 }
 
-body.escuro .carrossel-texto .botao-claro{
+body.escuro .criar-ficha{
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* o texto do botão do banner fica escuro, porque o botão é branco */
+body.escuro .destaque-bt{
     color: #6e1a26;
+}
+
+/* no escuro a estrela usa o rosa mais claro, para aparecer no fundo escuro */
+body.escuro .criar-ficha span{
+    color: var(--rosa-escuro);
 }
 
 body.escuro .convite-comunidade{

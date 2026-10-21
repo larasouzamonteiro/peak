@@ -53,7 +53,7 @@
         <label class="rotulo" for="nomeUsuario">Usuário ou e-mail</label>
         <input class="input" type="text" id="nomeUsuario" autocomplete="username">
       </div>
-
+      
       <div class="campo">
         <label class="rotulo" for="senha">Senha</label>
         <div class="campo-senha">
@@ -92,7 +92,11 @@
         <label class="rotulo" for="emailCadastro">E-mail</label>
         <input class="input" type="email" id="emailCadastro" maxlength="80" placeholder="voce@email.com" autocomplete="email">
       </div>
-
+       <!-- celular (opcional): só serve para recuperar a senha por SMS -->
+      <div class="campo">
+        <label class="rotulo" for="telefoneCadastro">Celular <span class="rotulo-opcional">(opcional, para recuperar a senha)</span></label>
+        <input class="input" type="tel" id="telefoneCadastro" maxlength="20" placeholder="(48) 99999-8888" autocomplete="tel">
+      </div>
       <div class="linha-campos">
         <div class="campo">
           <label class="rotulo" for="senhaCadastro">Senha</label>

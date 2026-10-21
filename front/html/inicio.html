@@ -63,39 +63,33 @@
   <main class="secao">
     <div class="container">
 
-      <!-- DESTAQUES: o carrossel com as fotos da equipe (esquerda) e as campanhas oficiais (direita) -->
+      <!-- DESTAQUES: o banner com as fotos da equipe (esquerda) e as campanhas oficiais (direita) -->
       <section class="destaques">
 
-        <!-- CARROSSEL: as fotos ficam em img/equipe/. Para trocar, é só substituir os arquivos
-             1.jpg, 2.jpg, 3.jpg e 4.jpg por fotos de vocês (com os mesmos nomes).
-             Para ter mais fotos, copie uma linha <img> e mude o número.
+        <!-- BANNER: as fotos ficam em img/equipe/. Para trocar, substitua 1.jpg, 2.jpg, 3.jpg e 4.jpg
+             pelas fotos de vocês (mesmos nomes). Para ter mais fotos, copie uma linha <img> e mude o número.
              Quem troca a foto é o js/inicio.js (mostrarFoto): ele só coloca e tira a classe "on". -->
-        <div class="carrossel">
-          <img class="carrossel-foto" src="../img/equipe/1.jpg" alt="">
-          <img class="carrossel-foto" src="../img/equipe/2.jpg" alt="">
-          <img class="carrossel-foto" src="../img/equipe/3.jpg" alt="">
-          <img class="carrossel-foto" src="../img/equipe/4.jpg" alt="">
+        <article class="destaque-grande">
+          <img class="banner-foto" src="../img/equipe/1.jpg" alt="">
+          <img class="banner-foto" src="../img/equipe/2.jpg" alt="">
+          <img class="banner-foto" src="../img/equipe/3.jpg" alt="">
+          <img class="banner-foto" src="../img/equipe/4.jpg" alt="">
 
-          <div class="carrossel-chips"><span>Equipe Peak</span><span>Senac · Info 1</span></div>
-          <div class="carrossel-barras" id="barrasFoto"></div>
+          <div class="destaque-chips"><span>Equipe Peak</span><span>Senac · Info 1</span></div>
+          <!-- os tracinhos de qual foto está aparecendo (feitos pelo js/inicio.js) -->
+          <div class="banner-pontos" id="bannerPontos"></div>
 
-          <button type="button" class="carrossel-seta esquerda" onclick="mudarFoto(-1)" title="Foto anterior">‹</button>
-          <button type="button" class="carrossel-seta direita" onclick="mudarFoto(1)" title="Próxima foto">›</button>
-
-          <div class="carrossel-texto">
+          <div class="destaque-texto">
             <span class="selo">Nossa mesa</span>
             <h2>Quem faz<br>a Peak</h2>
             <p>Fotos da equipe: os testes, as sessões e os bastidores do projeto.</p>
-            <div class="carrossel-linha">
-              <a class="botao botao-claro" href="livro-equipe.html">▶ Conhecer a equipe</a>
-              <!-- as miniaturas e o "2 / 4" são feitos pelo js/inicio.js -->
-              <div class="carrossel-mini" id="miniFotos"></div>
-              <span class="carrossel-contador" id="contadorFoto"></span>
+            <div class="destaque-botoes">
+              <a class="destaque-bt" href="livro-equipe.html">▶ Conhecer a equipe</a>
             </div>
           </div>
-        </div>
+        </article>
 
-        <!-- as 2 primeiras campanhas oficiais (carregarOficiais) -->
+        <!-- as 2 primeiras campanhas oficiais (função carregarOficiais) -->
         <div class="destaques-lado" id="oficiais"></div>
       </section>
 
@@ -108,20 +102,20 @@
 
       <section class="inicio-baixo">
 
-        <!-- NOVIDADES: a última campanha oficial, o último monstro, a última raça e a última classe
-             que entraram no site (carregarNovidades). Não precisa de rota nova: usa as listas que já existem. -->
+        <!-- NOVIDADES: a última raça, o último monstro e a última classe (carregarNovidades) -->
         <div>
           <div class="secao-titulo">
             <h2>Novidades na Peak</h2>
+            <a href="racas.html">ver tudo ›</a>
           </div>
           <div class="novidades" id="novidades"></div>
         </div>
 
-        <!-- COMUNIDADE: só um convite com foto e botão -->
+        <!-- COMUNIDADE: só um convite com foto e o botão (sem JavaScript) -->
         <div>
           <div class="secao-titulo">
             <h2>Comunidade</h2>
-            <a href="comunidade.html">abrir ›</a>
+            <a href="comunidade.html">ver ›</a>
           </div>
           <a class="convite-comunidade" href="comunidade.html">
             <img src="../img/editorial/grupo-cor.jpg" alt="">
@@ -129,7 +123,7 @@
               <small>Comunidade Peak</small>
               <b>Ninguém joga RPG sozinho.</b>
               <p>Encontre jogadores, mestres e artistas que gostam das mesmas coisas que você.</p>
-              <span class="botao botao-principal botao-pequeno">Encontrar meu grupo →</span>
+              <span class="convite-bt">Encontrar meu grupo →</span>
             </div>
           </a>
         </div>

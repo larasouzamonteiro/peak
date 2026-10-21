@@ -13,7 +13,7 @@
 <body class="entrada">
 
   <!-- VISUAL: o mesmo fundo e o mesmo "peak." do login -->
-  <div class="entrada-fundo"><video autoplay muted loop playsinline><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video></div>
+  <div class="entrada-fundo"></div>
   <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
   <div class="entrada-frase frase-login">
     <h2>peak<span>.</span></h2>
@@ -29,11 +29,19 @@
     <!-- ===== PASSO 1: PEDIR O CÓDIGO ===== -->
     <div class="entrada-form" id="passoPedir">
       <h1>Esqueci minha senha</h1>
-      <p class="entrada-sub">Digite o e-mail da sua conta. Vamos mandar um código de 6 números para você criar uma senha nova.</p>
+      <p class="entrada-sub">Digite o e-mail da sua conta. Vamos mandar um código de 6 números (por e-mail ou SMS) para você criar uma senha nova.</p>
 
       <div class="campo">
         <label class="rotulo" for="emailSenha">E-mail</label>
         <input class="input" type="email" id="emailSenha" autocomplete="email">
+      </div>
+
+      <!-- por onde o código vai chegar (função escolherVia do js/login.js).
+           SMS só funciona se a pessoa colocou o celular no cadastro; se não, vai por e-mail. -->
+      <p class="rotulo">Receber o código por</p>
+      <div class="entrada-abas">
+        <button type="button" class="ativo" id="viaEmail" onclick="escolherVia('email')">E-mail</button>
+        <button type="button" id="viaSms" onclick="escolherVia('sms')">SMS</button>
       </div>
 
       <p class="alerta" id="alertPedir"></p>
@@ -46,7 +54,8 @@
     <!-- ===== PASSO 2: CÓDIGO + SENHA NOVA ===== -->
     <div class="entrada-form oculto" id="passoTrocar">
       <h1>Criar senha nova</h1>
-      <p class="entrada-sub">Enviamos o código para <b id="emailMostrado"></b>. Ele só vale uma vez.</p>
+      <!-- o texto daqui é escrito pela função pedirCodigoSenha (muda se escolheu e-mail ou SMS) -->
+      <p class="entrada-sub" id="ondeChegou"></p>
 
       <div class="campo">
         <label class="rotulo" for="codigoSenha">Código</label>
@@ -56,17 +65,11 @@
       <div class="linha-campos">
         <div class="campo">
           <label class="rotulo" for="senhaNova">Senha nova</label>
-          <div class="campo-senha">
-            <input class="input" type="password" id="senhaNova" autocomplete="new-password">
-            <button type="button" class="botao-olho" onclick="verSenha(this)" aria-label="Mostrar senha"><svg class="olho-aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="olho-fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" y1="2" x2="22" y2="22"/></svg></button>
-          </div>
+          <input class="input" type="password" id="senhaNova" autocomplete="new-password">
         </div>
         <div class="campo">
           <label class="rotulo" for="senhaNova2">Confirmar senha</label>
-          <div class="campo-senha">
-            <input class="input" type="password" id="senhaNova2" autocomplete="new-password">
-            <button type="button" class="botao-olho" onclick="verSenha(this)" aria-label="Mostrar senha"><svg class="olho-aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="olho-fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" y1="2" x2="22" y2="22"/></svg></button>
-          </div>
+          <input class="input" type="password" id="senhaNova2" autocomplete="new-password">
         </div>
       </div>
 
@@ -81,6 +84,6 @@
   </div>
 
   <script src="../js/script.js"></script>
-  <script src="../js/login.js"></script>
+  <script src="../js/nova-senha.js"></script>
 </body>
 </html>

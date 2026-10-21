@@ -499,3 +499,86 @@ body.cadastro .form-cadastro{
         display: block;
     }
 }
+/* =====================================================
+   VISUAL: LOGIN COM O CARD ESCURO
+   Cole este bloco no FINAL do front/css/entrada.css.
+   Só muda a aparência: a foto do fundo fica normal (sem filtro)
+   e o card com os formulários fica escuro e meio transparente.
+   ===================================================== */
+
+/* a foto do fundo sem filtro */
+.entrada-fundo{
+    filter: none;
+}
+
+/* só uma sombra bem leve embaixo, para o "peak." aparecer */
+.entrada-fundo::after{
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), transparent 40%);
+}
+
+.entrada-frase h2,
+.entrada-frase p{
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* o card escuro */
+.entrada-caixa{
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(18, 12, 13, 0.82);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+    color: #fff;
+    backdrop-filter: blur(14px);
+}
+
+.entrada-form h1{
+    color: #fff;
+}
+
+.entrada-sub,
+.entrada-rodape{
+    color: #a8948f;
+}
+
+.link-trocar,
+.entrada-esqueci,
+.entrada-rodape a{
+    color: #ff9a86;
+}
+
+/* as abas Entrar | Criar conta */
+.entrada-abas{
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.entrada-abas button{
+    color: #a8948f;
+}
+
+.entrada-abas button.ativo{
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    box-shadow: none;
+}
+
+/* os campos escuros */
+body.entrada .entrada-form .rotulo{
+    color: #c9b3ae;
+}
+
+body.entrada .entrada-form .input{
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+body.entrada .entrada-form .input::placeholder{
+    color: rgba(255, 255, 255, 0.35);
+}
+
+body.entrada .entrada-form .input:focus{
+    background: rgba(255, 255, 255, 0.09);
+}
+
+body.entrada .entrada-form .rotulo-opcional{
+    color: #8f7b77;
+}

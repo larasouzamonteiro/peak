@@ -1,14 +1,50 @@
-PEAK - PROJETO COMPLETO (com o visual novo e o "Esqueci minha senha")
+PEAK - TUDO JUNTO: INÍCIO COM A FOTO DA LUX, PERFIL, LOGIN ESCURO E SMS
+=======================================================================
 
-COMO COLOCAR
-1. Abra o ZIP, selecione TUDO que está dentro (Ctrl+A) e arraste para Documentos\GitHub\peak.
-   Quando o Windows perguntar, escolha "Substituir os arquivos no destino".
-   (as pastas front e database e o app.js têm que cair DIRETO dentro de peak,
-    e não numa pasta peak\peak)
-2. Faça o commit e envie (push). Espere o deploy do Render terminar.
-3. Se testar no computador: feche o servidor (Ctrl+C) e rode node app.js de novo.
+PASSO 1 - COPIAR A PASTA (substitui sozinho)
+   Copie a pasta "peak" deste ZIP para Documentos\GitHub\peak
+   e escolha "Substituir os arquivos no destino".
 
-NÃO VEM NO ZIP (fica o seu): database/config.js, database/emailConfig.js e database/Email.js.
-O banco NÃO muda. Não rode o banco.sql.
+   O que vem nela:
+     front/html/inicio.html, front/js/inicio.js, front/css/inicio.css
+        - Início: banner, oficiais, personagens, novidades, comunidade
+        - parte 7 do inicio.css (VISUAL): a foto da Lux no topo.
+          Para testar outra foto, deixe só UMA linha "--lugar" sem comentário.
+        - a estrela rosa no "Criar ficha"
+     front/img/fundo/lux.jpg        - a foto do topo
+     front/html/perfil.html, front/js/perfil.js, front/css/perfil.css
+        - perfil novo; o "sobre mim" mostra o retrato da ÚLTIMA ficha criada
+     front/html/nova-senha.html, front/js/nova-senha.js (NOVO)
+        - "Esqueci minha senha" com os botões E-mail | SMS
+     database/UsuariosBD.js, database/Sms.js (NOVO), database/smsConfig.js (NOVO)
+     database/banco.sql, database/bancolocal.sql  (só para ficarem certos no papel,
+        NÃO rode eles de novo)
 
-Pode apagar (não é mais usado): front/js/index.js
+   NÃO vem (são de vocês): config.js, emailConfig.js, Email.js,
+   login.html, login.js, entrada.css, index.html e os vídeos.
+
+
+PASSO 2 - COLAR À MÃO (pasta "colar-a-mao")
+   Estes 3 são colados, e não substituídos, para não apagar o que você já fez
+   no login (a sua foto de fundo, o olhinho da senha...).
+     1-entrada.css   -> cole TUDO no FINAL do front/css/entrada.css (login escuro)
+     2-login.html    -> o campo de celular no cadastro (o arquivo diz onde)
+     3-login.js      -> 2 linhas na função cadastrar() (o arquivo diz onde)
+
+
+PASSO 3 - BANCO (uma vez só, no Workbench conectado no Aiven)
+       ALTER TABLE usuarios ADD telefone VARCHAR(20) NULL;
+   Só cria a coluna nova, não apaga nada.
+
+
+PASSO 4 - RENDER E BREVO
+   - O SMS usa a mesma BREVO_API_KEY que já está no Environment do Render.
+     Opcional: SMS_REMETENTE = Peak
+   - No Brevo, compre créditos de SMS (My Plan) para funcionar de verdade.
+     Sem créditos, o código aparece no terminal do servidor.
+   - Para testar no computador: arquivo .env ao lado do app.js com
+         BREVO_API_KEY=xkeysib-XXXX
+     e ligue com:  node --env-file=.env app.js
+
+
+PASSO 5 - Commit no GitHub. O Render publica sozinho.
