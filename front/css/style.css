@@ -1,4 +1,4 @@
-/* =====================================================
+ /* =====================================================
    STYLE.CSS - o que é igual em TODAS as páginas de dentro
    (as páginas com o menu do lado). O que é só de uma página
    fica no arquivo dela: inicio.css, campanhas.css, fichas.css...
@@ -165,25 +165,24 @@ p{
         2. por cima, um degradê cor de areia: fechado em cima (onde ficam os links)
            e sumindo aos poucos até mostrar a boneca. -- */
 .lateral{
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    bottom: 14px;
+      position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
     z-index: 40;
     display: flex;
+    width: 261px;
     flex-direction: column;
-    width: calc(var(--lateral) - 28px);
+    /* width: calc(var(--lateral) - 28px); */
     padding: 22px 14px;
     overflow: hidden;
     border: 1px solid var(--vidro-borda);
-    border-radius: 28px;
+    /* border-radius: 28px; */
     background-color: #fcf1f1;
-    background-image:
-        linear-gradient(180deg, #fcf1f1 0%, #fcf1f1 38%, rgba(252, 241, 241, 0.82) 45%, rgba(252, 241, 241, 0.30) 54%, rgba(252, 241, 241, 0) 62%),
-        url(../img/mascote/m1.jpg);
+    background-image: linear-gradient(180deg, #fcf1f1 0%, #fcf1f1 38%, rgba(252, 241, 241, 0.82) 45%, rgba(252, 241, 241, 0.30) 54%, rgba(252, 241, 241, 0) 62%), url(../img/mascote/m1.jpg);
     background-repeat: no-repeat;
-    background-size: 100% 100%, auto 62%;       /* degradê: o menu todo | boneca: 62% da altura */
-    background-position: 0 0, 85% 100%;         /* boneca: puxada para a direita (o rosto fica no meio) e presa embaixo */
+    background-size: 100% 100%, auto 62%;
+    background-position: 0 0, 85% 100%;
     box-shadow: var(--sombra-forte), var(--brilho);
     backdrop-filter: var(--desfoque);
 }
