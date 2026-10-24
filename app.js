@@ -94,7 +94,14 @@ function entregarArquivo(pathname, res){
             return paginaNaoEncontrada(res)
         }
 
-        res.writeHead(200, {'Content-Type': tipo})
+        // fotos, vídeos e sons ficam guardados no navegador por 7 dias:
+        // quem volta ao site não baixa tudo de novo (economiza a banda do Render)
+        var cache = 'no-cache'
+        if(/\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|mp3)$/i.test(caminho)){
+            cache = 'public, max-age=604800'
+        }
+
+        res.writeHead(200, {'Content-Type': tipo, 'Cache-Control': cache})
         res.end(conteudo)
     })
 }
@@ -1083,11 +1090,22 @@ process.on('uncaughtException', (erro)=>{
     console.log('Erro:', erro.message)
 })
 
-const server = http.createServer(callback)
+// =====================================================
+// LIGAR O SERVIDOR (computador, Render) OU ENTREGAR PARA A VERCEL
+// =====================================================
+// "node app.js" (no computador e no Render): require.main é este arquivo,
+// então criamos o servidor e ficamos esperando pedidos na porta.
+// Na Vercel quem roda é o api/index.js: ele só "pega" o callback abaixo
+// (module.exports) e a própria Vercel chama callback(req, res) a cada pedido.
+if(require.main === module){
+    const server = http.createServer(callback)
 
-// VERSÃO SERVIDOR: o Render escolhe a porta e avisa pelo process.env.PORT
-const PORTA = process.env.PORT || 3000
+    // VERSÃO SERVIDOR: o Render escolhe a porta e avisa pelo process.env.PORT
+    const PORTA = process.env.PORT || 3000
 
-server.listen(PORTA, ()=>{
-    console.log('Servidor rodando na porta ' + PORTA)
-})
+    server.listen(PORTA, ()=>{
+        console.log('Servidor rodando na porta ' + PORTA)
+    })
+}
+
+module.exports = callback
