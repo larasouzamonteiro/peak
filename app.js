@@ -323,6 +323,18 @@ const callback = (req, res)=>{
                 })
             })
 
+        // ----- amigos do perfil: /usuario/companheiros?id=3 -----
+        // quem já esteve numa campanha junto com a pessoa (Mestre ou jogador).
+        // A lista é a mesma para qualquer pessoa logada que abrir o perfil.
+        }else if(rota.pathname == '/usuario/companheiros'){
+
+            exigirLogin(req, res, function(usuario){
+                CampanhasBD.getCompanheiros(rota.query.id, function(companheiros){
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(companheiros))
+                })
+            })
+
         // ----- comunidade -----
         }else if(rota.pathname == '/comunidade/pessoas'){
 
@@ -519,7 +531,16 @@ const callback = (req, res)=>{
             }
 
             // o endereço de quem está pedindo (para bloquear tentativas repetidas)
-            var ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress).split(',')[0]
+            // No Render o pedido passa por um proxy, que coloca o IP real no cabeçalho
+            // X-Forwarded-For. Mas o navegador pode mandar esse cabeçalho já preenchido
+            // com qualquer coisa (IP falso)! O proxy ACRESCENTA o IP real NO FINAL da lista,
+            // então o último item é o único confiável. Sem o cabeçalho (no computador),
+            // usa o endereço da conexão.
+            var ip = req.socket.remoteAddress
+            if(req.headers['x-forwarded-for']){
+                var listaIps = String(req.headers['x-forwarded-for']).split(',')
+                ip = listaIps[listaIps.length - 1].trim()
+            }
 
             // ----- cadastro e login (não pedem token) -----
             if(rota.pathname == '/registro'){

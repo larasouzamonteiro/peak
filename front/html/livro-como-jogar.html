@@ -71,8 +71,10 @@
         </div>
       </div>
 
-      <!-- a narração deste livro: grave e salve em front/sons/livro-como-jogar.mp3 -->
-      <audio id="audio" src="../sons/livro-como-jogar.mp3" onended="audioTerminou()"></audio>
+      <!-- a narração deste livro: grave e salve em front/sons/livro-como-jogar.mp3
+           Enquanto o arquivo não existir, o historia.js esconde o botão "Ouvir".
+           preload="metadata" = o navegador só confere se o arquivo existe (não baixa o áudio todo). -->
+      <audio id="audio" src="../sons/livro-como-jogar.mp3" preload="metadata" onended="audioTerminou()"></audio>
       <p class="alerta" id="avisoAudio"></p>
 
       <!-- O LIVRO: página da esquerda = arte e sumário (links #cap-1, #cap-2...)

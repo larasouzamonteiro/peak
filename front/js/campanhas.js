@@ -131,7 +131,16 @@ function abrirOficial(id){
             var c = oficiais[i]
 
             document.getElementById('oficialNome').textContent = c.nome
-            document.getElementById('oficialCapa').src = c.imagemCapa
+
+            // sem capa, o src ficaria "null" e apareceria o ícone de imagem quebrada:
+            // então a imagem só aparece quando a campanha tem capa (igual a capa do perfil)
+            if(c.imagemCapa){
+                document.getElementById('oficialCapa').src = c.imagemCapa
+                document.getElementById('oficialCapa').classList.remove('oculto')
+            }else{
+                document.getElementById('oficialCapa').classList.add('oculto')
+            }
+
             document.getElementById('oficialDescricao').textContent = c.descricao
             document.getElementById('oficialHistoria').textContent = c.historia
             document.getElementById('oficialCriadaPor').textContent = c.criadaPor ? 'Criada por ' + c.criadaPor : ''

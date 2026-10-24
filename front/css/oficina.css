@@ -449,8 +449,11 @@
 
 /* ---------- 10. TELAS MENORES ---------- */
 @media (max-width: 1100px){
+    /* VISUAL: minmax(0, 1fr) deixa a coluna encolher até caber na tela.
+       Só "1fr" não deixa a coluna ficar menor que o conteúdo (nomes como "Sacerdotisa"),
+       e o card passava da tela no celular (rolagem para o lado). */
     .oficina .oficina-grade{
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .oficina .resumo{
@@ -459,10 +462,25 @@
 
     .oficina .galeria,
     .oficina .itens-grade{
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .oficina .escolhas-retrato{
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* VISUAL: celular estreito: 3 retratos por linha, com menos espaço entre eles,
+   e o nome do retrato quebra a linha em vez de empurrar o card para fora da tela */
+@media (max-width: 560px){
+    .oficina .escolhas-retrato{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .oficina .retrato-opcao{
+        min-width: 0;
+        text-align: center;
+        overflow-wrap: anywhere;
     }
 }

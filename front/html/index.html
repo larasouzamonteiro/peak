@@ -21,41 +21,50 @@
   <section class="capa">
 
     <!-- ===== FUNDOS DO COMPUTADOR =====
-         São 3 versões. Só UMA pode ficar sem comentário (comentário = o que está entre os sinais de abrir e fechar comentário do HTML).
-         Cada versão tem 6 fundos, um para cada item do menu, na mesma ordem. -->
+         São 4 versões. Só UMA pode ficar sem comentário (comentário = o que está entre os sinais de abrir e fechar comentário do HTML).
+         Cada versão tem 6 fundos, um para cada item do menu, na mesma ordem
+         (INÍCIO, CAMPANHAS, COMUNIDADE, FICHAS, SOBRE NÓS, ENTRAR). -->
     <div class="fundos-pc">
 
-      <!-- VERSÃO VÍDEOS (é a que está valendo) -->
-      <video class="fundo" poster="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/webm"><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/spirit-blossom-ahri-league-of-legends-1-moewalls-com.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/spirit-blossom-ahri-league-of-legends-1-moewalls-com.mp4" type="video/webm"><source src="../img/index/videos/spirit-blossom-ahri-league-of-legends-1-moewalls-com.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/mythmaker-irelia-lol.3840x2160.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/mythmaker-irelia-lol.3840x2160.mp4" type="video/webm"><source src="../img/index/videos/mythmaker-irelia-lol.3840x2160.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/dawnbringer-soraka-league-of-legends-1-moewalls-com.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/dawnbringer-soraka-league-of-legends-1-moewalls-com.mp4" type="video/webm"><source src="../img/index/videos/dawnbringer-soraka-league-of-legends-1-moewalls-com.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/lux-league-of-legends-moewalls-com.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/lux-league-of-legends-moewalls-com.mp4" type="video/webm"><source src="../img/index/videos/lux-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/pool-party-taliyah-league-of-legends-moewalls-com.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/pool-party-taliyah-league-of-legends-moewalls-com.mp4" type="video/webm"><source src="../img/index/videos/pool-party-taliyah-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
+      <!-- VERSÃO VÍDEOS LEVES (é a que está valendo)
+           Vídeos de 1 a 2 MB: o .webm vem primeiro (mais leve) e o .mp4 é reserva
+           para navegador que não abre webm. O poster é a foto (.jpg) que aparece
+           enquanto o vídeo não carrega. preload="none" = só baixa quando for tocar. -->
+
+      <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/leonaHD.mp4" type="video/webm"><source src="../img/index/videos/leonaHD.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ahriHD.mp4" type="video/webm"><source src="../img/index/videos/ahriHD.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ireliaHD.mp4" type="video/webm"><source src="../img/index/videos/ireliaHD.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/sorakaHD.mp4" type="video/webm"><source src="../img/index/videos/sorakaHD.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LuxHD.mp4" type="video/webm"><source src="../img/index/videos/LuxHD.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/akaliHD.mp4" muted loop playsinline preload="none"><source src="../img/index/videos/AkaliHD.mp4" type="video/webm"><source src="../img/index/videos/akaliHD.mp4" type="video/mp4"></video>
+
+      <!-- VERSÃO VÍDEOS ORIGINAIS (pesados, de 33 a 73 MB cada: demoram muito para abrir)
+           Ficou guardada só como opção. Para usar: coloque os vídeos leves acima
+           dentro de um comentário e tire o comentário destas 6 linhas.
+           Esses vídeos só existem em .mp4, então só tem um <source> com type="video/mp4".
+           O poster usa as fotos .jpg dos vídeos leves (o 6º usa a v1.jpg).
+
+      <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/spirit-blossom-ahri-league-of-legends-1-moewalls-com.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/mythmaker-irelia-lol.3840x2160.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/dawnbringer-soraka-league-of-legends-1-moewalls-com.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/lux-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v1.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/pool-party-taliyah-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
+      -->
 
       <!-- VERSÃO FOTOS 1 (dragão)
-           Para usar: coloque os 6 <video> acima dentro de um comentário
-           e tire o comentário destas 6 linhas. 
+           Para usar: coloque os 6 <video> leves acima dentro de um comentário
+           e tire o comentário destas 6 linhas.
       <img class="fundo" src="../img/index/fotos1/1.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/2.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/3.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/4.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/5.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/6.jpg" alt="">
-
-
-      videos leves
-         <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/leona.webm" type="video/webm"><source src="../img/index/videos/leona.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ahri.webm" type="video/webm"><source src="../img/index/videos/ahri.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/irelia.webm" type="video/webm"><source src="../img/index/videos/irelia.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/soraka.webm" type="video/webm"><source src="../img/index/videos/soraka.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/lux.webm" type="video/webm"><source src="../img/index/videos/lux.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/taliyah.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/taliyah.webm" type="video/webm"><source src="../img/index/videos/taliyah.mp4" type="video/mp4"></video>
-
       -->
 
       <!-- VERSÃO FOTOS 2 (personagens)
-           Para usar: coloque os 6 <video> acima dentro de um comentário
+           Para usar: coloque os 6 <video> leves acima dentro de um comentário
            e tire o comentário destas 6 linhas.
       <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
       <img class="fundo" src="../img/index/fotos2/2.jpg" alt="">
@@ -66,24 +75,29 @@
       -->
     </div>
 
-    <!-- ===== FUNDOS DO CELULAR (sempre fotos; os vídeos nem carregam no celular) ===== -->
+    <!-- ===== FUNDOS DO CELULAR =====
+         São 6 fundos, um para cada item do menu, na mesma ordem do computador.
+         O script do fim da página dá play no vídeo escolhido também no celular,
+         por isso aqui usamos os mesmos vídeos leves. Com preload="none" o celular
+         só baixa o vídeo do item escolhido; os outros mostram só o poster (.jpg). -->
     <div class="fundos-cel">
-<img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
-       <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/leona.webm" type="video/webm"><source src="../img/index/videos/leona.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ahri.webm" type="video/webm"><source src="../img/index/videos/ahri.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/irelia.webm" type="video/webm"><source src="../img/index/videos/irelia.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/soraka.webm" type="video/webm"><source src="../img/index/videos/soraka.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/lux.webm" type="video/webm"><source src="../img/index/videos/lux.mp4" type="video/mp4"></video>
-    <video class="fundo" poster="../img/index/videos/taliyah.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/taliyah.webm" type="video/webm"><source src="../img/index/videos/taliyah.mp4" type="video/mp4"></video>
-<!-- FOTOS 1 (está valendo no celular) 
+
+      <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/leona.webm" type="video/webm"><source src="../img/index/videos/leona.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ahri.webm" type="video/webm"><source src="../img/index/videos/ahri.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/irelia.webm" type="video/webm"><source src="../img/index/videos/irelia.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/soraka.webm" type="video/webm"><source src="../img/index/videos/soraka.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/lux.webm" type="video/webm"><source src="../img/index/videos/lux.mp4" type="video/mp4"></video>
+      <video class="fundo" poster="../img/index/videos/v1.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/v1.webm" type="video/webm"><source src="../img/index/videos/v1.mp4" type="video/mp4"></video>
+
+      <!-- FOTOS 1: para usar, comente os 6 vídeos de cima e tire o comentário destas
       <img class="fundo" src="../img/index/fotos1/1.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/2.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/3.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/4.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/5.jpg" alt="">
       <img class="fundo" src="../img/index/fotos1/6.jpg" alt="">
--->
-      <!-- FOTOS 2: para usar, comente as 6 de cima e tire o comentário destas
+      -->
+      <!-- FOTOS 2: para usar, comente os 6 vídeos de cima e tire o comentário destas
       <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
       <img class="fundo" src="../img/index/fotos2/2.jpg" alt="">
       <img class="fundo" src="../img/index/fotos2/3.jpg" alt="">
@@ -117,7 +131,8 @@
     </ul>
 
     <div class="dica"><i>↑</i><i>↓</i> ESCOLHER &nbsp; <i>ENTER</i> CONFIRMAR &nbsp; ou clique</div>
-    <a class="rolar" href="#conhecer">FAÇA A SUA CONTA E DESCUBRA<br>⌄</a>
+    <!-- leva para o login já aberto no cadastro (a parte #conhecer da página está comentada) -->
+    <a class="rolar" href="login.html?cadastro=sim">FAÇA A SUA CONTA E DESCUBRA<br>⌄</a>
   </section>
 
 <!--

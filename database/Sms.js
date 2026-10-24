@@ -10,7 +10,9 @@ class Sms{
 
     // telefone: só números, com o 55 na frente (ex.: '5548999998888')
     // codigo:   os 6 números (o mesmo tipo de código do e-mail)
-    static enviarCodigo(telefone, codigo){
+    // seFalhar: função chamada se o SMS NÃO sair (ex.: conta do Brevo sem créditos de SMS).
+    //           Quem chama usa para mandar o código por e-mail (plano B), senão o código se perde.
+    static enviarCodigo(telefone, codigo, seFalhar){
 
         // sem chave (no computador sem o .env): mostra o código no terminal, igual o e-mail faz
         if(smsConfig.brevoChave == ''){
@@ -36,10 +38,18 @@ class Sms{
             if(resposta.ok){
                 console.log('SMS enviado (Brevo) para ' + telefone)
             }else{
-                resposta.text().then((texto) => console.log('O Brevo recusou o SMS:', texto))
+                resposta.text().then(function(texto){
+                    console.log('O Brevo recusou o SMS:', texto)
+                    console.log('Plano B: mandando o código por e-mail')
+                    if(seFalhar){ seFalhar() }
+                })
             }
         })
-        .catch((erro) => console.log('Não consegui falar com o Brevo:', erro.message))
+        .catch(function(erro){
+            console.log('Não consegui falar com o Brevo (SMS):', erro.message)
+            console.log('Plano B: mandando o código por e-mail')
+            if(seFalhar){ seFalhar() }
+        })
     }
 }
 

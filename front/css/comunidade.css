@@ -203,4 +203,23 @@
     .pessoa-card .info{
         padding: 30px 10px 10px;
     }
+
+    /* VISUAL: no card pequeno os dois selos não cabem lado a lado e ficavam um em cima
+       do outro. Aqui eles ficam um embaixo do outro, no canto esquerdo. */
+    .pessoa-card .em-comum,
+    .selo-combina{
+        left: 8px;
+        right: auto;
+        padding: 2px 7px;
+        font-size: 0.6rem;
+        white-space: nowrap;
+    }
+
+    .pessoa-card .em-comum{
+        top: 8px;
+    }
+
+    .selo-combina{
+        top: 30px;
+    }
 }

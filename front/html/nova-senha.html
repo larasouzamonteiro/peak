@@ -21,9 +21,10 @@
   </div>
 
   <!-- ESQUECI MINHA SENHA: são 2 passos na mesma página.
-         1. a pessoa digita o e-mail e o servidor manda um código (função pedirCodigoSenha do js/login.js)
+         1. a pessoa digita o e-mail e o servidor manda um código (função pedirCodigoSenha do js/nova-senha.js)
          2. ela digita o código e a senha nova (função trocarSenha)
-       O passo 2 começa escondido (classe "oculto") e aparece quando o código é enviado. -->
+       O passo 2 começa escondido (classe "oculto") e aparece quando o código é enviado.
+       O Enter nos campos faz o mesmo que o botão do passo (apertouEnter, no js/script.js). -->
   <div class="entrada-caixa">
 
     <!-- ===== PASSO 1: PEDIR O CÓDIGO ===== -->
@@ -33,10 +34,10 @@
 
       <div class="campo">
         <label class="rotulo" for="emailSenha">E-mail</label>
-        <input class="input" type="email" id="emailSenha" autocomplete="email">
+        <input class="input" type="email" id="emailSenha" onkeydown="apertouEnter(event, pedirCodigoSenha)" autocomplete="email">
       </div>
 
-      <!-- por onde o código vai chegar (função escolherVia do js/login.js).
+      <!-- por onde o código vai chegar (função escolherVia do js/nova-senha.js).
            SMS só funciona se a pessoa colocou o celular no cadastro; se não, vai por e-mail. -->
       <p class="rotulo">Receber o código por</p>
       <div class="entrada-abas">
@@ -59,17 +60,17 @@
 
       <div class="campo">
         <label class="rotulo" for="codigoSenha">Código</label>
-        <input class="input" type="text" id="codigoSenha" maxlength="6" placeholder="000000">
+        <input class="input" type="text" id="codigoSenha" onkeydown="apertouEnter(event, trocarSenha)" maxlength="6" placeholder="000000">
       </div>
 
       <div class="linha-campos">
         <div class="campo">
           <label class="rotulo" for="senhaNova">Senha nova</label>
-          <input class="input" type="password" id="senhaNova" autocomplete="new-password">
+          <input class="input" type="password" id="senhaNova" onkeydown="apertouEnter(event, trocarSenha)" autocomplete="new-password">
         </div>
         <div class="campo">
           <label class="rotulo" for="senhaNova2">Confirmar senha</label>
-          <input class="input" type="password" id="senhaNova2" autocomplete="new-password">
+          <input class="input" type="password" id="senhaNova2" onkeydown="apertouEnter(event, trocarSenha)" autocomplete="new-password">
         </div>
       </div>
 

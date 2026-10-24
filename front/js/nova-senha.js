@@ -1,7 +1,6 @@
 // nova-senha.js  (página nova-senha.html)
 // "Esqueci minha senha": pede o código (por e-mail ou SMS) e troca a senha.
-// Antes isto ficava no final do login.js; agora tem arquivo próprio,
-// assim o login.js de vocês não precisa mudar nesta parte.
+// Este arquivo é carregado só pelo nova-senha.html (o login.js cuida do login e do cadastro).
 
 // ---------- ESQUECI MINHA SENHA (nova-senha.html) ----------
 // por onde o código vai: 'email' ou 'sms' (muda nos botões E-mail | SMS)

@@ -604,6 +604,11 @@ a.palavra:hover{
         min-height: 360px;
     }
 
+    /* VISUAL: 4 colunas não cabem em tela média; ficam 2 */
+    .dicionario-pagina .dicionario{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .pagina-dir{
         padding: 36px 32px 28px;
     }
@@ -626,6 +631,16 @@ a.palavra:hover{
 
     .dicionario,
     .equipe{
+        grid-template-columns: 1fr;
+    }
+
+    /* VISUAL: o dicionário do fim da página tem 4 colunas numa regra mais forte
+       (.dicionario-pagina .dicionario); sem esta linha ele vazava para o lado no celular */
+    .dicionario-pagina{
+        padding: 26px 18px 28px;
+    }
+
+    .dicionario-pagina .dicionario{
         grid-template-columns: 1fr;
     }
 

@@ -147,6 +147,19 @@ class FichasBD{
             }
         }
 
+        // tira os ids repetidos ([1, 1] vira [1]): o mesmo item não entra duas vezes
+        var semRepetir = []
+
+        for(var i = 0; i < itemIds.length; i++){
+            var itemId = Number(itemIds[i])
+
+            if(semRepetir.indexOf(itemId) == -1){
+                semRepetir.push(itemId)
+            }
+        }
+
+        itemIds = semRepetir
+
         if(itemIds.length > LIMITE_ITENS){
             return callback({'error': 'Escolha no máximo ' + LIMITE_ITENS + ' itens'})
         }
@@ -186,7 +199,30 @@ class FichasBD{
                 return callback({'error': 'Raça ou classe não encontrada'})
             }
 
-            FichasBD.inserirFicha(nova, itemIds, callback)
+            if(itemIds.length == 0){
+                return FichasBD.inserirFicha(nova, itemIds, callback)
+            }
+
+            // confere ANTES de gravar se todos os itens existem.
+            // Se algum não existir, nada é gravado (senão ficava uma ficha sem os itens).
+            // um "?" para cada item: "id in (?, ?, ?)"
+            var marcadores = []
+
+            for(var i = 0; i < itemIds.length; i++){
+                marcadores.push('?')
+            }
+
+            var sqlItens = 'select count(*) as total from itens where id in (' + marcadores.join(', ') + ')'
+
+            connection.query(sqlItens, itemIds, function(error, results){
+                if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+                if(results[0].total != itemIds.length){
+                    return callback({'error': 'Item não encontrado'})
+                }
+
+                FichasBD.inserirFicha(nova, itemIds, callback)
+            })
         })
     }
 

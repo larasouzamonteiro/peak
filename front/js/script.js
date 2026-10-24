@@ -20,29 +20,38 @@ var SERVIDOR = ''
 // GET: busca dados. Ex.: buscar('/fichas', function(fichas){ ... })
 // O token vai no cabeçalho Authorization para o servidor saber quem está pedindo.
 function buscar(rota, depois){
+    // em que parte o pedido está (explicado em falhaNoPedido, mais abaixo)
+    var etapa = 'conexao'
+
     fetch(SERVIDOR + rota, {
         method: 'GET',
         headers: {
             'Authorization': localStorage.getItem('token') || ''
         }
     })
-    .then((response) => response.json())
-    .then((dados) => {
+    .then(function(response){
+        etapa = 'resposta'
+        return response.json()
+    })
+    .then(function(dados){
         // token velho ou errado: volta para o login
         if(dados.sair){
             sair()
             return
         }
 
+        etapa = 'pagina'
         depois(dados)
     })
-    .catch(() => {
-        alert('Não consegui falar com o servidor. Tente de novo em 1 minuto (ele pode estar acordando).')
+    .catch(function(erro){
+        falhaNoPedido(erro, etapa)
     })
 }
 
 // POST: manda dados. Ex.: enviar('/fichas/criar', {nome: 'Aria'}, function(dados){ ... })
 function enviar(rota, corpo, depois){
+    var etapa = 'conexao'
+
     fetch(SERVIDOR + rota, {
         method: 'POST',
         headers: {
@@ -51,18 +60,63 @@ function enviar(rota, corpo, depois){
         },
         body: JSON.stringify(corpo)
     })
-    .then((response) => response.json())
-    .then((dados) => {
+    .then(function(response){
+        etapa = 'resposta'
+        return response.json()
+    })
+    .then(function(dados){
         if(dados.sair){
             sair()
             return
         }
 
+        etapa = 'pagina'
         depois(dados)
     })
-    .catch(() => {
-        alert('Não consegui falar com o servidor. Tente de novo em 1 minuto (ele pode estar acordando).')
+    .catch(function(erro){
+        falhaNoPedido(erro, etapa)
     })
+}
+
+// Quando a pessoa troca de página (clicou num link, ou o JS mudou o
+// window.location), o navegador cancela os pedidos que ainda não voltaram.
+// Isso cai no .catch como se fosse erro, mas não é: então guardamos que a
+// página está saindo e não mostramos aviso nenhum nesse caso.
+var saindoDaPagina = false
+
+window.addEventListener('beforeunload', function(){
+    saindoDaPagina = true
+})
+window.addEventListener('pagehide', function(){
+    saindoDaPagina = true
+})
+// voltou para a página pela seta "voltar" do navegador: ela vale de novo
+window.addEventListener('pageshow', function(){
+    saindoDaPagina = false
+})
+
+// O que fazer quando um pedido dá erro. A "etapa" diz onde parou:
+//   'conexao'  -> nem chegou resposta: aí sim o servidor está fora do ar (ou sem internet)
+//   'resposta' -> o servidor respondeu, mas não com JSON (ex.: rota que não existe)
+//   'pagina'   -> o servidor respondeu certo; o erro foi no JavaScript da própria página
+function falhaNoPedido(erro, etapa){
+    if(saindoDaPagina){
+        return
+    }
+
+    // erro do JavaScript da página: mostra no console (F12) e não culpa o servidor
+    if(etapa == 'pagina'){
+        console.error(erro)
+        return
+    }
+
+    if(etapa == 'resposta'){
+        console.error(erro)
+        alert('O servidor respondeu com um erro. Tente de novo.')
+        return
+    }
+
+    alert('Não consegui falar com o servidor. Tente de novo em 1 minuto (ele pode estar acordando).')
 }
 
 
@@ -160,6 +214,16 @@ function formatarData(data){
 // O que vem depois do "?" no endereço. Ex.: em ficha.html?id=3, parametro('id') devolve '3'
 function parametro(nome){
     return new URLSearchParams(window.location.search).get(nome)
+}
+
+// Tecla Enter nas páginas sem <form> (login, confirmar, nova-senha): o Enter
+// não aperta o botão sozinho. O input chama no onkeydown, por exemplo:
+//   <input ... onkeydown="apertouEnter(event, login)">
+// e, se a tecla foi Enter, roda a mesma função do botão.
+function apertouEnter(evento, funcao){
+    if(evento.key == 'Enter'){
+        funcao()
+    }
 }
 
 // Janelas (as caixas que aparecem por cima da página): só colocam e tiram a classe "oculto"

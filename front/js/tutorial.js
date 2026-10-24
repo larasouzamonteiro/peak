@@ -45,15 +45,56 @@ function mostrarFala(numero){
     // tira o destaque de todos os links e coloca só no link desta fala
     var links = document.querySelectorAll('.lateral-link')
 
+    var destaque = null
+
     for(var i = 0; i < links.length; i++){
         links[i].classList.toggle('tut-destaque', fala.alvo != '' && links[i].getAttribute('href') == fala.alvo)
+
+        if(fala.alvo != '' && links[i].getAttribute('href') == fala.alvo){
+            destaque = links[i]
+        }
     }
+
+    mostrarItemNoCelular(destaque)
 
     // na última fala o botão vira "Terminar" e o "Pular" some
     var ultima = (numero == falas.length - 1)
 
     document.getElementById('tutProximo').textContent = ultima ? 'Terminar' : 'Próximo ›'
     document.getElementById('tutPular').classList.toggle('oculto', ultima)
+}
+
+// VISUAL (celular): na barra de baixo só aparecem Início, Campanhas, Fichas e o "Mais".
+// Bestiário, Comunidade e Configurações ficam escondidos dentro do "Mais".
+// Então, se o item da fala está escondido, o tutorial abre o "Mais" (abrirMais do script.js)
+// e fecha de novo quando a fala seguinte não precisar dele.
+var tutAbriuMais = false
+
+function mostrarItemNoCelular(link){
+    var lateral = document.querySelector('.lateral')
+
+    // fecha o "Mais" que o próprio tutorial abriu na fala anterior
+    if(tutAbriuMais && lateral.classList.contains('mais-aberto')){
+        abrirMais()
+    }
+    tutAbriuMais = false
+
+    // offsetParent == null quer dizer que o link está escondido (display: none)
+    if(link != null && link.offsetParent == null && window.innerWidth <= 760){
+        abrirMais()
+        tutAbriuMais = true
+        link.scrollIntoView({block: 'nearest'})
+    }
+
+    // a caixa da Zero fica embaixo; se o item aceso estiver na metade de baixo
+    // da tela (ex.: Configurações no "Mais"), a caixa sobe para o topo e não cobre o item
+    var caixaEmCima = false
+
+    if(link != null && tutAbriuMais){
+        caixaEmCima = link.getBoundingClientRect().top > window.innerHeight / 2
+    }
+
+    document.getElementById('tutorial').classList.toggle('caixa-em-cima', caixaEmCima)
 }
 
 function proximaFala(){
@@ -74,6 +115,8 @@ function terminarTutorial(){
     for(var i = 0; i < links.length; i++){
         links[i].classList.remove('tut-destaque')
     }
+
+    mostrarItemNoCelular(null)      // fecha o "Mais" se o tutorial abriu
 
     enviar('/tutorial/visto', {}, function(dados){
 

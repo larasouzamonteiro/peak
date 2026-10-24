@@ -119,6 +119,39 @@ class CampanhasBD{
         connection.end()
     }
 
+    // Companheiros de mesa da pessoa (aba Amigos do perfil): todo mundo que está
+    // em alguma campanha junto com ela, como Mestre ou como jogador.
+    // Não depende de quem está olhando: qualquer pessoa logada vê a mesma lista.
+    // Só devolve id, nome e foto (nada de e-mail, telefone, token ou senha).
+    //   1ª parte: os Mestres das campanhas em que a pessoa joga
+    //   2ª parte: os jogadores das campanhas em que a pessoa é Mestre ou joga
+    static getCompanheiros(usuarioId, callback){
+        const connection = CampanhasBD.connect()
+
+        var sql = `
+            select distinct u.id, u.nomeUsuario, u.fotoPerfil
+            from usuarios u
+            where u.id <> ?
+            and (
+                u.id in (select c.usuarioMestreId from campanhas c
+                         join campanha_jogadores cj on cj.campanhaId = c.id
+                         where cj.usuarioId = ?)
+                or
+                u.id in (select cj.usuarioId from campanha_jogadores cj
+                         where cj.campanhaId in (select id from campanhas where usuarioMestreId = ?
+                                                 union select campanhaId from campanha_jogadores where usuarioId = ?))
+            )
+            order by u.nomeUsuario`
+
+        connection.query(sql, [usuarioId, usuarioId, usuarioId, usuarioId], function(error, results){
+            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            callback(results)
+        })
+
+        connection.end()
+    }
+
     // Os monstros que o Mestre colocou na campanha.
     // linhaId = id da linha em campanha_monstros (é ele que o botão Remover usa)
     // (versão servidor: só quem participa da campanha consegue ver)
@@ -433,6 +466,11 @@ class CampanhasBD{
         connection.query(sql, valores, (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
+            // nenhuma linha mudou = esse id não existe (ou não é oficial)
+            if(results.affectedRows == 0){
+                return callback({'error': 'Campanha oficial não encontrada'})
+            }
+
             callback({'message': 'Campanha oficial salva!'})
         })
 
@@ -445,6 +483,11 @@ class CampanhasBD{
 
         connection.query('delete from campanhas where id = ? and oficial = 1', [id], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+
+            // nenhuma linha apagada = esse id não existe (ou não é oficial)
+            if(results.affectedRows == 0){
+                return callback({'error': 'Campanha oficial não encontrada'})
+            }
 
             callback({'message': 'Campanha oficial excluída!'})
         })

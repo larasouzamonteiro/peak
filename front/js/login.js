@@ -1,6 +1,7 @@
-// login.js  (páginas login.html, confirmar.html e nova-senha.html)
-// Entrar, criar a conta, confirmar o código que chegou no e-mail e trocar a senha esquecida.
+// login.js  (páginas login.html e confirmar.html)
+// Entrar, criar a conta e confirmar o código que chegou no e-mail.
 // No login.html ficam os dois formulários (login e cadastro) dentro da mesma caixa.
+// O "esqueci minha senha" (nova-senha.html) tem arquivo próprio: js/nova-senha.js.
 
 // Só no login.html: o botão "criar conta" da página de propaganda abre
 // login.html?cadastro=sim, e aí a caixa já começa no cadastro
@@ -13,6 +14,9 @@ if(document.getElementById('caixa') != null && parametro('cadastro') == 'sim'){
 if(document.getElementById('codigo') != null && parametro('email') != null){
     document.getElementById('email').value = parametro('email')
 }
+
+// Tecla Enter: os inputs do login.html e do confirmar.html chamam apertouEnter()
+// (está no script.js) para o Enter fazer o mesmo que o botão.
 
 // ---------- LOGIN (login.html) ----------
 function login(){
@@ -28,7 +32,9 @@ function login(){
             // a conta existe, mas o e-mail ainda não foi confirmado: vai para a página do código
             if(dados.confirmar){
                 alert(dados.error)
-                window.location.href = 'confirmar.html?email=' + dados.email
+                // encodeURIComponent: um e-mail com "+" (ex.: a+b@x.com) chegaria
+                // no confirmar.html com espaço no lugar do "+" e o código daria errado
+                window.location.href = 'confirmar.html?email=' + encodeURIComponent(dados.email)
                 return
             }
 
@@ -94,7 +100,8 @@ function cadastrar(){
         }
 
         alert(dados.message)
-        window.location.href = 'confirmar.html?email=' + email
+        // encodeURIComponent: mesmo motivo do login (o "+" do e-mail não pode virar espaço)
+        window.location.href = 'confirmar.html?email=' + encodeURIComponent(email)
     })
 }
 
@@ -129,55 +136,5 @@ function reenviar(){
         }
 
         document.getElementById('alert').textContent = resposta.message
-    })
-}
-
-
-// ---------- ESQUECI MINHA SENHA (nova-senha.html) ----------
-// Passo 1: manda o e-mail. O servidor guarda um código e manda por e-mail (Brevo).
-function pedirCodigoSenha(){
-    var email = document.getElementById('emailSenha').value.trim()
-
-    document.getElementById('alertPedir').textContent = ''
-
-    enviar('/senha/pedir', {email: email}, function(resposta){
-
-        if(resposta.hasOwnProperty('error')){
-            document.getElementById('alertPedir').textContent = resposta.error
-            document.getElementById('alertTrocar').textContent = resposta.error
-            return
-        }
-
-        // esconde o passo 1 e mostra o passo 2
-        document.getElementById('emailMostrado').textContent = email
-        document.getElementById('passoPedir').classList.add('oculto')
-        document.getElementById('passoTrocar').classList.remove('oculto')
-        document.getElementById('alertTrocar').textContent = ''
-    })
-}
-
-// Passo 2: o código que chegou + a senha nova (duas vezes)
-function trocarSenha(){
-    var email = document.getElementById('emailSenha').value.trim()
-    var codigo = document.getElementById('codigoSenha').value.trim()
-    var senha = document.getElementById('senhaNova').value
-    var senha2 = document.getElementById('senhaNova2').value
-
-    if(senha != senha2){
-        document.getElementById('alertTrocar').textContent = 'Senhas não conferem'
-        document.getElementById('senhaNova').value = ''
-        document.getElementById('senhaNova2').value = ''
-        return
-    }
-
-    enviar('/senha/trocar', {email: email, codigo: codigo, senha: senha}, function(resposta){
-
-        if(resposta.hasOwnProperty('error')){
-            document.getElementById('alertTrocar').textContent = resposta.error
-            return
-        }
-
-        alert(resposta.message)
-        window.location.href = 'login.html'
     })
 }

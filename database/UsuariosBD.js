@@ -222,7 +222,11 @@ class UsuariosBD{
 
                 // escolheu SMS e tem celular salvo: vai por SMS. Se não, vai por e-mail.
                 if(dados.via == 'sms' && pessoa.telefone){
-                    Sms.enviarCodigo(pessoa.telefone, codigo)
+                    // se o SMS falhar (ex.: sem créditos no Brevo), o código vai por e-mail
+                    // para a pessoa não ficar esperando um SMS que nunca chega
+                    Sms.enviarCodigo(pessoa.telefone, codigo, function(){
+                        Email.enviarCodigo(email, codigo, 'senha')
+                    })
                 }else{
                     Email.enviarCodigo(email, codigo, 'senha')
                 }

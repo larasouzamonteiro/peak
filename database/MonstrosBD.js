@@ -165,7 +165,12 @@ class MonstrosBD{
         connection.query(sql, valores, (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
-            callback({'message': 'Monstro oficial salvo!'})
+            // nenhuma linha mudou = esse id não existe (ou não é oficial)
+            if(results.affectedRows == 0){
+                callback({'error': 'Monstro oficial não encontrado'})
+            }else{
+                callback({'message': 'Monstro oficial salvo!'})
+            }
         })
 
         connection.end()
@@ -177,7 +182,12 @@ class MonstrosBD{
         connection.query('delete from monstros where id = ? and usuarioId is null', [id], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
-            callback({'message': 'Monstro oficial excluído!'})
+            // nenhuma linha mudou = esse id não existe (ou não é oficial)
+            if(results.affectedRows == 0){
+                callback({'error': 'Monstro oficial não encontrado'})
+            }else{
+                callback({'message': 'Monstro oficial excluído!'})
+            }
         })
 
         connection.end()

@@ -13,7 +13,7 @@
 <body class="entrada">
 
   <!-- VISUAL: o mesmo fundo e o mesmo "peak." do login -->
-  <div class="entrada-fundo"><video autoplay muted loop playsinline><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video></div>
+  <div class="entrada-fundo"><video autoplay muted loop playsinline poster="../img/index/videos/leona.jpg"><source src="../img/index/videos/leona.webm" type="video/webm"><source src="../img/index/videos/leona.mp4" type="video/mp4"></video></div>
   <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
   <div class="entrada-frase frase-login">
     <h2>peak<span>.</span></h2>
@@ -30,12 +30,12 @@
       <div class="campo">
         <label class="rotulo" for="email">E-mail</label>
         <!-- o js/login.js já escreve aqui o e-mail que veio no endereço da página -->
-        <input class="input" type="email" id="email">
+        <input class="input" type="email" id="email" onkeydown="apertouEnter(event, confirmar)">
       </div>
 
       <div class="campo">
         <label class="rotulo" for="codigo">Código</label>
-        <input class="input" type="text" id="codigo" maxlength="6" placeholder="000000">
+        <input class="input" type="text" id="codigo" onkeydown="apertouEnter(event, confirmar)" maxlength="6" placeholder="000000">
       </div>
 
       <!-- mensagens do servidor (funções confirmar e reenviar do js/login.js) -->

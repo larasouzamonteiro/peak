@@ -159,3 +159,25 @@
         left: 0;
     }
 }
+
+/* VISUAL: celular. A barra do menu fica embaixo da tela (66px + 10px de margem),
+   então a caixa da Zero sobe para ficar logo acima dela e não cobrir o item aceso. */
+@media (max-width: 760px){
+    .tut-caixa{
+        bottom: 88px;
+        min-height: 0;
+        padding: 30px 18px 16px;
+    }
+
+    .tut-texto{
+        font-size: 0.98rem;
+        line-height: 1.5;
+    }
+
+    /* com o "Mais" aberto, o menu ocupa a tela toda: se o item aceso está embaixo
+       (Configurações), o tutorial.js coloca "caixa-em-cima" e a caixa vai para o topo */
+    #tutorial.caixa-em-cima .tut-caixa{
+        top: 30px;
+        bottom: auto;
+    }
+}

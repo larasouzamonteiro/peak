@@ -15,8 +15,9 @@
 
   <!-- VISUAL: o fundo são 2 camadas com o mesmo vídeo; a segunda é espelhada.
        No modo cadastro a primeira some e a espelhada aparece (css/entrada.css). -->
-  <div class="entrada-fundo"><video autoplay muted loop playsinline><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video></div>
-  <div class="entrada-fundo espelhado"><video autoplay muted loop playsinline><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video></div>
+  <!-- VISUAL: vídeo de fundo do login (versão leve da Leona, ~1 MB; o original tinha 33 MB) -->
+  <div class="entrada-fundo"><video autoplay muted loop playsinline poster="../img/index/videos/LeonaHD.mp4"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video></div>
+  <div class="entrada-fundo espelhado"><video autoplay muted loop playsinline poster="../img/index/videos/LeonaHD.mp4"><source src="../img/index/videos/leona.webm" type="video/webm"><source src="../img/index/videos/leona.mp4" type="video/mp4"></video></div>
 
   <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
 
@@ -51,13 +52,13 @@
 
       <div class="campo">
         <label class="rotulo" for="nomeUsuario">Usuário ou e-mail</label>
-        <input class="input" type="text" id="nomeUsuario" autocomplete="username">
+        <input class="input" type="text" id="nomeUsuario" onkeydown="apertouEnter(event, login)" autocomplete="username">
       </div>
       
       <div class="campo">
         <label class="rotulo" for="senha">Senha</label>
         <div class="campo-senha">
-          <input class="input" type="password" id="senha" autocomplete="current-password">
+          <input class="input" type="password" id="senha" onkeydown="apertouEnter(event, login)" autocomplete="current-password">
           <button type="button" class="botao-olho" onclick="verSenha(this)" aria-label="Mostrar senha"><svg class="olho-aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="olho-fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" y1="2" x2="22" y2="22"/></svg></button>
         </div>
       </div>
@@ -85,30 +86,30 @@
 
       <div class="campo">
         <label class="rotulo" for="nomeCadastro">Nome de usuário</label>
-        <input class="input" type="text" id="nomeCadastro" maxlength="30" placeholder="Ex.: luna.art" autocomplete="username">
+        <input class="input" type="text" id="nomeCadastro" onkeydown="apertouEnter(event, cadastrar)" maxlength="30" placeholder="Ex.: luna.art" autocomplete="username">
       </div>
 
       <div class="campo">
         <label class="rotulo" for="emailCadastro">E-mail</label>
-        <input class="input" type="email" id="emailCadastro" maxlength="80" placeholder="voce@email.com" autocomplete="email">
+        <input class="input" type="email" id="emailCadastro" onkeydown="apertouEnter(event, cadastrar)" maxlength="80" placeholder="voce@email.com" autocomplete="email">
       </div>
        <!-- celular (opcional): só serve para recuperar a senha por SMS -->
       <div class="campo">
         <label class="rotulo" for="telefoneCadastro">Celular <span class="rotulo-opcional">(opcional, para recuperar a senha)</span></label>
-        <input class="input" type="tel" id="telefoneCadastro" maxlength="20" placeholder="(48) 99999-8888" autocomplete="tel">
+        <input class="input" type="tel" id="telefoneCadastro" onkeydown="apertouEnter(event, cadastrar)" maxlength="20" placeholder="(48) 99999-8888" autocomplete="tel">
       </div>
       <div class="linha-campos">
         <div class="campo">
           <label class="rotulo" for="senhaCadastro">Senha</label>
           <div class="campo-senha">
-            <input class="input" type="password" id="senhaCadastro" autocomplete="new-password">
+            <input class="input" type="password" id="senhaCadastro" onkeydown="apertouEnter(event, cadastrar)" autocomplete="new-password">
             <button type="button" class="botao-olho" onclick="verSenha(this)" aria-label="Mostrar senha"><svg class="olho-aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="olho-fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" y1="2" x2="22" y2="22"/></svg></button>
           </div>
         </div>
         <div class="campo">
           <label class="rotulo" for="senha2Cadastro">Confirmar senha</label>
           <div class="campo-senha">
-            <input class="input" type="password" id="senha2Cadastro" autocomplete="new-password">
+            <input class="input" type="password" id="senha2Cadastro" onkeydown="apertouEnter(event, cadastrar)" autocomplete="new-password">
             <button type="button" class="botao-olho" onclick="verSenha(this)" aria-label="Mostrar senha"><svg class="olho-aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="olho-fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" y1="2" x2="22" y2="22"/></svg></button>
           </div>
         </div>

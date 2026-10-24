@@ -15,10 +15,10 @@ function tocarAudio(){
     var botao = document.getElementById('botaoAudio')
 
     if(audio.paused){
-        // play() tenta tocar. Se o arquivo não existir, cai no .catch() e mostra o aviso.
+        // play() tenta tocar. Se o arquivo não existir, cai no .catch() e o botão some.
         audio.play().catch(function(){
-            document.getElementById('avisoAudio').textContent = 'A narração deste livro ainda não foi gravada (falta o arquivo .mp3 em front/sons).'
             audioTerminou()
+            esconderAudio()
         })
         botao.textContent = '❚❚ Pausar'
         botao.classList.add('tocando')       // o visual do botão tocando está no css/historia.css
@@ -35,6 +35,29 @@ function audioTerminou(){
 
     botao.textContent = '▶ Ouvir'
     botao.classList.remove('tocando')
+}
+
+
+// Sem o arquivo .mp3 da narração não tem o que ouvir: o botão "Ouvir" some (sem aviso).
+function esconderAudio(){
+    var botao = document.getElementById('botaoAudio')
+
+    if(botao != null){
+        botao.classList.add('oculto')
+    }
+}
+
+// Confere se a narração existe (só nas páginas dos livros, que têm o <audio>).
+// audio.error já preenchido = o arquivo deu erro antes deste script carregar;
+// senão, fica esperando o evento "error" (quando o navegador descobrir que o arquivo não existe).
+var audioLivro = document.getElementById('audio')
+
+if(audioLivro != null){
+    if(audioLivro.error != null){
+        esconderAudio()
+    }else{
+        audioLivro.addEventListener('error', esconderAudio)
+    }
 }
 
 

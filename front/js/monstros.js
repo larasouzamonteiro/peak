@@ -104,9 +104,9 @@ function estaNaFaixa(m){
     }
 
     if(faixaEscolhida == 'comunidade'){
-        // A faixa deve mostrar qualquer monstro de jogador que seja público,
-        // inclusive o que a própria pessoa acabou de compartilhar.
-        return m.usuarioId != null && m.publico == 1
+        // Só os monstros públicos de OUTRAS pessoas (igual nas Raças).
+        // Os meus, mesmo públicos, ficam na faixa "Meus".
+        return m.usuarioId != null && m.usuarioId != eu.id && m.publico == 1
     }
 
     if(faixaEscolhida == 'meus'){

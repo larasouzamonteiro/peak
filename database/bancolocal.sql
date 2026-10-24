@@ -2,16 +2,16 @@
 -- banco.sql  -  Banco de dados da Peak
 -- =====================================================
 -- Como usar: conecte o MySQL Workbench no banco do Aiven
--- e execute tudo de uma vez. Ele cria o banco "peak_final" do zero.
+-- e execute tudo de uma vez. Ele cria o banco "peaklocal" do zero.
 --
--- ATENÇÃO: a primeira linha APAGA o banco peak_final (se já existir)
+-- ATENÇÃO: a primeira linha APAGA o banco peaklocal (se já existir)
 -- para criar de novo. Os outros bancos do seu MySQL não são mexidos.
 --
 -- VERSÃO SERVIDOR (para o Aiven):
 --   * NÃO tem contas de exemplo com senha conhecida.
 --   * A conta de administradora é criada SEM senha. Depois de rodar este arquivo,
 --     rode no seu computador:  node criar-admin.js   (veja o TUTORIAL-SERVIDOR.md)
---   * Rode este arquivo UMA VEZ só. Ele apaga o banco peak_final e cria de novo:
+--   * Rode este arquivo UMA VEZ só. Ele apaga o banco peaklocal e cria de novo:
 --     se rodar depois que as pessoas se cadastrarem, apaga tudo o que elas fizeram!
 --
 -- Regra que se repete em várias tabelas:
@@ -31,6 +31,7 @@ USE peaklocal;
 -- tutorialVisto:   1 = já viu (ou pulou) o tutorial da Zero
 -- token:           código do login (o servidor usa para saber quem está pedindo)
 -- tokenCriadoEm:   quando o token foi criado (VERSÃO SERVIDOR: ele vale 7 dias)
+-- telefone:        celular para o "Esqueci minha senha" por SMS (pode ficar vazio)
 CREATE TABLE usuarios(
     id INT AUTO_INCREMENT PRIMARY KEY,
     nomeUsuario VARCHAR(30) NOT NULL UNIQUE,
@@ -45,7 +46,8 @@ CREATE TABLE usuarios(
     codigoEmail VARCHAR(6) NULL,
     tutorialVisto TINYINT(1) NOT NULL DEFAULT 0,
     token VARCHAR(64) NULL,
-    tokenCriadoEm DATETIME NULL
+    tokenCriadoEm DATETIME NULL,
+    telefone VARCHAR(20) NULL
 );
 
 -- ---------- INTERESSES ----------
@@ -321,7 +323,7 @@ Assim, Dohomatika não é apenas uma história sobre seres poderosos, mas sobre 
 
 -- monstros
 --   1 a 4: oficiais gerais da Peak
---   5:     oficial da campanha Guardiões de Ágora
+--   5:     oficial da campanha As Raízes do Fim
 --   6 e 7: oficiais da campanha Dohomatika (exemplos para trocar no painel do admin)
 INSERT INTO monstros
 (usuarioId, campanhaOficialId, nome, imagem, descricao, vidaMaxima, defesa, publico)

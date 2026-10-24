@@ -266,13 +266,29 @@ body {
 .rolar{
     position: absolute;
     bottom: 2.5vh;
-    left: 50%;
+    /* VISUAL: fica no meio da tela, mas nunca mais para a esquerda que o fim da .dica
+       (6vw + uns 480px de texto). Sem isso, em telas de 1366px ele ficava em cima do "ou clique".
+       max() escolhe o maior dos dois valores. */
+    left: max(50%, calc(6vw + 640px));
     color: #b98a7e;
     font-family: "Lora", serif;
     font-size: 11px;
     letter-spacing: 0.3em;
     text-align: center;
     transform: translateX(-50%);
+}
+
+
+/* VISUAL: tela média (tablet deitado, janela pequena): não cabe a dica e o link
+   lado a lado. A dica é de teclado, então some aqui e o link fica sozinho embaixo. */
+@media (min-width: 701px) and (max-width: 1000px){
+    .dica{
+        display: none;
+    }
+
+    .rolar{
+        left: 50%;
+    }
 }
 
 
@@ -513,8 +529,9 @@ main{
 
 
 /* ---------- 7. CELULAR ---------- */
-/* No celular a foto fica na parte de cima, e o menu embaixo, em linhas separadas.
-   Os vídeos ficam escondidos (display: none) e só aparecem as fotos. */
+/* No celular o fundo fica na parte de cima, e o menu embaixo, em linhas separadas.
+   Os fundos do computador (.fundos-pc) ficam escondidos e aparecem os da .fundos-cel,
+   que também são os vídeos leves (o script do index.html dá play no escolhido). */
 @media (max-width: 700px){
     .capa{
         min-height: 640px;
@@ -663,6 +680,7 @@ main{
 
     .rolar{
         bottom: 14px;
+        left: 50%;          /* VISUAL: no celular não tem .dica, então volta para o meio */
         font-size: 10px;
     }
 

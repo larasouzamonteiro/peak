@@ -131,7 +131,8 @@ function salvarFicha(){
 }
 
 function excluirFicha(){
-    if(!confirm('Excluir esta ficha?')){
+    // no banco a ficha sai junto das campanhas (ON DELETE CASCADE), então avisa antes
+    if(!confirm('Excluir esta ficha? Se ela estiver em alguma campanha, ela sai da campanha também.')){
         return
     }
 

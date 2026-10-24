@@ -14,6 +14,7 @@ var parcerias = []
 var filtroInteresse = ''   // '' = todos | ou o nome de um interesse
 var soCombina = false      // true = mostrar só quem combina comigo
 var quantosMostrar = 12    // quantas pessoas aparecem; o botão "Mostrar mais 12" soma mais 12
+var ultimaBusca = ''       // o texto da busca da última vez que a lista foi desenhada
 
 if(verificarLogin()){
     carregarPessoas()
@@ -109,12 +110,14 @@ function desenharFiltros(){
 
 function filtrarInteresse(nome){
     filtroInteresse = nome
+    quantosMostrar = 12   // filtro novo: volta a mostrar só as primeiras 12 pessoas
     desenharFiltros()
     desenharPessoas()
 }
 
 function filtrarCombina(valor){
     soCombina = valor
+    quantosMostrar = 12   // filtro novo: volta a mostrar só as primeiras 12 pessoas
 
     document.getElementById('filtroTodoMundo').classList.toggle('ativo', valor == false)
     document.getElementById('filtroSoCombina').classList.toggle('ativo', valor == true)
@@ -192,6 +195,13 @@ function desenharPessoas(){
     var eu = pegarUsuarioLogado()
     var busca = document.getElementById('busca').value.trim().toLowerCase()
 
+    // a busca chama esta função a cada letra (oninput no HTML): se o texto
+    // mudou, é uma lista nova, então volta a mostrar só as primeiras 12
+    if(busca != ultimaBusca){
+        quantosMostrar = 12
+        ultimaBusca = busca
+    }
+
     var meusInteresses = interessesDe(eu.id)
     var oQueProcuro = parceriasDe(eu.id, 'procuro')
 
@@ -212,10 +222,6 @@ function desenharPessoas(){
         var emComum = quantosEmComum(meusInteresses, interessesDe(p.id))
         var combina = quantosEmComum(oQueProcuro, parceriasDe(p.id, 'sou')) > 0
 
-        if(combina){
-            totalCombinam = totalCombinam + 1
-        }
-
         // filtros
         if(busca != '' && p.nomeUsuario.toLowerCase().indexOf(busca) == -1){
             continue
@@ -223,6 +229,12 @@ function desenharPessoas(){
 
         if(filtroInteresse != '' && interessesDe(p.id).indexOf(filtroInteresse) == -1){
             continue
+        }
+
+        // conta quem combina DEPOIS da busca e do filtro de interesse:
+        // assim o número bate com a lista que aparece na tela
+        if(combina){
+            totalCombinam = totalCombinam + 1
         }
 
         if(soCombina && !combina){

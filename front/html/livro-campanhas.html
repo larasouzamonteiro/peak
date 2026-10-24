@@ -71,8 +71,10 @@
         </div>
       </div>
 
-      <!-- a narração deste livro: grave e salve em front/sons/livro-campanhas.mp3 -->
-      <audio id="audio" src="../sons/livro-campanhas.mp3" onended="audioTerminou()"></audio>
+      <!-- a narração deste livro: grave e salve em front/sons/livro-campanhas.mp3
+           Enquanto o arquivo não existir, o historia.js esconde o botão "Ouvir".
+           preload="metadata" = o navegador só confere se o arquivo existe (não baixa o áudio todo). -->
+      <audio id="audio" src="../sons/livro-campanhas.mp3" preload="metadata" onended="audioTerminou()"></audio>
       <p class="alerta" id="avisoAudio"></p>
 
       <!-- O LIVRO: página da esquerda = arte e sumário (links #cap-1, #cap-2...)
@@ -87,7 +89,7 @@
             <h2>Campanhas oficiais</h2>
             <ol>
               <li><a class="sumario-item" href="#cap-1"><span>1</span>O que é uma oficial</a></li>
-              <li><a class="sumario-item" href="#cap-2"><span>2</span>Guardiões de Ágora</a></li>
+              <li><a class="sumario-item" href="#cap-2"><span>2</span>As Raízes do Fim</a></li>
               <li><a class="sumario-item" href="#cap-3"><span>3</span>Dohomatika</a></li>
               <li><a class="sumario-item" href="#cap-4"><span>4</span>Como usar</a></li>
             </ol>
@@ -105,17 +107,17 @@
 
           <section class="cap-texto" id="cap-2">
             <small class="cap-numero">Capítulo 2</small>
-            <h3>Guardiões de Ágora</h3>
-            <p><span class="capitular">A</span> campanha principal da Peak é inspirada nos <a class="palavra" href="#ods" data-def="Objetivos de Desenvolvimento Sustentável: 17 metas da ONU para o mundo até 2030.">ODS</a> da ONU. A cidade de Ágora está adoecendo: o rio secou, a colheita falhou e as famílias do bairro de baixo não têm mais onde morar.</p>
-            <p>Cada capítulo apresenta um problema ligado a um ODS, e o grupo só vence quando resolve a causa do problema, e não só o monstro. No final, os heróis precisam unir os povos da região: é a ODS 17, parcerias e meios de implementação.</p>
+            <h3>As Raízes do Fim</h3>
+            <p><span class="capitular">A</span> campanha principal da Peak é uma fantasia sombria inspirada nos <a class="palavra" href="#ods" data-def="Objetivos de Desenvolvimento Sustentável: 17 metas da ONU para o mundo até 2030.">ODS</a> da ONU. No reino de Valdora, a água está morrendo: o Rio de Elar escureceu com as cidades e a mineração, as colheitas apodrecem e quem não pode pagar por água limpa adoece.</p>
+            <p>Seis princípios despertam (Fim, Humano, Anjo, Luz, Justiça e Dúvida) e cada um discorda sobre o que deve ser salvo. O grupo investiga a origem da contaminação e só vence quando resolve a causa, e não só o monstro. É a <a class="palavra" href="#ods" data-def="ODS 6: Água potável e saneamento. Garantir água limpa e saneamento para todas as pessoas.">ODS 6</a>, água potável e saneamento.</p>
             <div class="pagina-rodape"><span>2</span></div>
           </section>
 
           <section class="cap-texto" id="cap-3">
             <small class="cap-numero">Capítulo 3</small>
             <h3>Dohomatika</h3>
-            <!-- TEXTO DE EXEMPLO: troque pela história de verdade e pelo nome do artista -->
-            <p><span class="capitular">D</span>ohomatika é uma história original de um artista parceiro da Peak. <i>(Texto de exemplo: escreva aqui o resumo da história e quem a criou.)</i></p>
+            <p><span class="capitular">D</span>ohomatika é uma história original de César, artista parceiro da Peak. Ela se passa em Openworld, um universo que junta vários livros numa mesma existência, cheio de seres transcendentais.</p>
+            <p>Dohomatika é uma entidade inexistente: sem mente nem alma, é só uma couraça que abriga outros seres. Os Errantes, como Nosa e Shade, narram essas histórias de existência, insanidade e perda.</p>
             <p>Os personagens dessa história entram no Bestiário como monstros, na faixa Dohomatika, e aparecem prontos para quem usar a campanha.</p>
             <div class="pagina-rodape"><span>3</span></div>
           </section>

@@ -247,91 +247,44 @@ function carregarCampanhas(){
 // =====================================================
 // Não existe tabela de amigos, então usa o que já tem no banco:
 // quem é Mestre ou jogador nas mesmas campanhas que a pessoa do perfil.
-//   1. /usuario/campanhas  -> as campanhas da pessoa (cada uma diz quem é o Mestre)
-//   2. /campanha/jogadores -> quem joga em cada campanha
-//      (o servidor só mostra os jogadores das campanhas em que EU também estou;
-//       nas outras ele devolve uma lista vazia, e tudo bem)
-// A lista "companheiros" guarda {id, nome} e não deixa ninguém repetido.
-var companheiros = []
-
-function adicionarCompanheiro(id, nome){
-    // a própria pessoa do perfil não entra
-    if(id == perfilId){
-        return
-    }
-
-    for(var i = 0; i < companheiros.length; i++){
-        if(companheiros[i].id == id){
-            return      // já está na lista
-        }
-    }
-
-    companheiros.push({id: id, nome: nome})
-}
-
+// O servidor já devolve a lista pronta (/usuario/companheiros), sem ninguém repetido
+// e sem a própria pessoa. Assim todo mundo que abre o perfil vê os mesmos amigos.
+// Cada companheiro vem com { id, nomeUsuario, fotoPerfil }.
 function carregarCompanheiros(){
-    buscar('/usuario/campanhas?id=' + perfilId, function(campanhas){
-        var faltam = campanhas.length
+    buscar('/usuario/companheiros?id=' + perfilId, function(companheiros){
+        var lugar = document.getElementById('perfilCompanheiros')
 
-        if(faltam == 0){
-            desenharCompanheiros()
+        if(!Array.isArray(companheiros)){
+            companheiros = []
+        }
+
+        document.getElementById('numCompanheiros').textContent = companheiros.length
+
+        if(companheiros.length == 0){
+            lugar.innerHTML = '<p class="texto-suave">Ainda não jogou com ninguém.</p>'
             return
         }
 
-        for(var i = 0; i < campanhas.length; i++){
-            adicionarCompanheiro(campanhas[i].usuarioMestreId, campanhas[i].mestre)
+        // a foto redonda e o nome embaixo; sem foto, aparece a primeira letra do nome
+        var html = ''
 
-            buscar('/campanha/jogadores?id=' + campanhas[i].id, function(jogadores){
-                if(Array.isArray(jogadores)){
-                    for(var j = 0; j < jogadores.length; j++){
-                        adicionarCompanheiro(jogadores[j].usuarioId, jogadores[j].jogador)
-                    }
-                }
+        for(var i = 0; i < companheiros.length; i++){
+            var c = companheiros[i]
+            var foto = seguro(String(c.nomeUsuario).charAt(0).toUpperCase())
 
-                // quando a última campanha responder, desenha
-                faltam = faltam - 1
-
-                if(faltam == 0){
-                    desenharCompanheiros()
-                }
-            })
-        }
-    })
-}
-
-// Escreve em <div id="perfilCompanheiros"> TODOS os amigos: a foto redonda e o nome embaixo.
-// A foto vem depois (busca no /usuario); enquanto isso aparece a primeira letra do nome.
-function desenharCompanheiros(){
-    var lugar = document.getElementById('perfilCompanheiros')
-
-    document.getElementById('numCompanheiros').textContent = companheiros.length
-
-    if(companheiros.length == 0){
-        lugar.innerHTML = '<p class="texto-suave">Ainda não jogou com ninguém.</p>'
-        return
-    }
-
-    var html = ''
-
-    for(var i = 0; i < companheiros.length; i++){
-        var c = companheiros[i]
-
-        html += `
-            <a class="companheiro" href="perfil.html?id=${c.id}" title="${seguro(c.nome)}">
-                <span class="companheiro-foto" id="fotoCompanheiro${c.id}">${seguro(String(c.nome).charAt(0).toUpperCase())}</span>
-                <span class="companheiro-nome">${seguro(c.nome)}</span>
-            </a>`
-    }
-
-    lugar.innerHTML = html
-
-    for(var k = 0; k < companheiros.length; k++){
-        buscar('/usuario?id=' + companheiros[k].id, function(pessoa){
-            if(pessoa.fotoPerfil){
-                document.getElementById('fotoCompanheiro' + pessoa.id).innerHTML = '<img src="' + seguro(pessoa.fotoPerfil) + '" alt="">'
+            if(c.fotoPerfil){
+                foto = '<img src="' + seguro(c.fotoPerfil) + '" alt="">'
             }
-        })
-    }
+
+            html += `
+                <a class="companheiro" href="perfil.html?id=${c.id}" title="${seguro(c.nomeUsuario)}">
+                    <span class="companheiro-foto">${foto}</span>
+                    <span class="companheiro-nome">${seguro(c.nomeUsuario)}</span>
+                </a>`
+        }
+
+        lugar.innerHTML = html
+    })
 }
 
 
@@ -349,6 +302,12 @@ function trocarFoto(){
         }
 
         enviar('/perfil/foto', {imagem: imagem}, function(dados){
+            // arquivo inválido ou erro no servidor: mostra o erro (antes aparecia "undefined")
+            if(dados.error){
+                alert(dados.error)
+                return
+            }
+
             alert(dados.message)
             carregarPessoa()
         })
@@ -364,6 +323,12 @@ function trocarCapa(){
         }
 
         enviar('/perfil/capa', {imagem: imagem}, function(dados){
+            // arquivo inválido ou erro no servidor: mostra o erro (antes aparecia "undefined")
+            if(dados.error){
+                alert(dados.error)
+                return
+            }
+
             alert(dados.message)
             carregarPessoa()
         })
@@ -378,6 +343,11 @@ function salvarPerfil(){
     }
 
     enviar('/perfil/atualizar', dados, function(resposta){
+        if(resposta.error){
+            alert(resposta.error)
+            return
+        }
+
         alert(resposta.message)
         carregarPessoa()
     })

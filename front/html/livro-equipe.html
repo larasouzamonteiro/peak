@@ -71,8 +71,10 @@
         </div>
       </div>
 
-      <!-- a narração deste livro: grave e salve em front/sons/livro-equipe.mp3 -->
-      <audio id="audio" src="../sons/livro-equipe.mp3" onended="audioTerminou()"></audio>
+      <!-- a narração deste livro: grave e salve em front/sons/livro-equipe.mp3
+           Enquanto o arquivo não existir, o historia.js esconde o botão "Ouvir".
+           preload="metadata" = o navegador só confere se o arquivo existe (não baixa o áudio todo). -->
+      <audio id="audio" src="../sons/livro-equipe.mp3" preload="metadata" onended="audioTerminou()"></audio>
       <p class="alerta" id="avisoAudio"></p>
 
       <!-- O LIVRO: página da esquerda = arte e sumário (links #cap-1, #cap-2...)
@@ -99,19 +101,19 @@
             <h3>Por que a Peak existe</h3>
             <!-- TEXTO DE EXEMPLO: troque pelas palavras de vocês -->
             <p><span class="capitular">A</span> Peak nasceu como projeto final de escola, de um grupo que gosta de RPG e queria um lugar simples para criar fichas, juntar o grupo e jogar.</p>
-            <p>Junto com o jogo, a Peak quer dar destaque a artistas e criar parcerias, ligando a aventura aos ODS da ONU: a campanha Guardiões de Ágora fala de temas reais, como água, moradia e cooperação.</p>
+            <p>Junto com o jogo, a Peak quer dar destaque a artistas e criar parcerias, ligando a aventura aos ODS da ONU: a campanha As Raízes do Fim fala de um tema real, a água que está morrendo, e é ligada à <a class="palavra" href="#ods" data-def="ODS 6: Água potável e saneamento. Garantir água limpa e saneamento para todas as pessoas.">ODS 6</a>, água potável e saneamento.</p>
             <div class="pagina-rodape"><span>1</span></div>
           </section>
 
           <section class="cap-texto" id="cap-2">
             <small class="cap-numero">Capítulo 2</small>
             <h3>Quem somos</h3>
-            <!-- TROQUE pelos nomes e funções de verdade. A letra da bolinha é a inicial do nome. -->
+            <!-- as quatro alunas e a parte de cada uma. A letra da bolinha é a inicial do nome. -->
             <div class="equipe">
-              <div class="pessoa"><span>A</span><b>Nome da pessoa</b><small>Programação</small></div>
-              <div class="pessoa"><span>B</span><b>Nome da pessoa</b><small>Design e CSS</small></div>
-              <div class="pessoa"><span>C</span><b>Nome da pessoa</b><small>Banco de dados</small></div>
-              <div class="pessoa"><span>D</span><b>Nome da pessoa</b><small>História e textos</small></div>
+              <div class="pessoa"><span>L</span><b>Lara</b><small>Programação, servidor e login/perfil</small></div>
+              <div class="pessoa"><span>E</span><b>Ester</b><small>Design, index e história</small></div>
+              <div class="pessoa"><span>I</span><b>Isabely</b><small>Campanhas, fichas e mesa</small></div>
+              <div class="pessoa"><span>A</span><b>Amanda</b><small>Bestiário e comunidade</small></div>
             </div>
             <div class="pagina-rodape"><span>2</span></div>
           </section>
@@ -119,8 +121,7 @@
           <section class="cap-texto" id="cap-3">
             <small class="cap-numero">Capítulo 3</small>
             <h3>Artistas parceiros</h3>
-            <!-- TEXTO DE EXEMPLO -->
-            <p><span class="capitular">A</span>s artes da Peak e a história Dohomatika vêm de artistas parceiros. <i>(Escreva aqui os nomes e onde encontrar o trabalho de cada um.)</i></p>
+            <p><span class="capitular">A</span> história Dohomatika é do artista parceiro César, que criou o universo de Openworld. As artes usadas no site têm os créditos dos seus artistas.</p>
             <p>Quer ser parceiro? Na Comunidade, marque "Sou ilustrador" ou "Sou escritor" nas suas parcerias: quem procura vai encontrar você.</p>
             <div class="pagina-rodape"><span>3</span></div>
           </section>
