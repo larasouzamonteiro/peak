@@ -1,7 +1,6 @@
 // Sms.js
-// Manda o código do "Esqueci minha senha" por SMS, usando o Brevo
-// (o mesmo serviço do e-mail, com a mesma chave). Funciona igual ao
-// Email.enviarPeloBrevo: um fetch para o endereço do Brevo.
+// Manda o código do "Esqueci minha senha" por SMS usando o textBee:
+// o SMS sai de um celular Android nosso, com o app do textBee aberto.
 // (fetch no servidor: o Node 18 ou mais novo já tem, não precisa instalar nada)
 
 const smsConfig = require('./smsConfig')
@@ -10,43 +9,38 @@ class Sms{
 
     // telefone: só números, com o 55 na frente (ex.: '5548999998888')
     // codigo:   os 6 números (o mesmo tipo de código do e-mail)
-    // seFalhar: função chamada se o SMS NÃO sair (ex.: conta do Brevo sem créditos de SMS).
-    //           Quem chama usa para mandar o código por e-mail (plano B), senão o código se perde.
+    // seFalhar: chamada se o SMS NÃO sair (celular desligado, sem chave...).
+    //           Quem chama usa para mandar o código por e-mail (plano B).
     static enviarCodigo(telefone, codigo, seFalhar){
 
-        // sem chave (no computador sem o .env): mostra o código no terminal, igual o e-mail faz
-        if(smsConfig.brevoChave == ''){
+        // sem chave (no computador sem o .env): mostra o código no terminal
+        if(smsConfig.textbeeChave == ''){
             console.log('Código por SMS para ' + telefone + ': ' + codigo)
             return
         }
 
-        fetch('https://api.brevo.com/v3/transactionalSMS/send', {
+        fetch('https://api.textbee.dev/api/v1/gateway/send-sms', {
             method: 'POST',
             headers: {
-                'api-key': smsConfig.brevoChave,
+                'x-api-key': smsConfig.textbeeChave,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                sender: smsConfig.remetente,
-                recipient: telefone,
-                // sem acento de propósito: com acento cabe menos letra e pode virar 2 SMS (2 créditos)
-                content: 'Peak: seu codigo para criar uma senha nova e ' + codigo,
-                type: 'transactional'
+                recipients: ['+' + telefone],
+                // sem acento de propósito: com acento cabe menos letra no SMS
+                message: 'PEAK - Seu codigo para trocar a senha: ' + codigo + '. Se nao foi voce, ignore. Nao responda esta mensagem.'
             })
         })
-        .then((resposta) => {
+        .then(function(resposta){
             if(resposta.ok){
-                console.log('SMS enviado (Brevo) para ' + telefone)
+                console.log('SMS enviado (textBee) para ' + telefone)
             }else{
-                resposta.text().then(function(texto){
-                    console.log('O Brevo recusou o SMS:', texto)
-                    console.log('Plano B: mandando o código por e-mail')
-                    if(seFalhar){ seFalhar() }
-                })
+                console.log('O textBee recusou o SMS. Plano B: mandando o código por e-mail')
+                if(seFalhar){ seFalhar() }
             }
         })
         .catch(function(erro){
-            console.log('Não consegui falar com o Brevo (SMS):', erro.message)
+            console.log('Não consegui falar com o textBee:', erro.message)
             console.log('Plano B: mandando o código por e-mail')
             if(seFalhar){ seFalhar() }
         })

@@ -1,31 +1,14 @@
-PEAK - CORREÇÕES (versão que os PDFs explicam)
-==============================================
-
-COMO COLOCAR
-1. Copie a pasta "peak" deste ZIP para Documentos\GitHub\peak
-   e escolha "Substituir os arquivos no destino".
-2. Faça o commit no GitHub. O Render publica sozinho.
-
-NÃO VEM NO ZIP (são seus): config.js, emailConfig.js e .env.
-O BANCO NÃO MUDA. O banco.sql e o bancolocal.sql só ganharam a coluna
-telefone no papel (no Aiven você já rodou o ALTER). Não rode o banco.sql de novo.
-
-OPCIONAL: pode apagar front/js/index.js (nenhuma página usa mais).
-
-O QUE FOI ARRUMADO
-- Index: vídeos leves no computador e no celular (6 fundos, um por item),
-  link "Faça a sua conta" abre o cadastro, sem sobrepor a dica.
-- Login e confirmar: vídeo leve da Leona; Enter funciona; e-mail com "+" funciona.
-- Esqueci minha senha: se o SMS falhar (ex.: sem créditos), o código vai por e-mail;
-  o e-mail diz "trocar a sua senha".
-- Perfil: amigos iguais para todo mundo (rota nova /usuario/companheiros);
-  erro de foto/capa aparece direito.
-- Fichas: não grava ficha com item que não existe; aviso ao excluir ficha de campanha.
-- Bestiário: faixa Comunidade só com monstros de outras pessoas.
-- Comunidade: "Mostrar mais" volta para 12 ao filtrar; selos no celular.
-- Oficina no celular sem rolagem para o lado; ícones brancos no modo escuro;
-  tutorial da Zero funciona no celular.
-- Livros: "As Raízes do Fim" (ODS 6), Dohomatika do César, equipe preenchida,
-  botão Ouvir some quando não tem narração.
-- Admin: editar/excluir algo que não existe avisa "não encontrado".
-- Servidor: limite por IP usa o IP real do Render.
+PEAK - SMS PELO TEXTBEE + VERCEL MAIS ESTÁVEL
+=============================================
+1. Copie a pasta "peak" para Documentos\GitHub\peak (substituir). São 3 arquivos:
+   database/Sms.js        -> SMS pelo textBee (se falhar, o código vai por e-mail)
+   database/smsConfig.js  -> lê a chave TEXTBEE_API_KEY
+   database/conexao.js    -> na Vercel usa no máximo 2 conexões com o banco
+                             (no computador e no Render continua igual)
+   O app.js NÃO muda.
+2. Coloque TEXTBEE_API_KEY=sua-chave no .env, no Render (Environment) e na Vercel
+   (Settings > Environment Variables). Na Vercel confira também NODEJS_HELPERS = 0.
+   Pode apagar o SMS_REMETENTE.
+3. Teste no computador: node --env-file=.env app.js  ->  Esqueci minha senha > SMS
+   (celular do textBee ligado, com o app aberto).
+4. Commit e push. Na Vercel, se precisar: Deployments > ... > Redeploy.
