@@ -115,8 +115,10 @@ class UsuariosBD{
                 if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
                 connection.end()
-                Email.enviarCodigo(email, codigo)
-                callback({'message': 'Conta criada! Enviamos um código para o seu e-mail.'})
+                // só responde depois que o e-mail saiu (na Vercel, senão ele não sai)
+                Email.enviarCodigo(email, codigo, '', function(){
+                    callback({'message': 'Conta criada! Enviamos um código para o seu e-mail.'})
+                })
             })
         })
     }
@@ -175,8 +177,9 @@ class UsuariosBD{
                 return callback({'error': 'Não achei uma conta esperando confirmação com esse e-mail.'})
             }
 
-            Email.enviarCodigo(email, codigo)
-            callback({'message': 'Enviamos um código novo.'})
+            Email.enviarCodigo(email, codigo, '', function(){
+                callback({'message': 'Enviamos um código novo.'})
+            })
         })
     }
 
@@ -225,13 +228,20 @@ class UsuariosBD{
                     // se o SMS falhar (ex.: sem créditos no Brevo), o código vai por e-mail
                     // para a pessoa não ficar esperando um SMS que nunca chega
                     Sms.enviarCodigo(pessoa.telefone, codigo, function(){
-                        Email.enviarCodigo(email, codigo, 'senha')
+                        // plano B: o SMS falhou, manda por e-mail e só depois responde
+                        Email.enviarCodigo(email, codigo, 'senha', function(){
+                            callback(resposta)
+                        })
+                    }, function(){
+                        // o SMS saiu: já pode responder
+                        callback(resposta)
                     })
                 }else{
-                    Email.enviarCodigo(email, codigo, 'senha')
+                    // só responde depois que o e-mail saiu (na Vercel, senão ele não sai)
+                    Email.enviarCodigo(email, codigo, 'senha', function(){
+                        callback(resposta)
+                    })
                 }
-
-                callback(resposta)
             })
         })
     }

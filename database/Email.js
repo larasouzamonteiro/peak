@@ -31,7 +31,10 @@ class Email{
     // destino: e-mail de quem se cadastrou
     // codigo:  os 6 números que a pessoa vai digitar na página
     // tipo:    'senha' para o "Esqueci minha senha" (opcional; sem ele é o do cadastro)
-    static enviarCodigo(destino, codigo, tipo){
+    // depois:  função chamada quando o envio TERMINAR (deu certo ou não).
+    //          Na Vercel isso é importante: ela "desliga" o servidor logo depois da resposta,
+    //          então só respondemos para a página depois que o e-mail saiu.
+    static enviarCodigo(destino, codigo, tipo, depois){
 
         // assunto do e-mail: muda quando é para trocar a senha
         var assunto = 'Seu código da Peak: ' + codigo
@@ -41,13 +44,14 @@ class Email{
 
         // VERSÃO SERVIDOR: com o Brevo configurado, manda por ele
         if(emailConfig.brevoChave != '' && emailConfig.remetente != ''){
-            Email.enviarPeloBrevo(destino, codigo, assunto, tipo)
+            Email.enviarPeloBrevo(destino, codigo, assunto, tipo, depois)
             return
         }
 
         // sem conta configurada: mostra o código no terminal (serve para testar)
         if(emailConfig.email == '' || emailConfig.senha == ''){
             console.log('Código de confirmação de ' + destino + ': ' + codigo)
+            terminar(depois)
             return
         }
 
@@ -78,10 +82,12 @@ class Email{
                 // se o envio falhar, o código aparece no terminal para o cadastro não travar
                 console.log('Não consegui enviar o e-mail:', error.message)
                 console.log('Código de confirmação de ' + destino + ': ' + codigo)
+                terminar(depois)
                 return
             }
 
             console.log('E-mail enviado com sucesso para ' + destino)
+            terminar(depois)
         })
     }
 }
@@ -89,7 +95,7 @@ class Email{
 
 // VERSÃO SERVIDOR: manda o e-mail pela internet (HTTPS) usando o Brevo,
 // porque o Render grátis bloqueia o jeito do Gmail (SMTP).
-Email.enviarPeloBrevo = function(destino, codigo, assunto, tipo){
+Email.enviarPeloBrevo = function(destino, codigo, assunto, tipo, depois){
     fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
@@ -107,11 +113,25 @@ Email.enviarPeloBrevo = function(destino, codigo, assunto, tipo){
     .then((resposta) => {
         if(resposta.ok){
             console.log('E-mail enviado (Brevo) para ' + destino)
+            terminar(depois)
         }else{
-            resposta.text().then((texto) => console.log('O Brevo recusou o e-mail:', texto))
+            resposta.text().then((texto) => {
+                console.log('O Brevo recusou o e-mail:', texto)
+                terminar(depois)
+            })
         }
     })
-    .catch((erro) => console.log('Não consegui falar com o Brevo:', erro.message))
+    .catch((erro) => {
+        console.log('Não consegui falar com o Brevo:', erro.message)
+        terminar(depois)
+    })
+}
+
+// chama a função "depois" só se ela foi mandada (ela é opcional)
+function terminar(depois){
+    if(depois){
+        depois()
+    }
 }
 
 module.exports = Email

@@ -11,11 +11,13 @@ class Sms{
     // codigo:   os 6 números (o mesmo tipo de código do e-mail)
     // seFalhar: chamada se o SMS NÃO sair (celular desligado, sem chave...).
     //           Quem chama usa para mandar o código por e-mail (plano B).
-    static enviarCodigo(telefone, codigo, seFalhar){
+    // depois:   chamada quando o SMS SAIU (aí quem chama já pode responder para a página)
+    static enviarCodigo(telefone, codigo, seFalhar, depois){
 
         // sem chave (no computador sem o .env): mostra o código no terminal
         if(smsConfig.textbeeChave == ''){
             console.log('Código por SMS para ' + telefone + ': ' + codigo)
+            if(depois){ depois() }
             return
         }
 
@@ -34,6 +36,7 @@ class Sms{
         .then(function(resposta){
             if(resposta.ok){
                 console.log('SMS enviado (textBee) para ' + telefone)
+                if(depois){ depois() }
             }else{
                 console.log('O textBee recusou o SMS. Plano B: mandando o código por e-mail')
                 if(seFalhar){ seFalhar() }
