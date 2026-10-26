@@ -1,11 +1,12 @@
 // app.js  (VERSÃO SERVIDOR - para colocar no ar)
 // Servidor da Peak. Usa só http e url, como na aula.
 //
-// O que esta versão tem a mais que a do computador (procure "VERSÃO SERVIDOR"):
+// É o mesmo jeito do projeto de login da aula (http, url, callback, classes BD).
+// O que esta versão tem a mais (procure "VERSÃO SERVIDOR"):
 //   1. entrega as páginas (pasta front/), então o site abre pelo link
-//   2. limita o tamanho dos pedidos e confere os dados antes de usar
-//   3. bloqueia quem erra a senha ou o código muitas vezes seguidas
-//   4. confere as imagens enviadas
+//   2. login com token: o servidor sabe quem está pedindo
+//   3. recusa pedidos grandes demais (mais de 4 MB)
+//   4. bloqueia por 1 minuto quem erra a senha ou o código 5 vezes
 //   5. usa a porta que o Render mandar (process.env.PORT)
 //
 // Para ligar:   node app.js
@@ -107,54 +108,16 @@ function entregarArquivo(pathname, res){
 }
 
 // ----- 2. conferir os dados que chegam -----
-// Campos de imagem: só aceita imagem de verdade (data:image/... em base64)
-// ou uma imagem que já existe no site (../img/...)
-const CAMPOS_IMAGEM = ['imagem', 'retrato', 'imagemCapa', 'fotoPerfil', 'capaPerfil']
-
-function imagemValida(img){
-    if(img == '' || img == null){
-        return true
-    }
-
-    if(typeof img != 'string' || img.length > 3500000){
-        return false
-    }
-
-    return /^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+\/=]+$/.test(img)
-        || /^\.\.\/img\/[a-z0-9\/_-]+\.(jpg|jpeg|png|gif|svg|webp)$/.test(img)
-}
-
-// Devolve '' se está tudo certo, ou a mensagem de erro
-function conferirDados(dados){
+// Os dados do POST precisam ser textos ou números (a lista de itens da ficha é a única lista).
+// Por quê: se alguém mandar um OBJETO no lugar de um texto, o mysql transforma
+// o "where id = ?" em outra coisa e o SQL pode mexer em linhas que não devia.
+function temObjeto(dados){
     for(var campo in dados){
-        var valor = dados[campo]
-
-        // só a lista de itens da ficha pode ser uma lista; nada pode ser um objeto
-        // (um objeto no lugar de um texto muda o sentido do SQL)
-        if(campo == 'itemIds'){
-            if(!Array.isArray(valor)) return 'Dados inválidos'
-            continue
-        }
-
-        if(valor !== null && typeof valor == 'object'){
-            return 'Dados inválidos'
-        }
-
-        if(CAMPOS_IMAGEM.indexOf(campo) != -1){
-            if(!imagemValida(valor)) return 'Imagem inválida (use PNG, JPG, GIF ou WEBP de até 2,5 MB)'
-            continue
-        }
-
-        if(typeof valor == 'number' && (!isFinite(valor) || Math.abs(valor) > 100000)){
-            return 'Número inválido'
-        }
-
-        if(typeof valor == 'string' && valor.length > 20000){
-            return 'Texto grande demais'
+        if(campo != 'itemIds' && dados[campo] !== null && typeof dados[campo] == 'object'){
+            return true
         }
     }
-
-    return ''
+    return false
 }
 
 // ----- 3. bloquear tentativas repetidas -----
@@ -230,20 +193,8 @@ function exigirAdmin(req, res, depois){
 const callback = (req, res)=>{
 
     // VERSÃO SERVIDOR: as páginas e o servidor estão no MESMO endereço,
-    // então não precisa liberar outros sites (sem o "CORS *" da versão do computador).
-    // Estes cabeçalhos pedem para o navegador ser mais cuidadoso:
-    res.setHeader('X-Content-Type-Options', 'nosniff')      // não "adivinhar" o tipo do arquivo
-    res.setHeader('X-Frame-Options', 'DENY')                // ninguém coloca o site dentro de outro site
-    res.setHeader('Referrer-Policy', 'same-origin')
-
+    // então não precisa do "Access-Control-Allow-Origin" (CORS) da versão da aula.
     var rota = url.parse(req.url, true)
-
-    // se vier ?id=1&id=2, fica só o primeiro (uma lista quebraria o SQL)
-    for(var chave in rota.query){
-        if(Array.isArray(rota.query[chave])){
-            rota.query[chave] = rota.query[chave][0]
-        }
-    }
 
     // VERSÃO SERVIDOR: arquivos do site (páginas, css, js, imagens, sons)
     if(req.method == 'GET' && (rota.pathname == '/' || /^\/(html|css|js|img|sons)\//.test(rota.pathname))){
@@ -531,32 +482,12 @@ const callback = (req, res)=>{
                 return responder(res, 400, {'error': 'Dados inválidos'})
             }
 
-            var erroDados = conferirDados(dados)
-
-            if(erroDados != ''){
-                return responder(res, 400, {'error': erroDados})
-            }
-
-            // o endereço de quem está pedindo (para bloquear tentativas repetidas)
-            // No Render o pedido passa por um proxy, que coloca o IP real no cabeçalho
-            // X-Forwarded-For. Mas o navegador pode mandar esse cabeçalho já preenchido
-            // com qualquer coisa (IP falso)! O proxy ACRESCENTA o IP real NO FINAL da lista,
-            // então o último item é o único confiável. Sem o cabeçalho (no computador),
-            // usa o endereço da conexão.
-            var ip = req.socket.remoteAddress
-            if(req.headers['x-forwarded-for']){
-                var listaIps = String(req.headers['x-forwarded-for']).split(',')
-                ip = listaIps[listaIps.length - 1].trim()
+            if(temObjeto(dados)){
+                return responder(res, 400, {'error': 'Dados inválidos'})
             }
 
             // ----- cadastro e login (não pedem token) -----
             if(rota.pathname == '/registro'){
-
-                // no máximo 20 contas novas por minuto do mesmo lugar (mesma internet)
-                if(bloqueado('registro:' + ip, 20)){
-                    return responder(res, 429, {'error': 'Muitos cadastros seguidos. Tente de novo em 1 minuto.'})
-                }
-                contarErro('registro:' + ip)
 
                 UsuariosBD.addUsuario(dados, (message)=>{
                     res.writeHead(201, {'Content-Type': 'application/json'})
@@ -632,20 +563,16 @@ const callback = (req, res)=>{
 
             }else if(rota.pathname == '/login'){
 
-                // 5 senhas erradas para o mesmo usuário: bloqueia 1 minuto.
-                // Do mesmo lugar (mesmo IP) o limite é 30, porque numa escola
-                // muita gente usa a mesma internet.
+                // 5 senhas erradas para o mesmo usuário: bloqueia essa conta por 1 minuto
                 var chaveLogin = 'login:' + String(dados.nomeUsuario).toLowerCase()
-                var chaveIp = 'loginip:' + ip
 
-                if(bloqueado(chaveLogin) || bloqueado(chaveIp, 30)){
+                if(bloqueado(chaveLogin)){
                     return responder(res, 429, {'error': 'Muitas tentativas erradas. Tente de novo em 1 minuto.'})
                 }
 
                 UsuariosBD.login(dados, (message)=>{
                     if(message.errouSenha){
                         contarErro(chaveLogin)
-                        contarErro(chaveIp)
                         delete message.errouSenha
                     }else if(message.token){
                         limparErros(chaveLogin)
@@ -1078,10 +1005,6 @@ const callback = (req, res)=>{
                 res.end(JSON.stringify({'error': 'Rota não encontrada'}))
             }
         })
-
-    // VERSÃO SERVIDOR: qualquer outro método (PUT, DELETE...) recebe "não permitido"
-    }else{
-        responder(res, 405, {'error': 'Método não permitido'})
     }
 }
 

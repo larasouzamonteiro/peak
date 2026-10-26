@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Peak | Mesa de RPG</title>
-
+<style>
+    
+</style>
     <!-- fontes: Poppins (textos e "peak.") e Lora (o menu com letras espaçadas) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@400;600;800&display=swap">
 
@@ -81,32 +83,16 @@
           por isso aqui usamos os mesmos vídeos leves. Com preload="none" o celular
           só baixa o vídeo do item escolhido; os outros mostram só o poster (.jpg). -->
       <div class="fundos-cel">
-    <!-- FOTOS 1: para usar, comente os 6 vídeos de cima e tire o comentário destas
-
-  <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
-        <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/leona.webm" type="video/webm"><source src="../img/index/videos/leona.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ahri.webm" type="video/webm"><source src="../img/index/videos/ahri.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/irelia.webm" type="video/webm"><source src="../img/index/videos/irelia.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/soraka.webm" type="video/webm"><source src="../img/index/videos/soraka.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/lux.webm" type="video/webm"><source src="../img/index/videos/lux.mp4" type="video/mp4"></video>
-      <video class="fundo" poster="../img/index/videos/taliyah.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/taliyah.webm" type="video/webm"><source src="../img/index/videos/akali.mp4" type="video/mp4"></video>
-  FOTOS 1 (está valendo no celular) 
-
-        <img class="fundo" src="../img/index/fotos1/1.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/2.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/3.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/4.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/5.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/6.jpg" alt="">
-        -->
-        <!-- FOTOS 2: para usar, comente os 6 vídeos de cima e tire o comentário destas
-        <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/2.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/3.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/4.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/5.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/6.jpg" alt="">
-        -->
+        <!-- VISUAL: no celular cada fundo ocupa a tela inteira. O "object-position" diz
+             qual parte do vídeo aparece (o 1º número move para os lados): assim a personagem
+             fica no meio da tela. Se trocar um vídeo, ajuste esse número.
+             Aqui são os vídeos LEVES (1 a 2 MB), para o celular abrir rápido. -->
+        <video class="fundo" style="object-position: 46% center" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video>
+        <video class="fundo" style="object-position: 46% center" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/AhriHD.mp4" type="video/webm"><source src="../img/index/videos/AhriHD.mp4" type="video/mp4"></video>
+        <video class="fundo" style="object-position: 57% center" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ireliaHD.mp4" type="video/webm"><source src="../img/index/videos/ireliaHD.mp4" type="video/mp4"></video>
+        <video class="fundo" style="object-position: 39% center" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/sorakaHD.mp4" type="video/webm"><source src="../img/index/videos/sorakaHD.mp4" type="video/mp4"></video>
+        <video class="fundo" style="object-position: 43% center" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/luxHD.mp4" type="video/webm"><source src="../img/index/videos/luxHD.mp4" type="video/mp4"></video>
+        <video class="fundo" style="object-position: 53% center" poster="../img/index/videos/akali.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/AkaliHD.mp4" type="video/mp4"></video>
       </div>
 
       <!-- véu escuro por cima do fundo, para o texto aparecer -->
@@ -135,6 +121,13 @@
       <div class="dica"><i>↑</i><i>↓</i> ESCOLHER &nbsp; <i>ENTER</i> CONFIRMAR &nbsp; ou clique</div>
       <!-- leva para o login já aberto no cadastro (a parte #conhecer da página está comentada) -->
       <a class="rolar" href="login.html?cadastro=sim">FAÇA A SUA CONTA E DESCUBRA<br>⌄</a>
+
+      <!-- VISUAL (só no celular): o botão Entrar em cima, o número grande do capítulo,
+           a dica de deslizar e o botão Abrir. No computador eles ficam escondidos (index.css). -->
+      <a class="cel-entrar" href="login.html">ENTRAR</a>
+      <div class="cel-numero" id="celNumero">I</div>
+      <div class="cel-dica">‹ deslize para ver os capítulos ›</div>
+      <button class="cel-abrir" type="button" onclick="abrirAtual()">ABRIR ›</button>
     </section>
 
   <!--
@@ -239,6 +232,9 @@
       var pontos = document.querySelectorAll('.pontos i')
       var atual = 0
 
+      // VISUAL (celular): o número grande e apagadinho que fica atrás do título
+      var romanos = ['I', 'II', 'III', 'IV', 'V', 'VI']
+
       // Mostra o item i: acende o item do menu, o fundo e o pontinho (classe "on")
       // e escreve o texto e o capítulo
       function escolher(i){
@@ -259,7 +255,12 @@
               if(fundos[k].tagName == 'VIDEO'){
                   if(k == i){
                       fundos[k].currentTime = 0
-                      fundos[k].play()
+                      // play() devolve uma "promessa"; se a pessoa trocar rápido de item,
+                      // o navegador cancela o play e avisa um erro. O catch só ignora esse aviso.
+                      var tocando = fundos[k].play()
+                      if(tocando){
+                          tocando.catch(function(){})
+                      }
                   }else{
                       fundos[k].pause()
                   }
@@ -269,6 +270,7 @@
           document.getElementById('descricao').innerHTML = '<b>' + textos[i][0] + '</b>' + textos[i][1]
           document.getElementById('capNumero').textContent = textos[i][2]
           document.getElementById('capTitulo').textContent = textos[i][3]
+          document.getElementById('celNumero').textContent = romanos[i]
       }
 
       // computador: passar o mouse já troca
@@ -306,7 +308,102 @@
           }
       })
 
+      // =====================================================
+      // CELULAR: DESLIZAR O DEDO PARA TROCAR DE CAPÍTULO
+      // =====================================================
+      // touchstart: guarda onde o dedo encostou | touchend: vê para que lado ele andou.
+      // Andou mais de 50px para a esquerda -> próximo capítulo; para a direita -> anterior.
+      var dedoX = 0
+
+      document.querySelector('.capa').addEventListener('touchstart', function(evento){
+          dedoX = evento.touches[0].clientX
+      })
+
+      document.querySelector('.capa').addEventListener('touchend', function(evento){
+          var andou = evento.changedTouches[0].clientX - dedoX
+
+          if(andou < -50 && atual < itens.length - 1){
+              escolher(atual + 1)
+          }else if(andou > 50 && atual > 0){
+              escolher(atual - 1)
+          }
+      })
+
+      // tocar numa bolinha também troca de capítulo
+      for(var p = 0; p < pontos.length; p++){
+          pontos[p].setAttribute('onclick', 'escolher(' + p + ')')
+      }
+
+      // botão "ABRIR ›" do celular: abre a página do capítulo que está na tela
+      function abrirAtual(){
+          window.location.href = textos[atual][4]
+      }
+
       escolher(0)
+      
     </script>
+    <!-- ACESSIBILIDADE: tradutor de Libras do governo (VLibras) -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script>
+  // ACESSIBILIDADE: o avatar de Libras é pesado. Para não reabrir sozinho (e travar)
+  // a cada página nova, apagamos o que o VLibras guardou da página anterior:
+  // ele sempre começa fechado, e a pessoa abre quando quiser.
+  for(var k = localStorage.length - 1; k >= 0; k--){
+      var nomeGuardado = localStorage.key(k)
+
+      if(nomeGuardado && nomeGuardado.toLowerCase().indexOf('vlibras') != -1){
+          localStorage.removeItem(nomeGuardado)
+      }
+  }
+</script>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+
+<script>
+  // VISUAL: muda a cor e a posição do botão de Libras.
+  // O VLibras desenha o botão dentro de um "shadow root" (uma caixinha fechada)
+  // que o CSS do site não alcança. Então, a cada 1/4 de segundo, procuramos essa
+  // caixinha; quando ela aparece, colocamos o nosso estilo lá dentro e paramos.
+  var tentativasLibras = 0
+
+  var procurarLibras = setInterval(function(){
+      tentativasLibras++
+
+      var todos = document.querySelectorAll('*')
+
+      for(var i = 0; i < todos.length; i++){
+          var caixa = todos[i].shadowRoot
+
+          if(caixa && caixa.getElementById('vlibras-access')){
+              var estilo = document.createElement('style')
+
+                            estilo.textContent =
+                  // posição: embaixo à direita, em cima do botão do dado.
+                  // cor: o filtro vai na caixinha TODA (botão + fundo), para não sobrar azul nos cantos
+                  '#vlibras-access{ top: 10px !important; !important; right: 10px !important; left: auto !important; transform: none !important;' +
+                  ' filter: hue-rotate(140deg) saturate(0.85) brightness(0.95); border-radius: 14px; overflow: hidden; background: transparent !important; }' +
+                  // o botão de dentro: mesmo arredondado da caixinha
+                  '#vlibras-button{ border-radius: 14px; }' +
+                  // celular: acima da barra de baixo
+                  '@media (max-width: 760px){ #vlibras-access{ bottom: 96px !important; right: 12px !important; } }'
+              caixa.appendChild(estilo)
+              clearInterval(procurarLibras)
+              return
+          }
+      }
+
+      // se em 10 segundos não achou (internet lenta, VLibras fora do ar), desiste
+      if(tentativasLibras > 40){
+          clearInterval(procurarLibras)
+      }
+  }, 250)
+</script>
   </body>
   </html>
