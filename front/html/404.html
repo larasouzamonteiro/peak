@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Página não encontrada | Peak</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap">
+
+  <!-- Os caminhos começam com "/" (e não "../") porque esta página aparece
+       em QUALQUER endereço errado, por exemplo /lara ou /html/abc/xyz.html -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="pagina-erro">
+
+  <main class="erro-caixa">
+    <h1 class="erro-numero">404</h1>
+    <p class="erro-texto">Esta página não existe, ou o Mestre não lhe concedeu acesso.</p>
+    <a class="botao botao-principal" href="/html/index.html">Voltar para a Peak</a>
+  </main>
+
+<style>
+  /* VISUAL: só a página 404.html (endereço que não existe).
+     O fundo é o desenho do mago (img/erro/404.jpg), cobrindo a tela inteira. */
+
+.pagina-erro{
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13vh 24px 0;      /* desce um pouco o texto: ele fica em cima do lugar certo do desenho */
+    background: #111 url(/img/erro/404.jpg) center / cover no-repeat;
+    text-align: center;
+}
+
+/* o style.css desenha o fundo pêssego desfocado em todas as páginas: aqui não precisa */
+.pagina-erro::before,
+.pagina-erro::after{
+    display: none;
+}
+
+.erro-caixa{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 40px 70px;
+    /* uma sombra escura e redonda atrás do texto, para ler bem em cima do desenho */
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.55) 45%, transparent 72%);
+}
+
+/* o "404" gigante: o tamanho acompanha a largura da tela (vw), para ficar no lugar certo do desenho */
+.erro-numero{
+    margin: 0;
+    color: #fff;
+    font-size: clamp(5rem, 10vw, 16rem);
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.7);
+}
+
+.erro-texto{
+    max-width: 90vw;
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: clamp(1rem, 2vw, 2.6rem);
+    font-weight: 600;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+</style>
+</body>
+</html>

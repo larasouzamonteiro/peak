@@ -532,156 +532,180 @@ main{
 /* No celular o fundo fica na parte de cima, e o menu embaixo, em linhas separadas.
    Os fundos do computador (.fundos-pc) ficam escondidos e aparecem os da .fundos-cel,
    que também são os vídeos leves (o script do index.html dá play no escolhido). */
+/* ---------- VISUAL: as peças que só aparecem no celular (no computador ficam escondidas) ---------- */
+.cel-entrar,
+.cel-numero,
+.cel-dica,
+.cel-abrir{
+    display: none;
+}
+
 @media (max-width: 700px){
+    /* VISUAL: no celular cada capítulo ocupa a tela inteira (deslize para o lado para trocar) */
     .capa{
-        min-height: 640px;
-        background: #120909;
+        height: 100vh;
+        height: 100svh;      /* svh: a altura da tela sem a barra do navegador do celular */
+        min-height: 600px;
+        background: #0d0809;
     }
 
     .fundos-pc{
         display: none;
     }
 
-    /* a foto ocupa 60% de cima da tela */
+    /* o vídeo do capítulo ocupa a tela toda */
     .fundos-cel{
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        inset: 0;
         display: block;
-        height: 60vh;
         overflow: hidden;
     }
 
-    .fundos-cel .fundo{
-        object-position: center 20%;
-    }
-
-    /* escurece em cima (logo) e vai fechando embaixo até virar o fundo da página */
+    /* escuro em cima (logo) e bem escuro embaixo (texto), limpo no meio (personagem) */
     .veu{
-        background: linear-gradient(180deg, rgba(18, 9, 9, 0.75) 0%, transparent 24%, transparent 34%, rgba(18, 9, 9, 0.85) 52%, #120909 60%);
+        background: linear-gradient(180deg, rgba(13, 8, 9, 0.55) 0%, rgba(13, 8, 9, 0) 22%, rgba(13, 8, 9, 0) 45%, rgba(13, 8, 9, 0.85) 72%, #0d0809 100%);
     }
 
+    /* logo pequena no canto de cima */
     .logo{
         top: 46px;
         left: 24px;
-        font-size: 58px;
+        font-size: 30px;
     }
 
-    .logo small{
-        margin-bottom: 8px;
+    .logo small,
+    .flor,
+    .menu,
+    .dica,
+    .rolar{
+        display: none;
+    }
+
+    /* botão Entrar no canto de cima, de vidro */
+    .cel-entrar{
+        position: absolute;
+        top: 50px;
+        right: 24px;
+        z-index: 5;
+        display: block;
+        padding: 8px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.25);
         color: #fff;
-        font-size: 10px;
-        letter-spacing: 0.5em;
-        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        backdrop-filter: blur(6px);
     }
 
-    .flor{
-        top: 38px;
-        right: 18px;
-        width: 60px;
+    /* o número grande e apagado atrás do título */
+    .cel-numero{
+        position: absolute;
+        left: 22px;
+        bottom: 286px;
+        z-index: 4;
+        display: block;
+        color: rgba(255, 255, 255, 0.12);
+        font-family: "Lora", serif;
+        font-size: 96px;
+        line-height: 1;
     }
 
-    /* capítulo, tracinhos e texto ficam logo acima do menu */
+    /* "CAPÍTULO I" pequeno e o nome grande */
     .capitulo{
-        top: calc(60vh - 172px);
+        top: auto;
         left: 24px;
         right: 24px;
-        bottom: auto;
-        font-size: 10px;
+        bottom: 214px;
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        color: #f0b3c0;
         text-align: left;
     }
 
     .capitulo b{
-        margin-top: 2px;
-        font-size: 32px;
+        margin-top: 6px;
+        color: #fff;
+        font-size: 40px;
+        letter-spacing: 0;
+        line-height: 1.05;
     }
 
-    .pontos{
-        position: absolute;
-        top: calc(60vh - 112px);
-        left: 24px;
-        display: flex;
-        gap: 6px;
-    }
-
-    .pontos i{
-        width: 16px;
-        height: 3px;
-        border-radius: 3px;
-        background: rgba(255, 255, 255, 0.25);
-        transition: 0.3s;
-    }
-
-    .pontos i.on{
-        width: 34px;
-        background: var(--coral);
-    }
-
+    /* o texto do capítulo: até 3 linhas */
     .descricao{
-        top: calc(60vh - 90px);
+        top: auto;
         left: 24px;
         right: 24px;
-        bottom: auto;
+        bottom: 134px;
         width: auto;
+        height: 66px;
         min-height: 0;
-        color: #e8cfc6;
-        font-size: 12.5px;
-        line-height: 1.55;
+        color: #efe3e3;
+        font-size: 14px;
+        line-height: 1.5;
     }
 
     .descricao b{
         display: none;
     }
 
-    /* o menu vira uma lista com linhas separadas */
-    .menu{
-        top: calc(60vh + 2px);
+    .cel-dica{
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 104px;
+        z-index: 4;
+        display: block;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-align: center;
+    }
+
+    /* as bolinhas: qual capítulo está na tela (tocar numa também troca) */
+    .pontos{
+        position: absolute;
+        top: auto;
         left: 24px;
+        bottom: 54px;
+        z-index: 4;
+        display: flex;
+        gap: 6px;
+    }
+
+    .pontos i{
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.35);
+        transition: 0.3s;
+    }
+
+    .pontos i.on{
+        width: 24px;
+        border-radius: 4px;
+        background: #e0475d;
+    }
+
+    /* botão Abrir, rosa, embaixo à direita */
+    .cel-abrir{
+        position: absolute;
         right: 24px;
-        font-size: 13px;
-    }
-
-    .menu li{
-        padding: 12px 0 12px 22px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        letter-spacing: 0.32em;
-    }
-
-    .menu li.on{
-        letter-spacing: 0.32em;
-        background: linear-gradient(90deg, rgba(245, 127, 108, 0.16), transparent 75%);
-    }
-
-    .menu li.on::before{
-        left: 6px;
-        width: 7px;
-        height: 7px;
-    }
-
-    /* no celular, a linha de baixo vira o "ABRIR ›" do lado direito */
-    .menu li.on::after{
-        content: "ABRIR ›";
-        top: 50%;
-        left: auto;
-        right: 10px;
-        bottom: auto;
-        height: auto;
-        background: none;
-        color: var(--coral-claro);
-        font-size: 10px;
-        letter-spacing: 0.2em;
-        transform: translateY(-50%);
-    }
-
-    .dica{
-        display: none;
-    }
-
-    .rolar{
-        bottom: 14px;
-        left: 50%;          /* VISUAL: no celular não tem .dica, então volta para o meio */
-        font-size: 10px;
+        bottom: 34px;
+        z-index: 5;
+        display: block;
+        height: 50px;
+        padding: 0 26px;
+        border: 0;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #c0566b, #7d1d33);
+        color: #fff;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        box-shadow: 0 10px 26px rgba(125, 29, 51, 0.45);
+        cursor: pointer;
     }
 
     /* depois da capa */
@@ -769,13 +793,26 @@ main{
     }
 }
 
-/* celular baixinho: menos espaço entre os itens */
+/* VISUAL: celular baixinho: tudo um pouco menor e sem a dica de deslizar */
 @media (max-width: 700px) and (max-height: 700px){
-    .rolar{
+    .cel-dica{
         display: none;
     }
 
-    .menu li{
-        padding: 10px 0 10px 22px;
+    .cel-numero{
+        bottom: 250px;
+        font-size: 72px;
+    }
+
+    .capitulo{
+        bottom: 190px;
+    }
+
+    .capitulo b{
+        font-size: 32px;
+    }
+
+    .descricao{
+        bottom: 104px;
     }
 }

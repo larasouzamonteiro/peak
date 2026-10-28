@@ -268,12 +268,92 @@ function lerImagem(campo, depois, limiteKB){
 
     var leitor = new FileReader()
 
-    // quando terminar de ler, o texto da imagem está em leitor.result
+    // quando terminar de ler, o texto da imagem está em leitor.result.
+    // Antes de entregar, a imagem é DIMINUÍDA (função diminuirImagem, logo abaixo).
     leitor.onload = function(){
-        depois(leitor.result)
+        diminuirImagem(leitor.result, arquivo, campo, depois)
     }
 
     leitor.readAsDataURL(arquivo)
+}
+
+// Qual o tamanho máximo (em pixels, do lado maior) que cada imagem pode ter.
+// O site mostra as fotos pequenas (bolinha do perfil, carta da ficha, card do monstro),
+// então 800 px já sobra. A capa do perfil e o mapa da mesa aparecem grandes.
+function ladoMaximoDaImagem(campo){
+    if(campo.id == 'capaArquivo'){
+        return 1400
+    }
+
+    if(campo.id == 'mapaArquivo'){
+        return 1600
+    }
+
+    return 800
+}
+
+// Diminui a imagem ANTES de mandar para o servidor:
+// desenha a foto num <canvas> (um "quadro" invisível) menor e transforma de novo em texto.
+// Assim uma foto de celular de 2 MB vira uns 50 a 100 KB, e cada página que mostra
+// essa foto fica muito mais leve (economiza a banda da Vercel e do Render).
+// (canvas não foi visto em aula: é o jeito do navegador desenhar e redimensionar imagens)
+function diminuirImagem(textoOriginal, arquivo, campo, depois){
+    var imagem = new Image()
+
+    imagem.onload = function(){
+        var lado = ladoMaximoDaImagem(campo)
+        var largura = imagem.width
+        var altura = imagem.height
+
+        // a imagem já é pequena: manda do jeito que está
+        if(largura <= lado && altura <= lado && arquivo.size <= 300 * 1024){
+            depois(textoOriginal)
+            return
+        }
+
+        // regra de três: o lado maior vira "lado" e o outro diminui na mesma proporção
+        if(largura > altura){
+            if(largura > lado){
+                altura = Math.round(altura * lado / largura)
+                largura = lado
+            }
+        }else{
+            if(altura > lado){
+                largura = Math.round(largura * lado / altura)
+                altura = lado
+            }
+        }
+
+        var quadro = document.createElement('canvas')
+        quadro.width = largura
+        quadro.height = altura
+        quadro.getContext('2d').drawImage(imagem, 0, 0, largura, altura)
+
+        // PNG, GIF e WEBP podem ter fundo transparente (ex.: monstro recortado):
+        // esses viram WEBP, que guarda a transparência e é bem mais leve que PNG.
+        // (navegador que não sabe fazer WEBP devolve PNG sozinho, e também funciona)
+        // Foto normal (JPG) vira JPEG com qualidade 85%.
+        var texto
+
+        if(arquivo.type == 'image/png' || arquivo.type == 'image/gif' || arquivo.type == 'image/webp'){
+            texto = quadro.toDataURL('image/webp', 0.85)
+        }else{
+            texto = quadro.toDataURL('image/jpeg', 0.85)
+        }
+
+        // se por algum motivo a versão nova ficou maior, manda a original
+        if(texto.length > textoOriginal.length){
+            texto = textoOriginal
+        }
+
+        depois(texto)
+    }
+
+    imagem.onerror = function(){
+        alert('Não consegui abrir essa imagem. Tente outra (JPG ou PNG).')
+    }
+
+    imagem.src = textoOriginal
 }
 
 
