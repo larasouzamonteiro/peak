@@ -175,7 +175,57 @@
     <!-- o número sorteado aparece aqui (rolarDado) -->
     <div class="dado-resultado oculto" id="dadoResultado"></div>
   </div>
+    <!-- ACESSIBILIDADE: tradutor de Libras do governo (VLibras) -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
 
+<script>
+  // VISUAL: muda a cor e a posição do botão de Libras.
+  // O VLibras desenha o botão dentro de um "shadow root" (uma caixinha fechada)
+  // que o CSS do site não alcança. Então, a cada 1/4 de segundo, procuramos essa
+  // caixinha; quando ela aparece, colocamos o nosso estilo lá dentro e paramos.
+  var tentativasLibras = 0
+
+  var procurarLibras = setInterval(function(){
+      tentativasLibras++
+
+      var todos = document.querySelectorAll('*')
+
+      for(var i = 0; i < todos.length; i++){
+          var caixa = todos[i].shadowRoot
+
+          if(caixa && caixa.getElementById('vlibras-access')){
+              var estilo = document.createElement('style')
+
+                            estilo.textContent =
+                  // posição: embaixo à direita, em cima do botão do dado.
+                  // cor: o filtro vai na caixinha TODA (botão + fundo), para não sobrar azul nos cantos
+                  '#vlibras-access{ top: 10px !important; !important; right: 10px !important; left: auto !important; transform: none !important;' +
+                  ' filter: hue-rotate(140deg) saturate(0.85) brightness(0.95); border-radius: 14px; overflow: hidden; background: transparent !important; }' +
+                  // o botão de dentro: mesmo arredondado da caixinha
+                  '#vlibras-button{ border-radius: 14px; }' +
+                  // celular: acima da barra de baixo
+                  '@media (max-width: 760px){ #vlibras-access{ bottom: 96px !important; right: 12px !important; } }'
+              caixa.appendChild(estilo)
+              clearInterval(procurarLibras)
+              return
+          }
+      }
+
+      // se em 10 segundos não achou (internet lenta, VLibras fora do ar), desiste
+      if(tentativasLibras > 40){
+          clearInterval(procurarLibras)
+      }
+  }, 250)
+</script>
   <!-- script.js: funções usadas em todas as páginas (menu, dado...) -->
   <script src="../js/script.js"></script>
 

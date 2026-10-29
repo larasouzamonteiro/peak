@@ -13,7 +13,8 @@
 <body class="entrada">
 
   <!-- VISUAL: o mesmo fundo e o mesmo "peak." do login -->
-  <div class="entrada-fundo"></div>
+    <div class="entrada-fundo"><video autoplay muted loop playsinline poster="../img/index/videos/leona.jpg"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video></div>
+ 
   <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
   <div class="entrada-frase frase-login">
     <h2>peak<span>.</span></h2>
@@ -34,7 +35,7 @@
 
       <div class="campo">
         <label class="rotulo" for="emailSenha">E-mail</label>
-        <input class="input" type="email" id="emailSenha" onkeydown="apertouEnter(event, pedirCodigoSenha)" autocomplete="email">
+       <input class="input" type="email" id="emailSenha" onkeydown="apertouEnter(event, pedirCodigoSenha)" autocomplete="email" placeholder="o e-mail da sua conta (não o celular)">
       </div>
 
       <!-- por onde o código vai chegar (função escolherVia do js/nova-senha.js).
@@ -83,7 +84,6 @@
     </div>
 
   </div>
-
   <script src="../js/script.js"></script>
   <script src="../js/nova-senha.js"></script>
 </body>
