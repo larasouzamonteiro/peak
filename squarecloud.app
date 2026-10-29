@@ -1,0 +1,5 @@
+MAIN=app.js
+MEMORY=512
+VERSION=recommended
+SUBDOMAIN=peak
+DISPLAY_NAME=Peak
