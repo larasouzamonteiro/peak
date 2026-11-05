@@ -49,7 +49,83 @@
 
 
 /* ---------- 2. CARDS DE CAMPANHAS OFICIAIS ---------- */
-/* card com a capa em cima e o texto embaixo */
+/* VISUAL: parecido com os cards dos monstros. A capa aparece inteira em cima
+   e vai sumindo embaixo; atrás do texto fica a mesma capa, borrada e escurecida. */
+#listaCampanhas{
+    align-items: start;     /* cada card fica da altura da sua capa */
+}
+
+.card-campanha{
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--raio);
+    background: var(--escuro);
+    color: #fff;
+    box-shadow: var(--sombra-foto);
+}
+
+/* a capa borrada, que preenche o card inteiro por trás */
+.card-campanha .capa-fundo{
+    position: absolute;
+    inset: -30px;
+    width: calc(100% + 60px);
+    height: calc(100% + 60px);
+    object-fit: cover;
+    filter: blur(22px) saturate(1.1);
+    opacity: 0.85;
+}
+
+/* a capa nítida e inteira (a altura segue o formato da imagem) */
+.card-campanha .capa{
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    -webkit-mask-image: linear-gradient(#000 70%, transparent);
+    mask-image: linear-gradient(#000 70%, transparent);
+}
+
+/* lápis e lixeira no canto de cima */
+.card-campanha .botoes-canto{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+}
+
+/* o texto: um degradê escuro que começa transparente */
+.card-campanha .card-corpo{
+    position: relative;
+    padding: 30px 22px 22px;
+    background: var(--painel-foto);
+}
+
+/* com capa, o texto sobe um pouco por cima do fim dela */
+.card-campanha .capa ~ .card-corpo{
+    margin-top: -40px;
+}
+
+.card-campanha .selo{
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(140, 42, 64, 0.92);
+    color: #fff;
+}
+
+.card-campanha .card-titulo{
+    color: #fff;
+}
+
+.card-campanha .texto-suave{
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.card-campanha .card-texto{
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* (o card antigo, com a capa em cima e o texto embaixo) */
 .card-com-imagem{
     padding: 0;
     overflow: hidden;
@@ -73,4 +149,25 @@
 
 .card-corpo .card-texto{
     margin: 8px 0 14px;
+}
+
+
+/* ---------- ABA AVISOS (nov/2026) ---------- */
+/* título, texto e o botão Publicar na mesma linha */
+.form-aviso{
+    display: grid;
+    grid-template-columns: 1fr 1.4fr auto;
+    gap: 14px;
+    align-items: end;
+    margin-bottom: 8px;
+}
+
+.form-aviso .campo{
+    margin: 0;
+}
+
+@media (max-width: 760px){
+    .form-aviso{
+        grid-template-columns: 1fr;
+    }
 }

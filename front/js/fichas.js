@@ -17,17 +17,20 @@ function carregarFichas(){
 
             // os dois botões que aparecem no canto da carta quando o mouse passa por cima
             var botoes = `
-                <a class="botao botao-claro botao-pequeno" href="ficha.html?id=${f.id}&editar=sim">Editar</a>
-                <button type="button" class="botao botao-perigo botao-pequeno" onclick="excluirFicha(${f.id})">Excluir</button>`
+                <a class="botao-icone na-foto editar" title="Editar" aria-label="Editar" href="ficha.html?id=${f.id}&editar=sim"></a>
+                <button type="button" class="botao-icone na-foto excluir" title="Excluir" aria-label="Excluir" onclick="excluirFicha(${f.id})"></button>`
 
             html += htmlCarta(f, botoes)
         }
 
-        // o quadro tracejado "Criar ficha" fica sempre por último
+        // a carta "Nova ficha" fica sempre por último
+        // VISUAL: a foto clarinha atrás (img/criar/nova-ficha.jpg) e o "+" rosa
         html += `
             <a class="card-novo" href="criar-ficha.html">
-                <img src="../img/icones/mais.svg" alt="">
-                Criar ficha
+                <img class="card-novo-foto" src="../img/criar/nova-ficha.jpg" alt="">
+                <span class="card-novo-mais">+</span>
+                <b>Nova ficha</b>
+                <small>criar na Oficina</small>
             </a>`
 
         document.getElementById('listaFichas').innerHTML = html

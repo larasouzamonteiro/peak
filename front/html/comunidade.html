@@ -16,18 +16,23 @@
 
   <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
   <aside class="lateral">
-    <a class="lateral-marca" href="inicio.html">
-      <img class="logo-peak" src="../img/logo.png" alt="">
-      <span>Peak</span>
+    <!-- a conta fica em cima (no lugar da logo). A letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+    <a class="lateral-conta" href="perfil.html">
+      <div class="avatar" id="menuLetra"></div>
+      <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
     </a>
 
     <nav class="lateral-grupo">
       <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
-      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
       <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+    
+      
       <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
-      <a class="lateral-link ativo" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+        <a class="lateral-link ativo" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+     
       <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+    
       <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
       <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
       <!-- VISUAL: só aparece no celular, abre o menu inteiro (abrirMais do script.js) -->
@@ -37,11 +42,6 @@
     <div class="lateral-rodape">
       <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
       <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
-      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
-      <a class="lateral-conta" href="perfil.html">
-        <div class="avatar" id="menuLetra"></div>
-        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
-      </a>
     </div>
   </aside>
 
@@ -55,47 +55,92 @@
 
       <div class="cabecalho-pagina">
         <h1 class="titulo">Comunidade</h1>
-        <!-- "2 combinam com você": escrito pela função desenharPessoas() do js/comunidade.js -->
+        <!-- "2 combinam com você": escrito pelo js/mural.js -->
         <span class="contagem" id="contagemCombina"></span>
       </div>
 
-      <div class="comunidade">
+      <!-- ABAS DA COMUNIDADE: o Mural vem primeiro, as Pessoas ficam do lado (pessoas.html) -->
+      <nav class="abas">
+        <a href="comunidade.html" class="ativo">Mural</a>
+        <a href="pessoas.html">Pessoas</a>
+      </nav>
 
-        <!-- ===== COLUNA DA ESQUERDA: filtros e pessoas ===== -->
+      <!-- =====================================================
+           O MURAL (estilo Pinterest)
+           Esta página já tem o HTML e o CSS prontos. Quem preenche
+           as partes vazias é o js/mural.js (a Amanda está fazendo).
+           ===================================================== -->
+      <div class="mural">
+
+        <!-- ===== COLUNA DA ESQUERDA: pessoas, postar, filtros e recados ===== -->
         <div>
-          <!-- a cada letra digitada a lista é desenhada de novo (oninput) -->
-          <input class="input" type="text" id="busca" placeholder="Buscar pelo nome de usuário" oninput="desenharPessoas()">
+          <!-- PESSOAS (fileira tipo stories): o mural.js coloca uma bolinha por pessoa.
+               Quem combina com você ganha o anel colorido (classe "combina"). -->
+          <div class="card mural-pessoas" id="muralPessoas"></div>
 
-          <!-- FILTRO DE INTERESSE: os botões são criados pela função desenharFiltros() -->
-          <div class="chips espaco-topo" id="filtroInteresses"></div>
+          <!-- POSTAR UM RECADO -->
+          <div class="card mural-postar">
+            <div class="avatar" id="muralMinhaFoto"></div>
+            <input class="input" type="text" id="recadoTexto" maxlength="280" placeholder="O que você procura ou oferece hoje?">
+            <!-- a foto do recado (opcional): o label abre a janela de escolher arquivo -->
+            <label class="mural-foto-bt" for="recadoFoto" title="Colocar uma foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></label>
+            <input class="oculto" type="file" id="recadoFoto" accept="image/*">
+            <button type="button" class="botao botao-principal" id="botaoPublicar">Publicar</button>
 
-          <!-- FILTRO DE PARCERIA -->
-          <div class="chips espaco-topo-pequeno">
-            <button type="button" class="chip chip-botao ativo" id="filtroTodoMundo" onclick="filtrarCombina(false)">Todo mundo</button>
-            <button type="button" class="chip chip-botao" id="filtroSoCombina" onclick="filtrarCombina(true)">Só quem combina comigo</button>
+            <!-- Procuro / Ofereço e as tags do recado (até 3): o mural.js desenha as tags -->
+            <div class="mural-escolhas">
+              <button type="button" class="chip chip-botao ativo" id="tipoProcuro">Procuro</button>
+              <button type="button" class="chip chip-botao" id="tipoOfereco">Ofereço</button>
+              <span class="mural-separa"></span>
+              <div class="chips" id="recadoTags"></div>
+            </div>
+          </div>
+          <p class="alerta" id="alertRecado"></p>
+
+          <!-- FILTROS -->
+          <div class="chips mural-filtros">
+            <button type="button" class="chip chip-botao ativo" id="filtroTudo">Tudo</button>
+            <button type="button" class="chip chip-botao" id="filtroProcuro">Procuro</button>
+            <button type="button" class="chip chip-botao" id="filtroOfereco">Ofereço</button>
+            <button type="button" class="chip chip-botao" id="filtroCombina">Só quem combina</button>
           </div>
 
-          <div class="secao-titulo">
-            <h2>Gente parecida com você</h2>
+          <!-- OS RECADOS: duas colunas. O mural.js põe o 1º recado na esquerda,
+               o 2º na direita, o 3º na esquerda... (sempre começando pela esquerda).
+
+               Um recado COM foto fica assim:
+               <div class="recado">
+                 <img class="recado-foto" src="..." alt="">
+                 <span class="recado-tipo">Ofereço</span>
+                 <div class="recado-corpo">
+                   <p>Faço retratos dos personagens da sua ficha</p>
+                   <div class="recado-tags">#Fantasia #Anime</div>
+                   <div class="recado-autor">
+                     <img src="..." alt="">
+                     <div><b>laraadmin</b><small>Ilustradora</small></div>
+                     <a class="recado-chamar" href="perfil.html?id=1">Chamar ›</a>
+                   </div>
+                 </div>
+               </div>
+
+               Um recado SEM foto vira um cartão de frase: a mesma coisa, sem a <img class="recado-foto">
+               e com a classe "recado-frase" -> <div class="recado recado-frase">.
+               Para "Procuro", a etiqueta ganha a classe "procuro": <span class="recado-tipo procuro">. -->
+          <div class="mural-grade">
+            <div class="mural-coluna" id="colunaEsquerda"></div>
+            <div class="mural-coluna" id="colunaDireita"></div>
           </div>
 
-          <!-- os cards das pessoas entram aqui: função desenharPessoas() -->
-          <div class="pessoas" id="listaPessoas"></div>
-
-          <!-- aparece quando tem mais de 12 pessoas (desenharPessoas); clicar chama mostrarMais() -->
-          <button type="button" class="mostrar-mais oculto" id="botaoMais" onclick="mostrarMais()">
-            Mostrar mais 12
-            <small id="textoMais"></small>
-          </button>
+          <!-- aparece enquanto não tem nenhum recado (o mural.js esconde quando tiver) -->
+          <p class="texto-suave mural-vazio" id="muralVazio">Ainda não tem recados. Seja a primeira pessoa a postar!</p>
         </div>
 
-        <!-- ===== COLUNA DA DIREITA: a minha parceria ===== -->
+        <!-- ===== COLUNA DA DIREITA ===== -->
         <aside class="lado-caixas">
           <div class="card">
             <h2 class="card-titulo">Sua parceria</h2>
 
             <p class="rotulo">Você é</p>
-            <!-- preenchido pela função desenharMinhaParceria() -->
             <div class="chips" id="meuSou"></div>
 
             <p class="rotulo espaco-topo-pequeno">Você procura</p>
@@ -104,10 +149,21 @@
             <p class="espaco-topo-pequeno"><a href="perfil.html?aba=configuracoes">mudar no perfil ›</a></p>
           </div>
 
+          <!-- EM ALTA: as tags mais usadas nos recados (o mural.js escreve as linhas) -->
           <div class="card">
-            <h2 class="card-titulo">Como funciona</h2>
-            <p class="texto-suave">Aparece "Combina" quando a pessoa É alguma coisa que você PROCURA. Abra o perfil dela para ver o contato.</p>
+            <h2 class="card-titulo">Em alta no mural</h2>
+            <p class="texto-suave">as tags mais usadas nos recados</p>
+            <div class="em-alta" id="emAlta"></div>
           </div>
+
+          <!-- VISUAL: convite embaixo das caixas -->
+          <a class="convite-lado" href="pessoas.html">
+            <img src="../img/editorial/grupo-cor.jpg" alt="">
+            <div>
+              <b>Ninguém joga RPG sozinho.</b>
+              <p>Monte seu grupo e chame para a sua mesa.</p>
+            </div>
+          </a>
         </aside>
 
       </div>
@@ -195,6 +251,6 @@
 </script>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
-  <script src="../js/comunidade.js"></script>
+  <script src="../js/mural.js"></script>
 </body>
 </html>

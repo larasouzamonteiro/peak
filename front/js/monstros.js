@@ -165,8 +165,9 @@ function desenharMonstros(){
     if(faixaEscolhida == 'meus' && busca == ''){
         html += `
             <button type="button" class="card-novo" onclick="abrirJanela('janelaNovo')">
-                <img src="../img/icones/mais.svg" alt="">
-                Criar monstro
+                <span class="card-novo-mais">+</span>
+                <b>Novo monstro</b>
+                <small>criar no Bestiário</small>
             </button>`
     }else if(html == '' && busca != ''){
         html = '<p class="texto-suave">Nenhum monstro com esse nome nesta faixa.</p>'

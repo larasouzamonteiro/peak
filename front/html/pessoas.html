@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pessoas | Comunidade | Peak</title>
+
+  <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+
+  <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/comunidade.css">
+</head>
+<body>
+
+  <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
+  <aside class="lateral">
+    <!-- a conta fica em cima (no lugar da logo). A letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+    <a class="lateral-conta" href="perfil.html">
+      <div class="avatar" id="menuLetra"></div>
+      <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
+    </a>
+
+    <nav class="lateral-grupo">
+      <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
+      <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+     <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+       <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
+      <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
+      <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
+      <!-- VISUAL: só aparece no celular, abre o menu inteiro (abrirMais do script.js) -->
+      <button type="button" class="lateral-link botao-mais" onclick="abrirMais()"><img src="../img/icones/mais.svg" alt=""><span>Mais</span></button>
+    </nav>
+
+    <div class="lateral-rodape">
+      <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
+      <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
+    </div>
+  </aside>
+
+  <!-- TOPO: "Boa noite, fulano" (preenchido pelo verificarLogin() do script.js) -->
+  <header class="topo">
+    <div class="topo-oi"><span id="saudacao">Olá</span>, <b id="nomeLogado"></b></div>
+  </header>
+
+  <main class="secao">
+    <div class="container">
+
+      <div class="cabecalho-pagina">
+        <h1 class="titulo">Comunidade</h1>
+        <!-- "2 combinam com você": escrito pela função desenharPessoas() do js/comunidade.js -->
+        <span class="contagem" id="contagemCombina"></span>
+      </div>
+
+      <!-- ABAS DA COMUNIDADE: o Mural vem primeiro (comunidade.html), as Pessoas ficam do lado -->
+      <nav class="abas">
+        <a href="comunidade.html">Mural</a>
+        <a href="pessoas.html" class="ativo">Pessoas</a>
+      </nav>
+
+      <div class="comunidade">
+
+        <!-- ===== COLUNA DA ESQUERDA: filtros e pessoas ===== -->
+        <div>
+          <!-- a cada letra digitada a lista é desenhada de novo (oninput) -->
+          <input class="input" type="text" id="busca" placeholder="Buscar pelo nome de usuário" oninput="desenharPessoas()">
+
+          <!-- FILTRO DE INTERESSE: os botões são criados pela função desenharFiltros() -->
+          <div class="chips espaco-topo" id="filtroInteresses"></div>
+
+          <!-- FILTRO DE PARCERIA -->
+          <div class="chips espaco-topo-pequeno">
+            <button type="button" class="chip chip-botao ativo" id="filtroTodoMundo" onclick="filtrarCombina(false)">Todo mundo</button>
+            <button type="button" class="chip chip-botao" id="filtroSoCombina" onclick="filtrarCombina(true)">Só quem combina comigo</button>
+          </div>
+
+          <div class="secao-titulo">
+            <h2>Gente parecida com você</h2>
+          </div>
+
+          <!-- os cards das pessoas entram aqui: função desenharPessoas() -->
+          <div class="pessoas" id="listaPessoas"></div>
+
+          <!-- aparece quando tem mais de 12 pessoas (desenharPessoas); clicar chama mostrarMais() -->
+          <button type="button" class="mostrar-mais oculto" id="botaoMais" onclick="mostrarMais()">
+            Mostrar mais 12
+            <small id="textoMais"></small>
+          </button>
+        </div>
+
+        <!-- ===== COLUNA DA DIREITA: a minha parceria ===== -->
+        <aside class="lado-caixas">
+          <div class="card">
+            <h2 class="card-titulo">Sua parceria</h2>
+
+            <p class="rotulo">Você é</p>
+            <!-- preenchido pela função desenharMinhaParceria() -->
+            <div class="chips" id="meuSou"></div>
+
+            <p class="rotulo espaco-topo-pequeno">Você procura</p>
+            <div class="chips" id="meuProcuro"></div>
+
+            <p class="espaco-topo-pequeno"><a href="perfil.html?aba=configuracoes">mudar no perfil ›</a></p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-titulo">Como funciona</h2>
+            <p class="texto-suave">Aparece "Combina" quando a pessoa É alguma coisa que você PROCURA. Abra o perfil dela para ver o contato.</p>
+          </div>
+
+          <!-- VISUAL: convite embaixo das caixas (a foto é a mesma do Início) -->
+          <a class="convite-lado" href="campanhas.html">
+            <img src="../img/editorial/grupo-cor.jpg" alt="">
+            <div>
+              <b>Ninguém joga RPG sozinho.</b>
+              <p>Monte seu grupo e chame para a sua mesa.</p>
+            </div>
+          </a>
+        </aside>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
+  <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
+  <div class="dado-menu oculto" id="dadoMenu">
+    <p>Escolha o dado</p>
+    <div class="dado-faces">
+      <button type="button" onclick="rolarDado(4)">d4</button>
+      <button type="button" onclick="rolarDado(6)">d6</button>
+      <button type="button" onclick="rolarDado(8)">d8</button>
+      <button type="button" onclick="rolarDado(10)">d10</button>
+      <button type="button" onclick="rolarDado(12)">d12</button>
+      <button type="button" onclick="rolarDado(20)">d20</button>
+    </div>
+    <!-- o número sorteado aparece aqui (rolarDado) -->
+    <div class="dado-resultado oculto" id="dadoResultado"></div>
+  </div>
+  <!-- ACESSIBILIDADE: tradutor de Libras do governo (VLibras) -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script>
+  // ACESSIBILIDADE: o avatar de Libras é pesado. Para não reabrir sozinho (e travar)
+  // a cada página nova, apagamos o que o VLibras guardou da página anterior:
+  // ele sempre começa fechado, e a pessoa abre quando quiser.
+  for(var k = localStorage.length - 1; k >= 0; k--){
+      var nomeGuardado = localStorage.key(k)
+
+      if(nomeGuardado && nomeGuardado.toLowerCase().indexOf('vlibras') != -1){
+          localStorage.removeItem(nomeGuardado)
+      }
+  }
+</script>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+
+<script>
+  // VISUAL: muda a cor e a posição do botão de Libras.
+  // O VLibras desenha o botão dentro de um "shadow root" (uma caixinha fechada)
+  // que o CSS do site não alcança. Então, a cada 1/4 de segundo, procuramos essa
+  // caixinha; quando ela aparece, colocamos o nosso estilo lá dentro e paramos.
+  var tentativasLibras = 0
+
+  var procurarLibras = setInterval(function(){
+      tentativasLibras++
+
+      var todos = document.querySelectorAll('*')
+
+      for(var i = 0; i < todos.length; i++){
+          var caixa = todos[i].shadowRoot
+
+          if(caixa && caixa.getElementById('vlibras-access')){
+              var estilo = document.createElement('style')
+
+                            estilo.textContent =
+                  // posição: embaixo à direita, em cima do botão do dado.
+                  // cor: o filtro vai na caixinha TODA (botão + fundo), para não sobrar azul nos cantos
+                  '#vlibras-access{ top: auto !important; bottom: 34px !important; right: 110px !important; left: auto !important; transform: none !important;' +
+                  ' filter: hue-rotate(140deg) saturate(0.85) brightness(0.95); border-radius: 14px; overflow: hidden; background: transparent !important; }' +
+                  // o botão de dentro: mesmo arredondado da caixinha
+                  '#vlibras-button{ border-radius: 14px; }' +
+                  // celular: acima da barra de baixo
+                  '@media (max-width: 760px){ #vlibras-access{ bottom: 96px !important; right: 12px !important; } }'
+              caixa.appendChild(estilo)
+              clearInterval(procurarLibras)
+              return
+          }
+      }
+
+      // se em 10 segundos não achou (internet lenta, VLibras fora do ar), desiste
+      if(tentativasLibras > 40){
+          clearInterval(procurarLibras)
+      }
+  }, 250)
+</script>
+  <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
+  <script src="../js/script.js"></script>
+  <script src="../js/comunidade.js"></script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 //   - monstros oficiais (os gerais da Peak e os de cada campanha oficial)
 //   - campanhas oficiais
 //   - raças oficiais e classes oficiais (as que aparecem para todo mundo na Oficina)
+//   - avisos da Peak (o mais novo aparece no topo do Início)
 //
 // Quem protege de verdade é o servidor: as rotas /admin/... recusam quem não é admin.
 // Aqui a página só manda embora quem entrou por engano.
@@ -23,12 +24,13 @@ if(verificarLogin()){
         carregarCampanhas()
         carregarRacas()
         carregarClasses()
+        carregarAvisos()
     }
 }
 
 // ABAS: mostra só uma <section id="aba..."> e esconde as outras
 function mostrarAba(nome){
-    var abas = ['Monstros', 'Campanhas', 'Racas', 'Classes']
+    var abas = ['Monstros', 'Campanhas', 'Racas', 'Classes', 'Avisos']
 
     for(var i = 0; i < abas.length; i++){
         document.getElementById('aba' + abas[i]).classList.toggle('oculto', abas[i] != nome)
@@ -82,8 +84,8 @@ function desenharMonstros(){
                 <td>${m.defesa}</td>
                 <td>
                     <div class="botoes">
-                        <button type="button" class="botao botao-pequeno" onclick="editarMonstro(${m.id})">Editar</button>
-                        <button type="button" class="botao botao-pequeno" onclick="excluirMonstro(${m.id})">Excluir</button>
+                        <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="editarMonstro(${m.id})"></button>
+                        <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirMonstro(${m.id})"></button>
                     </div>
                 </td>
             </tr>`
@@ -200,6 +202,14 @@ function excluirMonstro(id){
 // CAMPANHAS OFICIAIS
 // =====================================================
 
+// VISUAL: a capa entra duas vezes no card: uma borrada (o fundo atrás do texto)
+// e uma nítida e inteira em cima, que vai sumindo embaixo
+function capaDoCard(imagem){
+    var src = seguro(imagem)
+    return '<img class="capa-fundo" src="' + src + '" alt="">' +
+           '<img class="capa" src="' + src + '" alt="">'
+}
+
 // Um card para cada campanha oficial, em <div id="listaCampanhas">
 function desenharCampanhas(){
     var html = ''
@@ -208,17 +218,17 @@ function desenharCampanhas(){
         var c = campanhas[i]
 
         html += `
-            <div class="card card-com-imagem">
-                ${c.imagemCapa ? '<img class="capa" src="' + seguro(c.imagemCapa) + '" alt="">' : ''}
+            <div class="card-campanha">
+                ${c.imagemCapa ? capaDoCard(c.imagemCapa) : ''}
+                <div class="botoes-canto">
+                    <button type="button" class="botao-icone na-foto editar" title="Editar" aria-label="Editar" onclick="editarCampanha(${c.id})"></button>
+                    <button type="button" class="botao-icone na-foto excluir" title="Excluir" aria-label="Excluir" onclick="excluirCampanha(${c.id})"></button>
+                </div>
                 <div class="card-corpo">
                     <span class="selo">Campanha oficial</span>
                     <h3 class="card-titulo">${seguro(c.nome)}</h3>
                     <p class="texto-suave">Criada por ${seguro(c.criadaPor || 'Equipe Peak')}</p>
                     <p class="card-texto">${seguro(c.descricao)}</p>
-                    <div class="botoes">
-                        <button type="button" class="botao botao-pequeno" onclick="editarCampanha(${c.id})">Editar</button>
-                        <button type="button" class="botao botao-pequeno" onclick="excluirCampanha(${c.id})">Excluir</button>
-                    </div>
                 </div>
             </div>`
     }
@@ -347,8 +357,8 @@ function desenharRacas(){
                 <td>${r.vidaMaxima}</td>
                 <td>
                     <div class="botoes">
-                        <button type="button" class="botao botao-pequeno" onclick="editarRaca(${r.id})">Editar</button>
-                        <button type="button" class="botao botao-pequeno" onclick="excluirRaca(${r.id})">Excluir</button>
+                        <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="editarRaca(${r.id})"></button>
+                        <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirRaca(${r.id})"></button>
                     </div>
                 </td>
             </tr>`
@@ -476,8 +486,8 @@ function desenharClasses(){
                 <td><strong>${seguro(c.nome)}</strong></td>
                 <td>
                     <div class="botoes">
-                        <button type="button" class="botao botao-pequeno" onclick="editarClasse(${c.id})">Editar</button>
-                        <button type="button" class="botao botao-pequeno" onclick="excluirClasse(${c.id})">Excluir</button>
+                        <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="editarClasse(${c.id})"></button>
+                        <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirClasse(${c.id})"></button>
                     </div>
                 </td>
             </tr>`
@@ -566,5 +576,78 @@ function excluirClasse(id){
         }
 
         carregarClasses()
+    })
+}
+
+
+// =====================================================
+// AVISOS DA PEAK
+// =====================================================
+// A rota /avisos manda os 3 mais novos (o mais novo primeiro).
+
+function carregarAvisos(){
+    buscar('/avisos', function(avisos){
+        var html = ''
+
+        for(var i = 0; i < avisos.length; i++){
+            var a = avisos[i]
+            var data = new Date(a.criadoEm).toLocaleDateString('pt-BR')
+
+            html += `
+                <tr>
+                    <td>${data}</td>
+                    <td><strong>${seguro(a.titulo)}</strong></td>
+                    <td>${seguro(a.texto || '')}</td>
+                    <td>
+                        <div class="botoes">
+                            <button type="button" class="botao-icone excluir" title="Apagar" aria-label="Apagar" onclick="excluirAviso(${a.id})"></button>
+                        </div>
+                    </td>
+                </tr>`
+        }
+
+        if(html == ''){
+            html = '<tr><td colspan="4" class="texto-suave">Nenhum aviso ainda.</td></tr>'
+        }
+
+        document.getElementById('tabelaAvisos').innerHTML = html
+    })
+}
+
+function publicarAviso(){
+    var aviso = {
+        titulo: document.getElementById('avisoTituloNovo').value.trim(),
+        texto: document.getElementById('avisoTextoNovo').value.trim()
+    }
+
+    document.getElementById('alertAviso').textContent = ''
+
+    enviar('/admin/avisos/criar', aviso, function(dados){
+
+        if(dados.hasOwnProperty('error')){
+            document.getElementById('alertAviso').textContent = dados.error
+            return
+        }
+
+        // limpa os campos e desenha a lista de novo
+        document.getElementById('avisoTituloNovo').value = ''
+        document.getElementById('avisoTextoNovo').value = ''
+        carregarAvisos()
+    })
+}
+
+function excluirAviso(id){
+    if(!confirm('Apagar este aviso?')){
+        return
+    }
+
+    enviar('/admin/avisos/excluir', {id: id}, function(dados){
+
+        if(dados.hasOwnProperty('error')){
+            alert(dados.error)
+            return
+        }
+
+        carregarAvisos()
     })
 }

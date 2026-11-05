@@ -35,20 +35,21 @@
     --cartao-2: #f8e9ea;
     --menu: #fcf1f1;
 
-    --tinta: #3b1a22;           /* texto */
+    --tinta: #1a1a1c;           /* texto (preto) */
     --tinta-2: #55303a;
     --tinta-3: #7a5660;         /* texto mais claro (ainda dá para ler em cima do fundo) */
     --linha: rgba(90, 60, 50, 0.16);
     --linha-forte: rgba(90, 60, 50, 0.3);
 
-    /* VISUAL: as 3 cores do vinho-rosado (os nomes das variáveis continuam "rosa"
-       para não precisar mexer nos outros arquivos) */
-    --rosa: #8c2a40;            /* destaque vinho (botão principal, etiquetas, vida) */
-    --rosa-escuro: #7d1d33;
-    --rosa-claro: #f0b3c0;
-    --degrade: linear-gradient(135deg, #c0566b 0%, #7d1d33 100%);    /* botões e o dado */
-    --titulo: #45151f;          /* cor dos títulos grandes */
-    --escuro: #3a2318;          /* fundo dos cards de foto */
+    /* VISUAL: preto e branco com o rosa flor só nos detalhes (nov/2026)
+       (os nomes das variáveis continuam "rosa" para não precisar mexer nos outros arquivos) */
+    --rosa: #d1405a;            /* rosa flor: detalhes (links, tracinho do menu, vida, tags) */
+    --rosa-escuro: #a92c44;
+    --rosa-claro: #f4b3c0;
+    --degrade: linear-gradient(135deg, #3a3a40 0%, #111114 100%);    /* botões principais e o dado: preto */
+    --degrade-rosa: linear-gradient(135deg, #ec6a7c 0%, #c0304a 100%);  /* o "+" das cartas de criar */
+    --titulo: #1a1a1c;          /* cor dos títulos grandes (preto) */
+    --escuro: #1d1b1e;          /* fundo dos cards de foto (grafite) */
     --sobre-escuro: #fbf1ee;    /* texto em cima do escuro */
 
     --verde: #4f9b62;
@@ -116,10 +117,10 @@ body::after{
 }
 
 body::before{
-    inset: -40px;                 /* passa um pouco da tela, senão o desfoque deixa a borda clara */
+    inset: -90px;                 /* passa um pouco da tela, senão o desfoque deixa a borda clara */
     z-index: -2;
     background: var(--arte) center 20% / cover;
-    filter: blur(10px) saturate(1.1) brightness(1.03);
+    filter: blur(40px) saturate(1.1) brightness(1.03);
 }
 
 body::after{
@@ -201,20 +202,6 @@ p{
     backdrop-filter: var(--desfoque);
 }
 
-.lateral-marca{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 8px 26px;
-    color: var(--tinta);
-    font-size: 1.35rem;
-    font-weight: 700;
-}
-
-.logo-peak{
-    height: 42px;
-}
-
 .lateral-grupo{
     display: flex;
     flex-direction: column;
@@ -249,12 +236,25 @@ p{
 }
 
 .lateral-link.ativo{
-    background: rgba(255, 255, 255, 0.86);
+    position: relative;
     color: var(--tinta);
-    box-shadow: var(--sombra), var(--brilho);
+    font-weight: 600;
 }
 
-/* Configurações, Sair e a conta ficam lá embaixo */
+/* VISUAL: o item escolhido não tem fundo, só um tracinho rosa do lado */
+.lateral-link.ativo::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 4px;
+    height: 22px;
+    margin-top: -11px;
+    border-radius: 4px;
+    background: var(--rosa);
+}
+
+/* Configurações e Sair ficam lá embaixo */
 .lateral-rodape{
     display: flex;
     flex-direction: column;
@@ -262,9 +262,8 @@ p{
     margin-top: auto;
 }
 
-/* Configurações, Sair e a conta: pequenos vidros em cima da boneca */
-.lateral-rodape .lateral-link,
-.lateral-conta{
+/* Configurações e Sair: pequenos vidros em cima da boneca */
+.lateral-rodape .lateral-link{
     border: 1px solid var(--vidro-borda);
     background: rgba(255, 255, 255, 0.55);
     color: var(--tinta);
@@ -272,19 +271,29 @@ p{
     backdrop-filter: blur(14px);
 }
 
+/* a conta fica em cima (no lugar da logo), num cartão branco bem visível */
 .lateral-conta{
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 4px;
-    padding: 10px;
-    border-radius: 20px;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding: 12px 14px;
+    border: 1px solid #fff;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--tinta);
+    box-shadow: 0 8px 22px rgba(30, 20, 25, 0.10);
 }
 
 .lateral-conta .avatar{
-    width: 36px;
-    height: 36px;
-    font-size: 0.85rem;
+    width: 46px;
+    height: 46px;
+    font-size: 0.95rem;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--rosa);    /* o anel rosa em volta da foto */
+}
+
+.lateral-conta strong{
+    font-size: 1.02rem;
 }
 
 .lateral-conta span{
@@ -294,8 +303,9 @@ p{
 }
 
 .lateral-conta small{
-    color: var(--tinta-3);
-    font-size: 0.72rem;
+    color: var(--rosa);
+    font-size: 0.78rem;
+    font-weight: 600;
 }
 
 /* -- barra do topo -- */
@@ -616,6 +626,65 @@ p{
     gap: 10px;
 }
 
+/* VISUAL: botões redondos só com o desenho (lápis = editar, lixeira = excluir).
+   O desenho é uma "máscara": a forma vem do SVG e a cor vem do "color" do botão. */
+.botao-icone{
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--rosa);
+    box-shadow: var(--sombra-pequena);
+    cursor: pointer;
+    transition: transform var(--rapido), background var(--rapido), color var(--rapido);
+}
+
+.botao-icone::before{
+    content: "";
+    width: 15px;
+    height: 15px;
+    background: currentColor;
+    -webkit-mask: var(--icone) center / contain no-repeat;
+    mask: var(--icone) center / contain no-repeat;
+}
+
+.botao-icone.editar{
+    --icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E");
+}
+
+.botao-icone.excluir{
+    --icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3C/svg%3E");
+}
+
+.botao-icone:hover{
+    transform: translateY(-2px);
+}
+
+/* a lixeira fica vermelha quando o mouse passa */
+.botao-icone.excluir:hover{
+    background: var(--vermelho);
+    color: #fff;
+}
+
+/* em cima de foto: vidro escuro com o desenho branco */
+.botao-icone.na-foto{
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(30, 17, 21, 0.45);
+    color: #fff;
+    box-shadow: none;
+    backdrop-filter: blur(6px);
+}
+
+/* na sessão da campanha a lixeira fica sozinha, no canto direito */
+.sessao > .botao-icone{
+    display: grid;
+    margin-left: auto;
+}
+
 
 /* ---------- 6. CARDS E GRADES ---------- */
 /* bloco de vidro: meio transparente, embaça o fundo, tem a linha de luz em cima e uma sombra leve */
@@ -642,34 +711,71 @@ p{
 
 /* card tracejado de "criar" */
 .card-novo{
+    position: relative;
     width: 100%;
     font-family: inherit;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     min-height: 180px;
-    border: 2px dashed rgba(70, 40, 35, 0.42);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: var(--raio);
-    background: var(--vidro-leve);
-    color: var(--tinta-2);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--titulo);
+    box-shadow: 0 8px 20px rgba(60, 20, 30, 0.08);
     backdrop-filter: blur(12px);
-    font-size: 1.05rem;
-    font-weight: 700;
     text-align: center;
     cursor: pointer;
 }
 
 .card-novo:hover{
-    border-color: var(--rosa);
-    color: var(--rosa-escuro);
+    border-color: #fff;
+    box-shadow: var(--sombra);
 }
 
-/* o "+" do card de criar */
-.card-novo img{
-    width: 34px;
-    height: 34px;
+/* VISUAL: a foto clarinha atrás da carta (img/criar/...) */
+.card-novo-foto{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    opacity: 0.32;
+    mix-blend-mode: multiply;      /* o branco da foto some e fica só o desenho */
+    filter: saturate(0.6);
+}
+
+/* o "+" redondo rosa */
+.card-novo-mais{
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: var(--degrade-rosa);
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    box-shadow: 0 10px 22px rgba(192, 48, 74, 0.32);
+}
+
+.card-novo b{
+    position: relative;
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.card-novo small{
+    position: relative;
+    color: var(--tinta-3);
+    font-size: 0.75rem;
 }
 
 .grade{
@@ -934,6 +1040,13 @@ input[type="radio"]{
     font-weight: 700;
 }
 
+/* a foto de perfil dentro da bolinha (o script.js troca a letra pela foto) */
+.avatar img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 /* Toda foto de card é feita pela função htmlFoto() do script.js:
      com imagem -> <img class="foto">
      sem imagem -> <div class="foto sem-foto">L</div>  (um quadro com a primeira letra do nome) */
@@ -998,10 +1111,11 @@ button.foto-card{
 }
 
 .foto-card .etiquetas .selo{
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: rgba(140, 42, 64, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(20, 10, 14, 0.42);         /* VISUAL: selo de vidro escuro */
     color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    letter-spacing: 0.08em;
+    backdrop-filter: blur(8px);
 }
 
 .foto-card .etiquetas .selo-escuro{
@@ -1088,10 +1202,11 @@ button.foto-card{
 }
 
 .carta .topo-carta .selo{
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: rgba(140, 42, 64, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(20, 10, 14, 0.42);         /* VISUAL: selo de vidro escuro */
     color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    letter-spacing: 0.08em;
+    backdrop-filter: blur(8px);
 }
 
 /* painel escuro de baixo: nome, raça e classe, atributos e vida */
@@ -1221,7 +1336,7 @@ button.foto-card{
 
 .grade-campanhas .foto-card,
 .grade-campanhas .card-novo{
-    min-height: 200px;
+    min-height: 290px;
 }
 
 /* texto longo escrito pela pessoa: respeita as quebras de linha que ela digitou */
@@ -1294,7 +1409,7 @@ button.foto-card{
         background-image: none;
     }
 
-    .lateral-marca,
+    .lateral-conta,
     .lateral-rodape{
         display: none;
     }
@@ -1324,6 +1439,11 @@ button.foto-card{
         background: transparent;
         box-shadow: none;
         color: var(--rosa-escuro);
+    }
+
+    /* no celular o item escolhido usa a pílula atrás do ícone (sem o tracinho) */
+    .lateral-grupo .lateral-link.ativo::before{
+        display: none;
     }
 
     /* a pílula clarinha atrás do ícone da página atual */
@@ -1371,7 +1491,7 @@ button.foto-card{
         background-color: var(--menu);
     }
 
-    .lateral.mais-aberto .lateral-marca,
+    .lateral.mais-aberto .lateral-conta,
     .lateral.mais-aberto .lateral-rodape{
         display: flex;
     }
@@ -1444,6 +1564,11 @@ button.foto-card{
     .grade-3,
     .grade-campanhas{
         grid-template-columns: 1fr;
+    }
+
+    .grade-campanhas .foto-card,
+    .grade-campanhas .card-novo{
+        min-height: 200px;
     }
 }
 
@@ -1580,6 +1705,17 @@ body.escuro .botao-principal{
     color: #fff;
 }
 
+/* VISUAL: no modo escuro o botão de ícone fica escuro também */
+body.escuro .botao-icone:not(.na-foto){
+    background: rgba(255, 255, 255, 0.1);
+    color: #f3e6e2;
+}
+
+body.escuro .botao-icone.excluir:hover{
+    background: var(--vermelho);
+    color: #fff;
+}
+
 body.escuro .botao-claro{
     background: #f3e6e2;
     color: #6e1a26;
@@ -1605,11 +1741,18 @@ body.escuro .selo{
 
 body.escuro .foto-card .etiquetas .selo,
 body.escuro .carta .topo-carta .selo{
-    background: rgba(168, 50, 63, 0.92);
+    background: rgba(0, 0, 0, 0.45);
 }
 
 body.escuro .card-novo{
     border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+body.escuro .card-novo-foto{
+    opacity: 0.18;
+    mix-blend-mode: normal;
 }
 
 body.escuro .modal-fundo{

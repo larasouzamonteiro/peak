@@ -16,17 +16,18 @@
 
   <!-- MENU LATERAL: igual em todas as páginas de dentro. A classe "ativo" marca a página atual. -->
   <aside class="lateral">
-    <a class="lateral-marca" href="inicio.html">
-      <img class="logo-peak" src="../img/logo.png" alt="">
-      <span>Peak</span>
+    <!-- a conta fica em cima (no lugar da logo). A letra e o nome são preenchidos pelo verificarLogin() do script.js -->
+    <a class="lateral-conta" href="perfil.html">
+      <div class="avatar" id="menuLetra"></div>
+      <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
     </a>
 
     <nav class="lateral-grupo">
       <a class="lateral-link" href="inicio.html"><img src="../img/icones/inicio.svg" alt=""><span>Início</span></a>
-      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
       <a class="lateral-link" href="fichas.html"><img src="../img/icones/fichas.svg" alt=""><span>Fichas</span></a>
-      <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
-      <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
+      <a class="lateral-link" href="campanhas.html"><img src="../img/icones/campanhas.svg" alt=""><span>Campanhas</span></a>
+     <a class="lateral-link" href="monstros.html"><img src="../img/icones/bestiario.svg" alt=""><span>Bestiário</span></a>
+       <a class="lateral-link" href="comunidade.html"><img src="../img/icones/comunidade.svg" alt=""><span>Comunidade</span></a>
       <a class="lateral-link" href="historia.html"><img src="../img/icones/historia.svg" alt=""><span>História</span></a>
       <!-- só aparece para administradores: quem tira a classe "oculto" é o verificarLogin() do script.js -->
       <a class="lateral-link oculto" id="linkAdmin" href="admin.html"><img src="../img/icones/admin.svg" alt=""><span>Administração</span></a>
@@ -37,11 +38,6 @@
     <div class="lateral-rodape">
       <a class="lateral-link" href="perfil.html?aba=configuracoes"><img src="../img/icones/configuracoes.svg" alt=""><span>Configurações</span></a>
       <button type="button" class="lateral-link" onclick="sair()"><img src="../img/icones/sair.svg" alt=""><span>Sair</span></button>
-      <!-- a letra e o nome são preenchidos pelo verificarLogin() do script.js -->
-      <a class="lateral-conta" href="perfil.html">
-        <div class="avatar" id="menuLetra"></div>
-        <span><strong id="menuNome"></strong><small>Ver perfil</small></span>
-      </a>
     </div>
   </aside>
 

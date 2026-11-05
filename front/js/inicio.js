@@ -1,5 +1,6 @@
 // inicio.js  (página inicio.html)
 // A primeira tela depois do login:
+//   - o aviso da equipe da Peak (no topo)
 //   - o banner com as fotos da equipe e as campanhas oficiais
 //   - os meus personagens
 //   - as novidades (o que entrou por último no site)
@@ -11,6 +12,7 @@ var fotoAtual = 0
 
 if(verificarLogin()){
     carregarMinhaFoto()
+    carregarAvisos()
     carregarOficiais()
     carregarFichas()
     carregarNovidades()
@@ -117,25 +119,102 @@ function carregarOficiais(){
 }
 
 // =====================================================
-// SEUS PERSONAGENS
+// AVISOS DA PEAK (a linha do topo e a janelinha)
 // =====================================================
-// As 4 primeiras fichas viram cartas em <section id="filaCartas">,
-// e no final vem o quadro "Criar ficha"
-function carregarFichas(){
-    buscar('/fichas', function(fichas){
-        var html = ''
-
-        for(var i = 0; i < fichas.length && i < 4; i++){
-            html += htmlCarta(fichas[i], '')
+// O admin posta os avisos na Administração. Aqui:
+//   - o mais novo aparece numa linha no topo (<a id="avisoTopo">)
+//   - clicando nela, abre a janelinha com os 3 últimos (<div id="avisosJanela">)
+// O servidor já manda o mais novo primeiro (order by id desc).
+function carregarAvisos(){
+    buscar('/avisos', function(avisos){
+        // sem aviso (ou deu erro): a linha do topo continua escondida
+        if(avisos.hasOwnProperty('error') || avisos.length == 0){
+            return
         }
 
-        // VISUAL: o quadro "Criar ficha" com a estrela
+        document.getElementById('avisoTitulo').textContent = avisos[0].titulo
+        document.getElementById('avisoData').textContent = '· ' + dataCurta(avisos[0].criadoEm)
+        document.getElementById('avisoTopo').classList.remove('oculto')
+
+        var html = '<h4>Avisos da Peak</h4>'
+
+        for(var i = 0; i < avisos.length; i++){
+            html += `
+                <div class="aviso-item">
+                    <b>${seguro(avisos[i].titulo)}</b>
+                    <p>${seguro(avisos[i].texto || '')}</p>
+                    <small>${dataCurta(avisos[i].criadoEm)}</small>
+                </div>`
+        }
+
+        document.getElementById('avisosJanela').innerHTML = html
+    })
+}
+
+// abre e fecha a janelinha dos avisos
+function abrirAvisos(){
+    document.getElementById('avisosJanela').classList.toggle('oculto')
+}
+
+// "2026-11-03T..." -> "3 nov"
+function dataCurta(texto){
+    var meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
+    var data = new Date(texto)
+
+    return data.getDate() + ' ' + meses[data.getMonth()]
+}
+
+
+// =====================================================
+// SEUS PERSONAGENS
+// =====================================================
+// A fila tem um número de "espaços" que depende do tamanho da tela:
+//   tela grande -> 5 espaços | notebook -> 4 | tela pequena -> 3
+// Nos espaços entram: as fichas (a MAIS NOVA primeiro), depois a carta
+// "Nova ficha" (sempre aparece) e, se ainda sobrar espaço, as vagas livres.
+function carregarFichas(){
+    buscar('/fichas', function(fichas){
+        // VISUAL: quantos espaços cabem na fila (o CSS usa as mesmas larguras)
+        var espacos = 5
+
+        if(window.innerWidth < 1400){
+            espacos = 4
+        }
+
+        if(window.innerWidth <= 1100){
+            espacos = 3
+        }
+
+        var html = ''
+        var usados = 0
+
+        // a lista vem do servidor em ordem de id (a mais antiga primeiro),
+        // então começamos do FIM da lista para a mais nova vir na frente.
+        // O "espacos - 1" guarda 1 espaço para a carta "Nova ficha".
+        for(var i = fichas.length - 1; i >= 0 && usados < espacos - 1; i--){
+            html += htmlCarta(fichas[i], '')
+            usados++
+        }
+
+        // a carta "Nova ficha" aparece sempre
         html += `
             <a class="criar-ficha" href="criar-ficha.html">
-                <span>✦</span>
-                <b>Criar ficha</b>
-                <small>na Oficina</small>
+                <img class="criar-foto" src="../img/criar/nova-ficha.jpg" alt="">
+                <span class="criar-mais">+</span>
+                <b>Nova ficha</b>
+                <small>criar na Oficina</small>
             </a>`
+        usados++
+
+        // VISUAL: as vagas livres completam a fila (só quando tem poucas fichas)
+        while(usados < espacos){
+            html += `
+                <a class="vaga-livre" href="criar-ficha.html">
+                    <span class="criar-mais">+</span>
+                    <small>vaga livre</small>
+                </a>`
+            usados++
+        }
 
         document.getElementById('filaCartas').innerHTML = html
     })

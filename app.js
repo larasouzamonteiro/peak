@@ -35,6 +35,8 @@ const ClassesBD = require('./database/ClassesBD')
 const MonstrosBD = require('./database/MonstrosBD')
 const CampanhasBD = require('./database/CampanhasBD')
 const SessoesBD = require('./database/SessoesBD')
+const AvisosBD = require('./database/AvisosBD')
+const RecadosBD = require('./database/RecadosBD')
 
 
 // =====================================================
@@ -322,7 +324,30 @@ const callback = (req, res)=>{
             })
 
         // ----- fichas, raças e classes -----
-        }else if(rota.pathname == '/fichas'){
+
+        // ----- mural da comunidade -----
+        }else if(rota.pathname == '/recados'){
+
+            exigirLogin(req, res, (usuario)=>{
+                RecadosBD.getRecados(usuario.id, (recados)=>{
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(recados))
+                })
+            })
+
+        }else if(rota.pathname == '/recados/em-alta'){
+
+            exigirLogin(req, res, (usuario)=>{
+                RecadosBD.getEmAlta((tags)=>{
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(tags))
+                })
+
+                
+            })  
+        
+        
+            }else if(rota.pathname == '/fichas'){
 
             // só as fichas de quem está logado
             exigirLogin(req, res, (usuario)=>{
@@ -423,6 +448,16 @@ const callback = (req, res)=>{
                 CampanhasBD.getMonstros(rota.query.id, usuario.id, (monstros)=>{
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
+                })
+            })
+
+        // ----- avisos da Peak (aparecem no topo do Início) -----
+        }else if(rota.pathname == '/avisos'){
+
+            exigirLogin(req, res, (usuario)=>{
+                AvisosBD.getAvisos((avisos)=>{
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(avisos))
                 })
             })
 
@@ -887,7 +922,40 @@ const callback = (req, res)=>{
                     })
                 })
 
-            // Daqui para baixo só o ADMIN pode (exigirAdmin confere o tipo da conta).
+
+                            // ----- mural da comunidade -----
+            }else if(rota.pathname == '/recados/publicar'){
+
+                exigirLogin(req, res, (usuario)=>{
+                    // o dono do recado é SEMPRE quem está logado (vem do token)
+                    dados.usuarioId = usuario.id
+
+                    RecadosBD.publicar(dados, (message)=>{
+                        res.writeHead(201, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/recados/apagar'){
+
+                exigirLogin(req, res, (usuario)=>{
+                    RecadosBD.apagar(dados.id, usuario, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/recados/interesse'){
+
+                exigirLogin(req, res, (usuario)=>{
+                    RecadosBD.marcarInteresse(dados.id, usuario.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+
+                // Daqui para baixo só o ADMIN pode (exigirAdmin confere o tipo da conta).
             // ----- admin: monstros oficiais -----
             }else if(rota.pathname == '/admin/monstros/criar'){
 
@@ -995,6 +1063,25 @@ const callback = (req, res)=>{
 
                 exigirAdmin(req, res, (usuario)=>{
                     CampanhasBD.excluirOficial(dados.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            // ----- admin: avisos da Peak -----
+            }else if(rota.pathname == '/admin/avisos/criar'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    AvisosBD.addAviso(dados, (message)=>{
+                        res.writeHead(201, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            }else if(rota.pathname == '/admin/avisos/excluir'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    AvisosBD.excluir(dados.id, (message)=>{
                         res.writeHead(200, {'Content-Type': 'application/json'})
                         res.end(JSON.stringify(message))
                     })

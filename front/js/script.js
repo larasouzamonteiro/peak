@@ -163,6 +163,13 @@ function verificarLogin(){
     document.getElementById('saudacao').textContent = saudacao
     document.getElementById('nomeLogado').textContent = usuario.nomeUsuario
     document.getElementById('menuLetra').textContent = usuario.nomeUsuario.charAt(0).toUpperCase()
+
+    // VISUAL: se a pessoa tem foto de perfil, a foto aparece no menu no lugar da letra
+    buscar('/usuario?id=' + usuario.id, function(pessoa){
+        if(pessoa.fotoPerfil){
+            document.getElementById('menuLetra').innerHTML = '<img src="' + seguro(pessoa.fotoPerfil) + '" alt="">'
+        }
+    })
     document.getElementById('menuNome').textContent = usuario.nomeUsuario
 
     if(usuario.tipo == 'admin'){

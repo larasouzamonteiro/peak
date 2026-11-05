@@ -1,4 +1,4 @@
-// comunidade.js  (página comunidade.html)
+// comunidade.js  (página pessoas.html — a aba "Pessoas" da Comunidade)
 // Mostra as outras pessoas, quantos interesses cada uma tem em comum comigo
 // e se a parceria "combina" (a pessoa É algo que eu PROCURO).
 //

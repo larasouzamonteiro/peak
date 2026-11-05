@@ -66,8 +66,10 @@ function desenharMinhas(){
 
     html += `
         <a class="card-novo" href="criar-campanha.html">
-            <img src="../img/icones/mais.svg" alt="">
-            Criar campanha
+            <img class="card-novo-foto" src="../img/criar/nova-campanha.jpg" alt="">
+            <span class="card-novo-mais">+</span>
+            <b>Nova campanha</b>
+            <small>chame o seu grupo</small>
         </a>`
 
     document.getElementById('listaMinhas').innerHTML = html

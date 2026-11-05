@@ -23,9 +23,111 @@
 }
 
 .topo-bolinhas{
+    position: relative;
     display: flex;
+    align-items: center;
     gap: 12px;
     margin-bottom: 6px;
+}
+
+/* AVISO DA PEAK: a linha "• AVISO  Mural na Comunidade! · 3 nov ›" (sem caixa em volta).
+   Começa escondida; o carregarAvisos() do js/inicio.js mostra o aviso mais novo. */
+.aviso-topo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 14px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--titulo);
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.aviso-topo b{
+    font-weight: 600;
+}
+
+.aviso-topo small{
+    color: var(--tinta-3);
+    font-size: 0.8rem;
+}
+
+.aviso-topo small::after{
+    content: " ›";
+}
+
+/* a bolinha rosa e a palavra AVISO */
+.aviso-rotulo{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--rosa);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.aviso-rotulo::before{
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rosa);
+    box-shadow: 0 0 0 4px rgba(209, 64, 90, 0.16);
+}
+
+/* a janelinha com os últimos avisos (abre clicando na linha: abrirAvisos) */
+.avisos-janela{
+    position: absolute;
+    top: 58px;
+    right: 110px;
+    z-index: 30;
+    width: 400px;
+    padding: 18px 20px 8px;
+    border: 1px solid var(--vidro-borda);
+    border-radius: 22px;
+    background: var(--vidro-forte);
+    box-shadow: 0 18px 40px rgba(70, 20, 35, 0.18);
+    backdrop-filter: blur(18px);
+}
+
+.avisos-janela h4{
+    margin: 0 0 8px;
+    color: var(--rosa);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.aviso-item{
+    padding: 12px 0;
+    border-top: 1px solid var(--linha);
+}
+
+.aviso-item:first-of-type{
+    border-top: 0;
+}
+
+.aviso-item b{
+    display: block;
+    color: var(--titulo);
+}
+
+.aviso-item p{
+    margin: 3px 0 4px;
+    color: var(--tinta-2);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.aviso-item small{
+    color: var(--tinta-3);
+    font-size: 0.74rem;
 }
 
 .bolinha{
@@ -130,9 +232,11 @@
 .destaque-texto .selo,
 .destaques-lado .selo,
 .novidade .selo{
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    background: var(--rosa);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(20, 10, 14, 0.42);         /* VISUAL: selo de vidro escuro */
     color: #fff;
+    letter-spacing: 0.08em;
+    backdrop-filter: blur(8px);
 }
 
 .destaque-texto h2{
@@ -224,11 +328,18 @@
 
 
 /* ---------- 3. SEUS PERSONAGENS ---------- */
-/* 4 cartas + o quadro "Criar ficha" */
+/* Todos os espaços têm o MESMO tamanho. O js/inicio.js usa os mesmos números:
+   tela grande -> 5 espaços | menor que 1400px -> 4 | até 1100px -> 3 */
 .fila-cartas{
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 200px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 16px;
+}
+
+@media (max-width: 1399px){
+    .fila-cartas{
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
 .fila-cartas .carta{
@@ -245,119 +356,167 @@
     border-radius: 3px;
 }
 
-/* "Criar ficha": quadro tracejado com a estrela */
-.criar-ficha{
+/* "Nova ficha" (sempre aparece) e "vaga livre" (só quando tem poucas fichas) */
+.criar-ficha,
+.vaga-livre{
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 4px;
     height: 300px;
-    border: 2px dashed rgba(90, 40, 50, 0.3);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: 22px;
-    background: var(--vidro-leve);
-    color: var(--tinta-2);
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 20px rgba(60, 20, 30, 0.08);
+    color: var(--titulo);
     text-align: center;
+    backdrop-filter: blur(14px);
 }
 
-/* a estrela do "Criar ficha" (o ✦ que está no inicio.js) */
-.criar-ficha span{
-    margin-bottom: 12px;
-    color: var(--rosa);
-    font-size: 3.2rem;
+/* VISUAL: a foto clarinha atrás da Nova ficha (img/criar/nova-ficha.jpg) */
+.criar-foto{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 10%;
+    opacity: 0.32;
+    mix-blend-mode: multiply;     /* o branco da foto some e fica só o desenho */
+    filter: saturate(0.6);
+}
+
+/* o "+" redondo: rosa na Nova ficha, clarinho nas vagas */
+.criar-mais{
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: var(--degrade-rosa);
+    color: #fff;
+    font-size: 30px;
     line-height: 1;
+    box-shadow: 0 10px 22px rgba(192, 48, 74, 0.32);
 }
 
 .criar-ficha b{
-    font-size: 1rem;
+    position: relative;
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
-.criar-ficha small{
+.criar-ficha small,
+.vaga-livre small{
+    position: relative;
     color: var(--tinta-3);
     font-size: 0.75rem;
+}
+
+/* a vaga livre é mais apagada */
+.vaga-livre{
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: none;
+}
+
+.vaga-livre .criar-mais{
+    width: 52px;
+    height: 52px;
+    background: rgba(209, 64, 90, 0.10);
+    color: var(--rosa);
+    font-size: 26px;
+    box-shadow: none;
 }
 
 
 /* ---------- 4. NOVIDADES E COMUNIDADE ---------- */
 .inicio-baixo{
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 400px;
     gap: 16px;
 }
 
-/* 3 cards: o primeiro um pouco mais largo */
+/* 3 cards: o primeiro (a novidade mais nova) bem maior */
 .novidades{
     display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr;
-    gap: 14px;
+    grid-template-columns: 1.7fr 1fr 1fr;
+    gap: 16px;
 }
 
 .novidade{
-    height: 210px;
+    height: 250px;
 }
 
 .novidade .nome b{
     margin-top: 6px;
-    font-size: 1.15rem;
+    font-size: 1.3rem;
 }
 
-/* o convite da Comunidade: foto na esquerda, texto e botão na direita */
+/* o convite da Comunidade: a foto ocupa o quadro todo e o texto fica embaixo */
 .convite-comunidade{
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    grid-template-rows: minmax(0, 1fr);
-    gap: 16px;
-    height: 210px;
-    padding: 12px;
+    position: relative;
+    display: block;
+    height: 250px;
+    overflow: hidden;
     border-radius: 24px;
-    background: var(--cartao);
-    color: var(--tinta);
-    box-shadow: var(--sombra-pequena);
+    color: #fff;
+    box-shadow: var(--sombra-foto);
 }
 
 .convite-comunidade img{
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 30%;
-    border-radius: 16px;
+}
+
+/* o escurecido de baixo para o texto aparecer */
+.convite-comunidade::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(40, 12, 20, 0.88) 0%, rgba(40, 12, 20, 0.35) 55%, rgba(40, 12, 20, 0) 80%);
 }
 
 .convite-comunidade div{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 22px 24px;
 }
 
-.convite-comunidade small{
-    color: var(--rosa);
-    font-size: 0.66rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+/* só a frase e o botão (o rótulo e o texto pequeno ficam escondidos) */
+.convite-comunidade small,
+.convite-comunidade p{
+    display: none;
 }
 
 .convite-comunidade b{
-    margin: 4px 0;
-    color: var(--titulo);
-    font-size: 1.15rem;
-    line-height: 1.15;
-}
-
-.convite-comunidade p{
-    margin: 0 0 10px;
-    color: var(--tinta-3);
-    font-size: 0.76rem;
+    display: block;
+    margin: 0 0 14px;
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1.1;
 }
 
 .convite-bt{
+    display: inline-block;
     padding: 8px 16px;
     border-radius: 999px;
-    background: var(--degrade);
-    color: #fff;
+    background: #fff;
+    color: var(--titulo);
     font-size: 0.76rem;
     font-weight: 700;
-    box-shadow: 0 8px 18px rgba(110, 26, 47, 0.3);
 }
 
 
@@ -377,7 +536,8 @@
     }
 
     .fila-cartas .carta,
-    .criar-ficha{
+    .criar-ficha,
+    .vaga-livre{
         height: 270px;
     }
 }
@@ -470,17 +630,17 @@
     }
 
     .convite-comunidade{
-        grid-template-columns: 86px 1fr;
-        height: auto;
-        padding: 10px;
+        height: 190px;
     }
 
-    .convite-comunidade img{
-        height: 86px;
+    .convite-comunidade b{
+        font-size: 1.2rem;
     }
 
-    .convite-comunidade p{
-        display: none;
+    /* no celular o topo é a barra fina: o aviso não cabe */
+    .aviso-topo,
+    .avisos-janela{
+        display: none !important;
     }
 
     .destaques-lado .foto-card .nome{
@@ -514,6 +674,17 @@
         flex: none;
         width: 120px;
         height: 210px;
+    }
+
+    .criar-mais{
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+    }
+
+    /* no celular a fila rola para o lado: as vagas livres não aparecem */
+    .vaga-livre{
+        display: none;
     }
 
     .fila-cartas .carta .atributos{
@@ -552,8 +723,16 @@ body.escuro .bolinha-foto img{
     filter: none;
 }
 
-body.escuro .criar-ficha{
-    border-color: rgba(255, 255, 255, 0.15);
+body.escuro .criar-ficha,
+body.escuro .vaga-livre{
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+body.escuro .criar-foto{
+    opacity: 0.18;
+    mix-blend-mode: normal;
 }
 
 /* o texto do botão do banner fica escuro, porque o botão é branco */
@@ -562,9 +741,6 @@ body.escuro .destaque-bt{
 }
 
 /* no escuro a estrela usa o rosa mais claro, para aparecer no fundo escuro */
-body.escuro .criar-ficha span{
-    color: var(--rosa-escuro);
-}
 
 body.escuro .convite-comunidade{
     box-shadow: none;

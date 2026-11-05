@@ -340,3 +340,20 @@ VALUES
 (NULL, NULL, 'Orc', '../img/monstros/orc.jpg', 'Guerreiro forte e brutal que ataca em bandos com machados pesados.', 22, 13, 1);
 
 
+CREATE TABLE recados(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuarioId INT NOT NULL,
+    texto VARCHAR(280) NOT NULL,
+    tipo ENUM('procuro', 'ofereco') NOT NULL,
+    foto LONGTEXT NULL,
+    criadoEm DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuarioId) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE recado_interesses(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recadoId INT NOT NULL,
+    interesseId INT NOT NULL,
+    FOREIGN KEY (recadoId) REFERENCES recados(id) ON DELETE CASCADE,
+    FOREIGN KEY (interesseId) REFERENCES interesses(id) ON DELETE CASCADE
+);
