@@ -362,7 +362,7 @@ function usarMusicaEnviada(){
     }
 
     if(arquivo.size > 20000 * 1024){
-        alert('A música precisa ter no máximo 20 MB.')
+        avisar('Música grande demais', 'A música precisa ter no máximo 20 MB.', 'erro')
         return
     }
 

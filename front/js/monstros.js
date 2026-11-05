@@ -238,7 +238,7 @@ function salvarEdicao(){
     enviar('/monstros/atualizar', mudancas, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
+            avisar('Não deu certo', dados.error, 'erro')
             return
         }
 
@@ -248,20 +248,18 @@ function salvarEdicao(){
 }
 
 function excluirMonstro(){
-    if(!confirm('Excluir este monstro?')){
-        return
-    }
+    confirmar('Excluir este monstro?', function(){
+        enviar('/monstros/excluir', {id: monstroAberto.id}, function(dados){
 
-    enviar('/monstros/excluir', {id: monstroAberto.id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        fecharJanela('janelaMonstro')
-        carregarMonstros()
-    })
+            fecharJanela('janelaMonstro')
+            carregarMonstros()
+        })
+    }, 'Excluir')
 }
 
 

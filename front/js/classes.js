@@ -51,8 +51,8 @@ function desenharClasses(){
             var botoes = `
                 <div class="botoes">
                     <span class="selo">${c.publico == 1 ? 'Pública' : 'Só eu vejo'}</span>
-                    <button type="button" class="botao botao-pequeno" onclick="abrirEdicao(${c.id})">Editar</button>
-                    <button type="button" class="botao botao-pequeno" onclick="excluirClasse(${c.id})">Excluir</button>
+                    <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="abrirEdicao(${c.id})"></button>
+                    <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirClasse(${c.id})"></button>
                 </div>`
 
             minhas += htmlCardClasse(c, botoes)
@@ -95,7 +95,7 @@ function salvarClasse(){
                 return
             }
 
-            alert(dados.message)
+            avisar(dados.message, '', 'certo')
 
             // limpa o formulário e mostra a lista de novo
             document.getElementById('nome').value = ''
@@ -133,7 +133,7 @@ function salvarEdicao(){
     enviar('/classes/atualizar', mudancas, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
+            avisar('Não deu certo', dados.error, 'erro')
             return
         }
 
@@ -144,17 +144,15 @@ function salvarEdicao(){
 
 // ---------- EXCLUIR ----------
 function excluirClasse(id){
-    if(!confirm('Excluir esta classe?')){
-        return
-    }
+    confirmar('Excluir esta classe?', function(){
+        enviar('/classes/excluir', {id: id}, function(dados){
 
-    enviar('/classes/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarClasses()
-    })
+            carregarClasses()
+        })
+    }, 'Excluir')
 }

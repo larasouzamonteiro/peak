@@ -294,11 +294,16 @@ p{
 
 .lateral-conta strong{
     font-size: 1.02rem;
+    /* nome grande não sai do menu: corta com "..." (nov/2026) */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lateral-conta span{
     display: flex;
     flex-direction: column;
+    min-width: 0;           /* deixa o nome encolher e cortar com "..." */
     line-height: 1.3;
 }
 
@@ -1812,3 +1817,224 @@ body.escuro .modal-fundo{
         transition: none !important;
     }
 }
+
+
+/* ---------- AVISOS DA ZERO (nov/2026) ----------
+   Feitos pelas funções avisar() e confirmar() do js/script.js,
+   no lugar do alert() e do confirm() do navegador. */
+
+/* aviso pequeno no canto de cima (some sozinho) */
+.aviso-canto{
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: min(360px, calc(100vw - 44px));
+    padding: 14px 18px 16px 14px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: rgba(26, 22, 24, 0.92);
+    color: #fff;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+    animation: aviso-entra 0.3s ease;
+}
+
+/* a bolinha com o símbolo (✓, ! ou i) */
+.aviso-icone{
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+/* cada tipo tem a sua cor (a bolinha e a barrinha usam a mesma) */
+.aviso-canto.certo{ --cor-aviso: #5fd38f; }
+.aviso-canto.erro{ --cor-aviso: #ff6b78; }
+.aviso-canto.info{ --cor-aviso: #f4b3c0; }
+
+.aviso-canto .aviso-icone{
+    color: var(--cor-aviso);
+}
+
+.aviso-canto b{
+    display: block;
+    font-size: 0.95rem;
+}
+
+.aviso-canto small{
+    display: block;
+    margin-top: 2px;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    opacity: 0.72;
+}
+
+.aviso-canto small:empty{
+    display: none;
+}
+
+/* a barrinha embaixo vai diminuindo até o aviso sumir
+   (a duração vem do JS, no style da própria barrinha) */
+.aviso-barra{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--cor-aviso);
+    transform-origin: left;
+    animation: aviso-barra linear forwards;
+}
+
+@keyframes aviso-barra{
+    from{ transform: scaleX(1); }
+    to{ transform: scaleX(0); }
+}
+
+.aviso-canto.saindo{
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s, transform 0.4s;
+}
+
+@keyframes aviso-entra{
+    from{ opacity: 0; transform: translateY(-10px); }
+    to{ opacity: 1; transform: translateY(0); }
+}
+
+/* caixa no meio da tela (confirmar antes de excluir, sair...) */
+.confirmar-fundo{
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(20, 14, 16, 0.45);
+    backdrop-filter: blur(6px);
+}
+
+.confirmar-caixa{
+    width: min(380px, 100%);
+    padding: 28px 26px 22px;
+    border-radius: 24px;
+    background: #fbf8f7;
+    color: var(--tinta);
+    text-align: center;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+}
+
+/* o círculo rosa em cima, com o desenho (lixeira, porta ou "?") */
+.confirmar-icone{
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: rgba(209, 64, 90, 0.12);
+}
+
+.confirmar-icone::before{
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--rosa);
+    -webkit-mask: var(--desenho) center / 28px no-repeat;
+    mask: var(--desenho) center / 28px no-repeat;
+}
+
+.confirmar-icone.lixeira{
+    --desenho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v6M14 11v6'/%3E%3C/svg%3E");
+}
+
+.confirmar-icone.sair{
+    --desenho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/%3E%3Cpath d='M16 17l5-5-5-5'/%3E%3Cpath d='M21 12H9'/%3E%3C/svg%3E");
+}
+
+.confirmar-icone.pergunta{
+    --desenho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
+}
+
+.confirmar-caixa h3{
+    margin: 0 0 6px;
+    color: var(--tinta);
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.confirmar-caixa p{
+    margin: 0 0 20px;
+    color: #5a5054;
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+/* sem explicação: o título fica sozinho, com o espaço embaixo */
+.confirmar-caixa p:empty{
+    margin: 0 0 14px;
+}
+
+.confirmar-botoes{
+    display: flex;
+    gap: 10px;
+}
+
+/* os dois botões: pílulas iguais, letras maiúsculas */
+.confirmar-nao,
+.confirmar-sim{
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--tinta);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--tinta);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform var(--rapido);
+}
+
+/* o botão que confirma: rosa da Peak */
+.confirmar-sim{
+    border-color: var(--rosa);
+    background: var(--rosa);
+    color: #fff;
+}
+
+.confirmar-nao:hover,
+.confirmar-sim:hover{
+    transform: translateY(-2px);
+}
+
+body.escuro .confirmar-caixa{
+    background: #241b1e;
+}
+
+body.escuro .confirmar-caixa h3{
+    color: #fff;
+}
+
+body.escuro .confirmar-caixa p{
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.escuro .confirmar-nao{
+    border-color: rgba(255, 255, 255, 0.5);
+    background: transparent;
+    color: #fff;
+}
+

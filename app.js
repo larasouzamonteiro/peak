@@ -37,6 +37,7 @@ const CampanhasBD = require('./database/CampanhasBD')
 const SessoesBD = require('./database/SessoesBD')
 const AvisosBD = require('./database/AvisosBD')
 const RecadosBD = require('./database/RecadosBD')
+const ImagensBD = require('./database/ImagensBD')     // FOTOS MAIS RÁPIDAS (explicado lá embaixo)
 
 
 // =====================================================
@@ -204,6 +205,12 @@ const callback = (req, res)=>{
         return
     }
 
+    // FOTOS MAIS RÁPIDAS: /imagem?tipo=monstro&id=7 entrega uma foto só (função lá embaixo)
+    if(req.method == 'GET' && rota.pathname == '/imagem'){
+        entregarImagem(rota, res)
+        return
+    }
+
     // =====================================================
     // GET
     // =====================================================
@@ -352,6 +359,7 @@ const callback = (req, res)=>{
             // só as fichas de quem está logado
             exigirLogin(req, res, (usuario)=>{
                 FichasBD.getFichas(usuario.id, (fichas)=>{
+                    ImagensBD.trocarFotos(fichas, 'retrato', 'ficha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(fichas))
                 })
@@ -399,6 +407,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 MonstrosBD.getMonstros(usuario.id, (monstros)=>{
+                    ImagensBD.trocarFotos(monstros, 'imagem', 'monstro')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
                 })
@@ -409,6 +418,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getCampanhas(usuario.id, (campanhas)=>{
+                    ImagensBD.trocarFotos(campanhas, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(campanhas))
                 })
@@ -418,6 +428,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getOficiais((oficiais)=>{
+                    ImagensBD.trocarFotos(oficiais, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(oficiais))
                 })
@@ -1099,6 +1110,42 @@ const callback = (req, res)=>{
 process.on('uncaughtException', (erro)=>{
     console.log('Erro:', erro.message)
 })
+
+// =====================================================
+// FOTOS MAIS RÁPIDAS (nov/2026)
+// =====================================================
+// Entrega UMA foto que está salva no banco como texto ("data:image/webp;base64,....").
+// Quem chama: o navegador, quando encontra <img src="/imagem?tipo=monstro&id=7">.
+// (o endereço foi colocado na lista pelo ImagensBD.trocarFotos)
+//
+// Não pede login porque a tag <img> não manda o token.
+function entregarImagem(rota, res){
+    ImagensBD.getImagem(rota.query.tipo, rota.query.id, (foto)=>{
+
+        // não achou a foto (ou não é uma foto em texto): responde "não existe"
+        if(foto == null || foto.indexOf('data:') != 0){
+            res.writeHead(404)
+            res.end()
+            return
+        }
+
+        // o texto tem duas partes separadas pela vírgula:
+        //   "data:image/webp;base64"   ,   "UklGRl...(a foto em letras)"
+        var virgula = foto.indexOf(',')
+        var tipoDaImagem = foto.substring(5, foto.indexOf(';'))      // ex.: image/webp
+        var letras = foto.substring(virgula + 1)
+
+        // Buffer.from(..., 'base64') transforma as letras de volta na imagem de verdade
+        var imagem = Buffer.from(letras, 'base64')
+
+        res.writeHead(200, {
+            'Content-Type': tipoDaImagem,
+            'Cache-Control': 'public, max-age=604800'     // o navegador guarda a foto por 7 dias
+        })
+        res.end(imagem)
+    })
+}
+
 
 // =====================================================
 // LIGAR O SERVIDOR (computador, Render) OU ENTREGAR PARA A VERCEL

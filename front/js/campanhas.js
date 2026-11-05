@@ -85,12 +85,13 @@ function entrarNaCampanha(){
     enviar('/campanhas/entrar', dados, function(resposta){
 
         if(resposta.hasOwnProperty('error')){
-            alert(resposta.error)
+            avisar('Não deu certo', resposta.error, 'erro')
             return
         }
 
-        alert(resposta.message)
-        window.location.href = 'campanha.html?id=' + resposta.id
+        avisar(resposta.message, 'Levando você para a campanha…', 'certo', function(){
+            window.location.href = 'campanha.html?id=' + resposta.id
+        })
     })
 }
 
@@ -157,11 +158,12 @@ function usarOficial(){
     enviar('/campanhas/usar-oficial', {id: oficialAberta}, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
+            avisar('Não deu certo', dados.error, 'erro')
             return
         }
 
-        alert(dados.message)
-        window.location.href = 'campanha.html?id=' + dados.id
+        avisar(dados.message, 'Levando você para a campanha…', 'certo', function(){
+            window.location.href = 'campanha.html?id=' + dados.id
+        })
     })
 }

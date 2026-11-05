@@ -273,7 +273,7 @@ function trocarItem(id){
     }else if(itensEscolhidos.length < LIMITE_ITENS){
         itensEscolhidos.push(id)                // não estava e ainda cabe: coloca
     }else{
-        alert('Escolha no máximo ' + LIMITE_ITENS + ' itens')
+        avisar('Itens demais', 'Escolha no máximo ' + LIMITE_ITENS + ' itens.', 'erro')
     }
 
     desenharItens()
@@ -408,7 +408,8 @@ function salvarFicha(){
             return
         }
 
-        alert(dados.message)
-        window.location.href = 'fichas.html'
+        avisar(dados.message, 'Levando você para as suas fichas…', 'certo', function(){
+            window.location.href = 'fichas.html'
+        })
     })
 }

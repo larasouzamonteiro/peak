@@ -18,8 +18,9 @@ function carregarCampanha(){
     buscar('/campanha?id=' + campanhaId, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            window.location.href = 'campanhas.html'
+            avisar('Não deu certo', dados.error, 'erro', function(){
+                window.location.href = 'campanhas.html'
+            })
             return
         }
 
@@ -105,13 +106,11 @@ function carregarJogadores(){
 }
 
 function sairDaCampanha(){
-    if(!confirm('Sair desta campanha?')){
-        return
-    }
-
-    enviar('/campanhas/sair', {campanhaId: campanhaId}, function(dados){
-        window.location.href = 'campanhas.html'
-    })
+    confirmar('Sair desta campanha?', function(){
+        enviar('/campanhas/sair', {campanhaId: campanhaId}, function(dados){
+            window.location.href = 'campanhas.html'
+        })
+    }, 'Sair')
 }
 
 
@@ -129,7 +128,7 @@ function carregarSessoes(){
             var botao = ''
 
             if(souMestre){
-                botao = '<button type="button" class="botao botao-pequeno" onclick="excluirSessao(' + s.id + ')">Excluir</button>'
+                botao = '<button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirSessao(' + s.id + ')"></button>'
             }
 
             html += `
@@ -178,19 +177,17 @@ function salvarSessao(){
 }
 
 function excluirSessao(id){
-    if(!confirm('Excluir esta sessão?')){
-        return
-    }
+    confirmar('Excluir esta sessão?', function(){
+        enviar('/sessoes/excluir', {id: id}, function(dados){
 
-    enviar('/sessoes/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarSessoes()
-    })
+            carregarSessoes()
+        })
+    }, 'Excluir')
 }
 
 
@@ -257,7 +254,7 @@ function adicionarMonstro(){
     enviar('/campanhas/monstros/adicionar', dados, function(resposta){
 
         if(resposta.hasOwnProperty('error')){
-            alert(resposta.error)
+            avisar('Não deu certo', resposta.error, 'erro')
             return
         }
 
@@ -270,7 +267,7 @@ function removerMonstro(linhaId){
     enviar('/campanhas/monstros/remover', {linhaId: linhaId}, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
+            avisar('Não deu certo', dados.error, 'erro')
             return
         }
 
@@ -289,27 +286,25 @@ function salvarCampanha(){
     enviar('/campanhas/atualizar', mudancas, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
+            avisar('Não deu certo', dados.error, 'erro')
             return
         }
 
-        alert(dados.message)
+        avisar(dados.message, '', 'certo')
         carregarCampanha()
     })
 }
 
 function excluirCampanha(){
-    if(!confirm('Excluir esta campanha? Não dá para desfazer.')){
-        return
-    }
+    confirmar('Excluir esta campanha? Não dá para desfazer.', function(){
+        enviar('/campanhas/excluir', {id: campanhaId}, function(dados){
 
-    enviar('/campanhas/excluir', {id: campanhaId}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        window.location.href = 'campanhas.html'
-    })
+            window.location.href = 'campanhas.html'
+        })
+    }, 'Excluir')
 }

@@ -182,19 +182,17 @@ function salvarMonstro(){
 }
 
 function excluirMonstro(id){
-    if(!confirm('Excluir este monstro oficial?')){
-        return
-    }
+    confirmar('Excluir este monstro oficial?', function(){
+        enviar('/admin/monstros/excluir', {id: id}, function(dados){
 
-    enviar('/admin/monstros/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarMonstros()
-    })
+            carregarMonstros()
+        })
+    }, 'Excluir')
 }
 
 
@@ -308,19 +306,17 @@ function salvarCampanha(){
 }
 
 function excluirCampanha(id){
-    if(!confirm('Excluir esta campanha oficial? Os monstros dela são apagados junto.')){
-        return
-    }
+    confirmar('Excluir esta campanha oficial? Os monstros dela são apagados junto.', function(){
+        enviar('/admin/campanhas/excluir', {id: id}, function(dados){
 
-    enviar('/admin/campanhas/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarCampanhas()
-    })
+            carregarCampanhas()
+        })
+    }, 'Excluir')
 }
 
 
@@ -438,19 +434,17 @@ function salvarRaca(){
 }
 
 function excluirRaca(id){
-    if(!confirm('Excluir esta raça oficial?')){
-        return
-    }
+    confirmar('Excluir esta raça oficial?', function(){
+        enviar('/admin/racas/excluir', {id: id}, function(dados){
 
-    enviar('/admin/racas/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarRacas()
-    })
+            carregarRacas()
+        })
+    }, 'Excluir')
 }
 
 
@@ -564,19 +558,17 @@ function salvarClasse(){
 }
 
 function excluirClasse(id){
-    if(!confirm('Excluir esta classe oficial?')){
-        return
-    }
+    confirmar('Excluir esta classe oficial?', function(){
+        enviar('/admin/classes/excluir', {id: id}, function(dados){
 
-    enviar('/admin/classes/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarClasses()
-    })
+            carregarClasses()
+        })
+    }, 'Excluir')
 }
 
 
@@ -637,17 +629,15 @@ function publicarAviso(){
 }
 
 function excluirAviso(id){
-    if(!confirm('Apagar este aviso?')){
-        return
-    }
+    confirmar('Apagar este aviso?', function(){
+        enviar('/admin/avisos/excluir', {id: id}, function(dados){
 
-    enviar('/admin/avisos/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarAvisos()
-    })
+            carregarAvisos()
+        })
+    }, 'Apagar')
 }

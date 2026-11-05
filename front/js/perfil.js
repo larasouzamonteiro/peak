@@ -75,8 +75,9 @@ function carregarPessoa(){
     buscar('/usuario?id=' + perfilId, function(pessoa){
 
         if(pessoa.hasOwnProperty('error')){
-            alert(pessoa.error)
-            window.location.href = 'comunidade.html'
+            avisar('Não deu certo', pessoa.error, 'erro', function(){
+                window.location.href = 'comunidade.html'
+            })
             return
         }
 
@@ -297,18 +298,18 @@ function trocarFoto(){
     lerImagem(document.getElementById('fotoArquivo'), function(imagem){
 
         if(imagem == ''){
-            alert('Escolha uma imagem primeiro.')
+            avisar('Falta a imagem', 'Escolha uma imagem primeiro.', 'info')
             return
         }
 
         enviar('/perfil/foto', {imagem: imagem}, function(dados){
             // arquivo inválido ou erro no servidor: mostra o erro (antes aparecia "undefined")
             if(dados.error){
-                alert(dados.error)
+                avisar('Não deu certo', dados.error, 'erro')
                 return
             }
 
-            alert(dados.message)
+            avisar(dados.message, '', 'certo')
             carregarPessoa()
         })
     })
@@ -318,18 +319,18 @@ function trocarCapa(){
     lerImagem(document.getElementById('capaArquivo'), function(imagem){
 
         if(imagem == ''){
-            alert('Escolha uma imagem primeiro.')
+            avisar('Falta a imagem', 'Escolha uma imagem primeiro.', 'info')
             return
         }
 
         enviar('/perfil/capa', {imagem: imagem}, function(dados){
             // arquivo inválido ou erro no servidor: mostra o erro (antes aparecia "undefined")
             if(dados.error){
-                alert(dados.error)
+                avisar('Não deu certo', dados.error, 'erro')
                 return
             }
 
-            alert(dados.message)
+            avisar(dados.message, '', 'certo')
             carregarPessoa()
         })
     })
@@ -344,11 +345,11 @@ function salvarPerfil(){
 
     enviar('/perfil/atualizar', dados, function(resposta){
         if(resposta.error){
-            alert(resposta.error)
+            avisar('Não deu certo', resposta.error, 'erro')
             return
         }
 
-        alert(resposta.message)
+        avisar(resposta.message, '', 'certo')
         carregarPessoa()
     })
 }

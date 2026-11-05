@@ -62,7 +62,8 @@ function trocarSenha(){
             return
         }
 
-        alert(resposta.message)
-        window.location.href = 'login.html'
+        avisar(resposta.message, 'Levando você para o login…', 'certo', function(){
+            window.location.href = 'login.html'
+        })
     })
 }

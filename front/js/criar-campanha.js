@@ -23,8 +23,9 @@ function criarCampanha(){
             }
 
             // a mensagem já traz o código de convite
-            alert(dados.message)
-            window.location.href = 'campanha.html?id=' + dados.id
+            avisar(dados.message, 'Levando você para a campanha…', 'certo', function(){
+                window.location.href = 'campanha.html?id=' + dados.id
+            })
         })
     })
 }

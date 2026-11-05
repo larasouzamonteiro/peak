@@ -31,10 +31,11 @@ function login(){
 
             // a conta existe, mas o e-mail ainda não foi confirmado: vai para a página do código
             if(dados.confirmar){
-                alert(dados.error)
                 // encodeURIComponent: um e-mail com "+" (ex.: a+b@x.com) chegaria
                 // no confirmar.html com espaço no lugar do "+" e o código daria errado
-                window.location.href = 'confirmar.html?email=' + encodeURIComponent(dados.email)
+                avisar('Confirme o seu e-mail', dados.error, 'info', function(){
+                    window.location.href = 'confirmar.html?email=' + encodeURIComponent(dados.email)
+                })
                 return
             }
 
@@ -99,9 +100,10 @@ function cadastrar(){
             return
         }
 
-        alert(dados.message)
         // encodeURIComponent: mesmo motivo do login (o "+" do e-mail não pode virar espaço)
-        window.location.href = 'confirmar.html?email=' + encodeURIComponent(email)
+        avisar(dados.message, 'Levando você para confirmar o e-mail…', 'certo', function(){
+            window.location.href = 'confirmar.html?email=' + encodeURIComponent(email)
+        })
     })
 }
 
@@ -119,8 +121,9 @@ function confirmar(){
             return
         }
 
-        alert(resposta.message)
-        window.location.href = 'login.html'
+        avisar(resposta.message, 'Levando você para o login…', 'certo', function(){
+            window.location.href = 'login.html'
+        })
     })
 }
 

@@ -51,8 +51,8 @@ function desenharRacas(){
             var botoes = `
                 <div class="botoes">
                     <span class="selo">${r.publico == 1 ? 'Pública' : 'Só eu vejo'}</span>
-                    <button type="button" class="botao botao-pequeno" onclick="abrirEdicao(${r.id})">Editar</button>
-                    <button type="button" class="botao botao-pequeno" onclick="excluirRaca(${r.id})">Excluir</button>
+                    <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="abrirEdicao(${r.id})"></button>
+                    <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirRaca(${r.id})"></button>
                 </div>`
 
             minhas += htmlCardRaca(r, botoes)
@@ -96,7 +96,7 @@ function salvarRaca(){
                 return
             }
 
-            alert(dados.message)
+            avisar(dados.message, '', 'certo')
 
             // limpa o formulário e mostra a lista de novo
             document.getElementById('nome').value = ''
@@ -134,7 +134,7 @@ function salvarEdicao(){
     enviar('/racas/atualizar', mudancas, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
+            avisar('Não deu certo', dados.error, 'erro')
             return
         }
 
@@ -145,17 +145,15 @@ function salvarEdicao(){
 
 // ---------- EXCLUIR ----------
 function excluirRaca(id){
-    if(!confirm('Excluir esta raça?')){
-        return
-    }
+    confirmar('Excluir esta raça?', function(){
+        enviar('/racas/excluir', {id: id}, function(dados){
 
-    enviar('/racas/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarRacas()
-    })
+            carregarRacas()
+        })
+    }, 'Excluir')
 }

@@ -39,17 +39,15 @@ function carregarFichas(){
 
 function excluirFicha(id){
     // no banco a ficha sai junto das campanhas (ON DELETE CASCADE), então avisa antes
-    if(!confirm('Excluir esta ficha? Se ela estiver em alguma campanha, ela sai da campanha também.')){
-        return
-    }
+    confirmar('Excluir esta ficha? Se ela estiver em alguma campanha, ela sai da campanha também.', function(){
+        enviar('/fichas/excluir', {id: id}, function(dados){
 
-    enviar('/fichas/excluir', {id: id}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        carregarFichas()
-    })
+            carregarFichas()
+        })
+    }, 'Excluir')
 }

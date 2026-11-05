@@ -15,8 +15,9 @@ function carregarFicha(){
     buscar('/ficha?id=' + fichaId, function(dados){
 
         if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            window.location.href = 'fichas.html'
+            avisar('Não deu certo', dados.error, 'erro', function(){
+                window.location.href = 'fichas.html'
+            })
             return
         }
 
@@ -132,17 +133,15 @@ function salvarFicha(){
 
 function excluirFicha(){
     // no banco a ficha sai junto das campanhas (ON DELETE CASCADE), então avisa antes
-    if(!confirm('Excluir esta ficha? Se ela estiver em alguma campanha, ela sai da campanha também.')){
-        return
-    }
+    confirmar('Excluir esta ficha? Se ela estiver em alguma campanha, ela sai da campanha também.', function(){
+        enviar('/fichas/excluir', {id: fichaId}, function(dados){
 
-    enviar('/fichas/excluir', {id: fichaId}, function(dados){
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
 
-        if(dados.hasOwnProperty('error')){
-            alert(dados.error)
-            return
-        }
-
-        window.location.href = 'fichas.html'
-    })
+            window.location.href = 'fichas.html'
+        })
+    }, 'Excluir')
 }

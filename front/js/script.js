@@ -112,11 +112,140 @@ function falhaNoPedido(erro, etapa){
 
     if(etapa == 'resposta'){
         console.error(erro)
-        alert('O servidor respondeu com um erro. Tente de novo.')
+        avisar('Erro no servidor', 'O servidor respondeu com um erro. Tente de novo.', 'erro')
         return
     }
 
-    alert('Não consegui falar com o servidor. Tente de novo em 1 minuto (ele pode estar acordando).')
+    avisar('Sem conexão', 'Não consegui falar com o servidor. Tente de novo em 1 minuto (ele pode estar acordando).', 'erro')
+}
+
+
+// =====================================================
+// AVISOS (nov/2026): no lugar do alert() e do confirm() do navegador
+// =====================================================
+// avisar(titulo, texto, tipo, depois)
+//   Mostra um aviso no canto de cima e ele some sozinho.
+//   Serve para as coisas simples: "Ficha criada!", erros, "Perfil salvo"...
+//   titulo -> a linha em negrito (ex.: 'Ficha criada!')
+//   texto  -> a linha menor embaixo (pode ser '' para não ter)
+//   tipo   -> 'certo' (✓ verde), 'erro' (! vermelho) ou 'info' (i rosa)
+//   depois -> opcional: uma função que roda quando o aviso some (ex.: mudar de página).
+//             Com o alert antigo o código esperava a pessoa clicar em OK;
+//             aqui não espera, por isso o que vem depois vai dentro da função.
+//
+// confirmar(texto, depois, textoBotao)
+//   Abre a caixa no meio da tela com "Cancelar" e o botão rosa.
+//   Serve para as coisas importantes: excluir, sair de campanha...
+//   "depois" só roda se a pessoa clicar no botão rosa.
+//   "textoBotao" é opcional (ex.: 'Excluir'). Se não vier, fica "Confirmar".
+
+function avisar(titulo, texto, tipo, depois){
+    // se já tem um aviso na tela, tira (para não empilhar)
+    var antigo = document.querySelector('.aviso-canto')
+
+    if(antigo != null){
+        antigo.remove()
+    }
+
+    // o símbolo da bolinha de cada tipo
+    var simbolo = 'i'
+
+    if(tipo == 'certo'){
+        simbolo = '✓'
+    }else if(tipo == 'erro'){
+        simbolo = '!'
+    }else{
+        tipo = 'info'
+    }
+
+    // quando vai mudar de página espera menos (1,8 s); se não, 3,5 s
+    var tempo = 3500
+
+    if(depois){
+        tempo = 1800
+    }
+
+    var aviso = document.createElement('div')
+    aviso.className = 'aviso-canto ' + tipo
+    aviso.innerHTML = `
+        <span class="aviso-icone">${simbolo}</span>
+        <div><b></b><small></small></div>
+        <i class="aviso-barra" style="animation-duration: ${tempo}ms"></i>`
+
+    // textContent: o texto entra como texto, nunca como HTML
+    aviso.querySelector('b').textContent = titulo
+    aviso.querySelector('small').textContent = texto || ''
+
+    document.body.appendChild(aviso)
+
+    // um pouco antes de sumir, ganha a classe "saindo" (o CSS faz ele desaparecer devagar)
+    setTimeout(function(){
+        aviso.classList.add('saindo')
+    }, tempo - 400)
+
+    setTimeout(function(){
+        aviso.remove()
+
+        if(depois){
+            depois()
+        }
+    }, tempo)
+}
+
+function confirmar(texto, depois, textoBotao){
+    // a primeira frase (até o "?") vira o título; o resto vira a explicação
+    // ex.: 'Excluir esta ficha? Ela sai da campanha também.'
+    //      título = 'Excluir esta ficha?'   explicação = 'Ela sai da campanha também.'
+    var titulo = texto
+    var explicacao = ''
+    var fim = texto.indexOf('?')
+
+    if(fim != -1 && fim < texto.length - 1){
+        titulo = texto.substring(0, fim + 1)
+        explicacao = texto.substring(fim + 1).trim()
+    }
+
+    // o desenho do círculo: lixeira para excluir/apagar, porta para sair, "?" para o resto
+    var icone = 'pergunta'
+
+    if(textoBotao == 'Excluir' || textoBotao == 'Apagar'){
+        icone = 'lixeira'
+    }else if(textoBotao == 'Sair'){
+        icone = 'sair'
+    }
+
+    var fundo = document.createElement('div')
+    fundo.className = 'confirmar-fundo'
+    fundo.innerHTML = `
+        <div class="confirmar-caixa">
+            <div class="confirmar-icone ${icone}"></div>
+            <h3></h3>
+            <p></p>
+            <div class="confirmar-botoes">
+                <button type="button" class="confirmar-nao">Cancelar</button>
+                <button type="button" class="confirmar-sim"></button>
+            </div>
+        </div>`
+
+    fundo.querySelector('h3').textContent = titulo
+    fundo.querySelector('p').textContent = explicacao
+
+    var botoes = fundo.querySelectorAll('button')
+
+    botoes[1].textContent = textoBotao || 'Confirmar'
+
+    // Cancelar: só fecha
+    botoes[0].onclick = function(){
+        fundo.remove()
+    }
+
+    // botão rosa: fecha e faz o que foi pedido
+    botoes[1].onclick = function(){
+        fundo.remove()
+        depois()
+    }
+
+    document.body.appendChild(fundo)
 }
 
 
@@ -269,7 +398,7 @@ function lerImagem(campo, depois, limiteKB){
     }
 
     if(arquivo.size > limiteKB * 1024){
-        alert('A imagem precisa ter no máximo ' + limiteKB + ' KB.')
+        avisar('Imagem grande demais', 'A imagem precisa ter no máximo ' + limiteKB + ' KB.', 'erro')
         return
     }
 
@@ -357,7 +486,7 @@ function diminuirImagem(textoOriginal, arquivo, campo, depois){
     }
 
     imagem.onerror = function(){
-        alert('Não consegui abrir essa imagem. Tente outra (JPG ou PNG).')
+        avisar('Imagem inválida', 'Não consegui abrir essa imagem. Tente outra (JPG ou PNG).', 'erro')
     }
 
     imagem.src = textoOriginal
