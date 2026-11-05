@@ -14,8 +14,8 @@ var falas = [
     {alvo: 'inicio.html', texto: 'Este é o Início, a primeira tela que você vê. Aqui ficam os avisos da Peak, os seus personagens e as novidades do site.'},
     {alvo: 'fichas.html', texto: 'Em Fichas você cria personagens na Oficina: identidade, raça, classe, combate, itens, atributos e história. Também dá para inventar as suas próprias raças e classes.'},
     {alvo: 'campanhas.html', texto: 'Em Campanhas você vê as suas mesas, cria uma nova ou entra na de um amigo com o código de convite. Se for o Mestre, lá também ficam as sessões e o mapa com sons.'},
-    {alvo: 'comunidade.html', texto: 'Na Comunidade fica o Mural, onde você posta recados para achar grupo ou parceria. Na aba Pessoas você encontra quem tem os mesmos interesses: quem desenha, quem mestra, quem escreve.'},
     {alvo: 'monstros.html', texto: 'O Bestiário tem os monstros da Peak, os de cada campanha oficial e os da comunidade. Você pode criar os seus e colocar nas suas campanhas.'},
+    {alvo: 'comunidade.html', texto: 'Na Comunidade fica o Mural, onde você posta recados para achar grupo ou parceria. Na aba Pessoas você encontra quem tem os mesmos interesses: quem desenha, quem mestra, quem escreve.'},
     {alvo: 'historia.html', texto: 'Em História ficam os livros da Peak: como jogar, o que é RPG, as campanhas oficiais e a história da nossa equipe.'},
     {alvo: 'perfil.html?aba=configuracoes', texto: 'Aqui embaixo ficam o seu perfil e as configurações: foto, capa, "sobre mim", contato, interesses, parcerias e o modo escuro.'},
     {alvo: '', texto: 'Pronto, agora é com você! Crie a sua primeira ficha, chame os seus amigos e boa aventura!'}
