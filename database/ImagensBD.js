@@ -3,7 +3,7 @@
 // FOTOS MAIS RÁPIDAS
 // =====================================================
 // O problema: as fotos que as pessoas enviam (monstros, capas de campanha,
-// retratos de ficha) ficam salvas no banco como um TEXTO enorme ("data:image...").
+// retratos de ficha, foto e capa do perfil, fotos do mural) ficam salvas no banco como um TEXTO enorme ("data:image...").
 // Quando o site pedia a lista de monstros, esses textos iam todos juntos
 // e a lista ficava com uns 5 MB (demorava uns 10 segundos para aparecer).
 //
@@ -21,15 +21,24 @@ const conexao = require('./conexao')
 const LUGAR_DA_FOTO = {
     'monstro':  {tabela: 'monstros',  coluna: 'imagem'},
     'campanha': {tabela: 'campanhas', coluna: 'imagemCapa'},
-    'ficha':    {tabela: 'fichas',    coluna: 'retrato'}
+    'ficha':    {tabela: 'fichas',    coluna: 'retrato'},
+    'perfil':   {tabela: 'usuarios',  coluna: 'fotoPerfil'},     // a foto da pessoa (menu, comunidade, perfil)
+    'capa':     {tabela: 'usuarios',  coluna: 'capaPerfil'},     // a capa do perfil
+    'recado':   {tabela: 'recados',   coluna: 'foto'}            // a foto de um recado do mural
 }
 
 class ImagensBD{
 
     // lista -> o que veio do banco (ex.: os monstros)
     // campo -> o nome da coluna da foto (ex.: 'imagem')
-    // tipo  -> 'monstro', 'campanha' ou 'ficha'
-    static trocarFotos(lista, campo, tipo){
+    // tipo  -> 'monstro', 'campanha', 'ficha', 'perfil', 'capa' ou 'recado'
+    // campoId -> opcional: de qual coluna vem o id (normalmente 'id').
+    //            Ex.: num recado, a foto da PESSOA usa o 'usuarioId', não o id do recado.
+    static trocarFotos(lista, campo, tipo, campoId){
+
+        if(campoId == undefined){
+            campoId = 'id'
+        }
 
         // se veio um erro em vez de uma lista, não faz nada
         if(lista.length == undefined){
@@ -43,7 +52,7 @@ class ImagensBD{
             // foto de arquivo ("img/monstros/mimico.jpg") é curtinha e fica como está
             if(foto != null && foto.length > 1000){
                 // o "&v=" muda quando a foto muda, assim o navegador não mostra a foto antiga
-                lista[i][campo] = '/imagem?tipo=' + tipo + '&id=' + lista[i].id + '&v=' + foto.length
+                lista[i][campo] = '/imagem?tipo=' + tipo + '&id=' + lista[i][campoId] + '&v=' + foto.length
             }
         }
     }

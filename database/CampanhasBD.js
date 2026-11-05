@@ -155,11 +155,12 @@ class CampanhasBD{
     // Os monstros que o Mestre colocou na campanha.
     // linhaId = id da linha em campanha_monstros (é ele que o botão Remover usa)
     // (versão servidor: só quem participa da campanha consegue ver)
+    // (FOTOS MAIS RÁPIDAS: o m.id as monstroId é usado pelo ImagensBD.trocarFotos no app.js)
     static getMonstros(campanhaId, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
         var sql = `
-            select cm.id as linhaId, m.nome, m.imagem, m.vidaMaxima, m.defesa
+            select cm.id as linhaId, m.id as monstroId, m.nome, m.imagem, m.vidaMaxima, m.defesa
             from campanha_monstros cm
             join monstros m on m.id = cm.monstroId
             where cm.campanhaId = ?

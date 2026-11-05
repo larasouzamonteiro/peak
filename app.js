@@ -249,6 +249,8 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 UsuariosBD.getUsuario(rota.query.id, (pessoa)=>{
+                    ImagensBD.trocarFotos([pessoa], 'fotoPerfil', 'perfil')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos([pessoa], 'capaPerfil', 'capa')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(pessoa))
                 })
@@ -276,6 +278,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 FichasBD.getFichas(rota.query.id, (fichas)=>{
+                    ImagensBD.trocarFotos(fichas, 'retrato', 'ficha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(fichas))
                 })
@@ -285,6 +288,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getCampanhas(rota.query.id, (campanhas)=>{
+                    ImagensBD.trocarFotos(campanhas, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(campanhas))
                 })
@@ -297,6 +301,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, function(usuario){
                 CampanhasBD.getCompanheiros(rota.query.id, function(companheiros){
+                    ImagensBD.trocarFotos(companheiros, 'fotoPerfil', 'perfil')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(companheiros))
                 })
@@ -307,6 +312,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 ComunidadeBD.getPessoas((pessoas)=>{
+                    ImagensBD.trocarFotos(pessoas, 'fotoPerfil', 'perfil')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(pessoas))
                 })
@@ -337,6 +343,8 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 RecadosBD.getRecados(usuario.id, (recados)=>{
+                    ImagensBD.trocarFotos(recados, 'foto', 'recado')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(recados, 'fotoPerfil', 'perfil', 'usuarioId')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(recados))
                 })
@@ -439,6 +447,7 @@ const callback = (req, res)=>{
             // /campanha?id=3 -> uma campanha (só para quem participa dela)
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getCampanha(rota.query.id, usuario.id, (campanha)=>{
+                    ImagensBD.trocarFotos([campanha], 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(campanha))
                 })
@@ -448,6 +457,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getJogadores(rota.query.id, usuario.id, (jogadores)=>{
+                    ImagensBD.trocarFotos(jogadores, 'retrato', 'ficha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(jogadores))
                 })
@@ -457,6 +467,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getMonstros(rota.query.id, usuario.id, (monstros)=>{
+                    ImagensBD.trocarFotos(monstros, 'imagem', 'monstro', 'monstroId')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
                 })
