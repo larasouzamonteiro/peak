@@ -123,21 +123,6 @@ body.entrada::after{
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
-.entrada-chips{
-    display: flex;
-    gap: 8px;
-    margin-top: 2vh;
-}
-
-.entrada-chips span{
-    padding: 6px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.2);
-    font-size: 12px;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
-}
 
 /* a frase do cadastro fica na direita e começa invisível */
 .frase-cadastro{
@@ -150,10 +135,6 @@ body.entrada::after{
 
 .frase-cadastro p{
     margin-left: auto;
-}
-
-.frase-cadastro .entrada-chips{
-    justify-content: flex-end;
 }
 
 

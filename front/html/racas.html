@@ -8,6 +8,21 @@
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
 
+  <!-- VISUAL: ANTES DE DESENHAR. Este script roda antes da página aparecer:
+       - modo escuro: o <html> já ganha a classe "escuro" e a página não pisca branca;
+       - abertura: na primeira página da visita (logado), o <html> ganha a classe "abrindo"
+         e a página fica escondida até a abertura aparecer (assim o Início não pisca antes).
+       (O resto do tema e da abertura está no script.js.) -->
+  <script>
+    if(localStorage.getItem('tema') == 'escuro'){
+      document.documentElement.classList.add('escuro')
+    }
+
+    if(localStorage.getItem('token') && !sessionStorage.getItem('abriu')){
+      document.documentElement.classList.add('abrindo')
+    }
+  </script>
+
   <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/fichas.css">

@@ -411,16 +411,27 @@ class UsuariosBD{
         var sql = 'select id, nomeUsuario, tipo, fotoPerfil, capaPerfil, bio, contato from usuarios where id = ?'
 
         connection.query(sql, [id], (error, results)=>{
-            if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+            if(error){ console.log(error.message); connection.end(); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             if(results.length == 0){
-                callback({'error': 'Usuário não encontrado'})
-            }else{
-                callback(results[0])
+                connection.end()
+                return callback({'error': 'Usuário não encontrado'})
             }
-        })
 
-        connection.end()
+            var pessoa = results[0]
+
+            // IMAGEM DO "SOBRE MIM" (nov/2026): fica na coluna nova imagemSobre.
+            // Ela é buscada separado: se o ALTER TABLE ainda não foi feito no banco,
+            // dá erro só aqui e o perfil continua funcionando, só sem a imagem.
+            connection.query('select imagemSobre from usuarios where id = ?', [id], (erro2, resultado2)=>{
+                if(!erro2 && resultado2.length > 0){
+                    pessoa.imagemSobre = resultado2[0].imagemSobre
+                }
+
+                connection.end()
+                callback(pessoa)
+            })
+        })
     }
 
     // dados: { bio, contato }
@@ -446,6 +457,22 @@ class UsuariosBD{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             callback({'message': 'Foto trocada!'})
+        })
+
+        connection.end()
+    }
+
+    // a imagem do lado do "sobre mim" (precisa da coluna imagemSobre: veja o LEIA-ME)
+    static atualizarImagemSobre(imagem, usuarioId, callback){
+        const connection = UsuariosBD.connect()
+
+        connection.query('update usuarios set imagemSobre = ? where id = ?', [imagem, usuarioId], (error, results)=>{
+            if(error){
+                console.log(error.message)
+                return callback()
+            }
+
+            callback({'message': 'Imagem trocada!'})
         })
 
         connection.end()

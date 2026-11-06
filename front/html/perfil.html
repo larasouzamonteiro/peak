@@ -8,6 +8,21 @@
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
 
+  <!-- VISUAL: ANTES DE DESENHAR. Este script roda antes da página aparecer:
+       - modo escuro: o <html> já ganha a classe "escuro" e a página não pisca branca;
+       - abertura: na primeira página da visita (logado), o <html> ganha a classe "abrindo"
+         e a página fica escondida até a abertura aparecer (assim o Início não pisca antes).
+       (O resto do tema e da abertura está no script.js.) -->
+  <script>
+    if(localStorage.getItem('tema') == 'escuro'){
+      document.documentElement.classList.add('escuro')
+    }
+
+    if(localStorage.getItem('token') && !sessionStorage.getItem('abriu')){
+      document.documentElement.classList.add('abrindo')
+    }
+  </script>
+
   <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/perfil.css">
@@ -47,7 +62,10 @@
   </header>
 
   <main class="secao">
-    <div class="container">
+    <!-- VISUAL: a classe "editando" entra aqui quando a aba Configurações está aberta
+         (função mostrarAba do js/perfil.js). O CSS usa ela para mostrar o "Trocar capa"
+         e o lápis da foto (os elementos com a classe "so-editando"). -->
+    <div class="container" id="paginaPerfil">
 
       <!-- VISUAL: CABEÇALHO DO PERFIL = a capa grande e, embaixo dela, a faixa branca com as abas.
            A imagem da capa é colocada pela função carregarPessoa() do js/perfil.js
@@ -55,11 +73,16 @@
       <section class="perfil-topo">
         <div class="perfil-capa">
           <img class="oculto" id="perfilCapa" src="" alt="">
+          <!-- só aparece na aba Configurações: abre a escolha de arquivo do input escondido "capaArquivo" -->
+          <label class="perfil-trocar-capa so-editando" for="capaArquivo">Trocar capa</label>
         </div>
 
         <div class="perfil-faixa">
           <!-- a foto redonda fica "pendurada" em cima da capa -->
-          <div class="perfil-foto" id="perfilFoto"></div>
+          <div class="perfil-foto-caixa">
+            <div class="perfil-foto" id="perfilFoto"></div>
+            <label class="perfil-lapis so-editando" for="fotoArquivo" title="Trocar foto">✎</label>
+          </div>
 
           <!-- a função mostrarAba() mostra uma aba e esconde as outras.
                A aba Configurações tem a classe "so-meu": só aparece no MEU perfil. -->
@@ -71,144 +94,147 @@
         </div>
       </section>
 
+      <!-- os arquivos de foto, capa e imagem do "sobre mim" (escondidos; quem abre é o <label for="...">) -->
+      <input class="oculto" type="file" id="fotoArquivo" accept="image/*" onchange="trocarFoto()">
+      <input class="oculto" type="file" id="capaArquivo" accept="image/*" onchange="trocarCapa()">
+      <input class="oculto" type="file" id="sobreArquivo" accept="image/*" onchange="trocarImagemSobre()">
+
       <div class="perfil-grade">
 
-        <!-- ===== COLUNA DA ESQUERDA: quem é a pessoa ===== -->
+        <!-- ===== COLUNA DA ESQUERDA ===== -->
         <aside class="perfil-lado">
           <h1 class="perfil-nome" id="perfilNome"></h1>
           <p class="perfil-arroba" id="perfilArroba"></p>
 
-          <!-- "RPG | D&D | Anime": os interesses numa linha só (função carregarInteresses) -->
-          <p class="perfil-gostos" id="perfilInteresses"></p>
+          <!-- os selos: o que a pessoa É (escuro) e do que ela gosta (clarinho)
+               (funções carregarParcerias e carregarInteresses) -->
+          <div class="perfil-selos">
+            <span id="perfilSou"></span>
+            <span id="perfilInteresses"></span>
+          </div>
 
-          <!-- "3 fichas · 2 campanhas" (funções carregarFichas e carregarCampanhas) -->
-          <p class="perfil-numeros"><span id="numFichas">0</span> fichas · <span id="numCampanhas">0</span> campanhas</p>
+          <!-- "3 fichas · 2 campanhas · 5 amigos" (carregarFichas, carregarCampanhas e carregarCompanheiros) -->
+          <p class="perfil-numeros"><b id="numFichas">0</b> fichas · <b id="numCampanhas">0</b> campanhas · <b id="numCompanheiros">0</b> amigos</p>
 
-          <!-- só aparece no perfil de OUTRA pessoa, quando ela é algo que eu procuro (função carregarCombina) -->
-          <p class="oculto" id="perfilCombina"><span class="selo">Combina com você</span></p>
+          <!-- no MEU perfil: compartilhar | no perfil de OUTRA pessoa: "Combina com você" -->
+          <button type="button" class="perfil-compartilhar so-meu oculto" onclick="compartilharPerfil()">Compartilhar perfil</button>
+          <p class="perfil-combina oculto" id="perfilCombina">✦ Combina com você</p>
+
+          <section class="perfil-caixa">
+            <h2>Procuro</h2>
+            <!-- preenchido pela função carregarParcerias() -->
+            <div class="perfil-selos" id="perfilProcuro"></div>
+          </section>
 
           <section class="perfil-caixa">
             <h2>Contato</h2>
-            <p class="perfil-bio" id="perfilContato"></p>
+            <div class="perfil-contato">
+              <span id="perfilContato"></span>
+              <button type="button" onclick="copiarContato()">copiar</button>
+            </div>
           </section>
+
           <!-- AMIGOS (companheiros de mesa): quem joga nas mesmas campanhas (função carregarCompanheiros).
                Não precisou de tabela nova: usa as campanhas e os jogadores que já existem. -->
           <section class="perfil-caixa">
-            <!-- o número do lado do título é escrito pela função carregarCompanheiros -->
-            <h2>Amigos <span class="perfil-contagem" id="numCompanheiros"></span></h2>
-            <p class="perfil-ajuda">quem joga nas mesmas campanhas</p>
+            <h2>Amigos</h2>
             <div class="companheiros" id="perfilCompanheiros"></div>
+            <p class="perfil-ajuda">quem joga nas mesmas campanhas</p>
           </section>
-
-          <section class="perfil-caixa">
-            <h2>Parcerias</h2>
-            <p class="rotulo">Sou</p>
-            <!-- preenchidos pela função carregarParcerias() -->
-            <div class="chips" id="perfilSou"></div>
-            <p class="rotulo espaco-topo-pequeno">Procuro</p>
-            <div class="chips" id="perfilProcuro"></div>
-          </section>
-
         </aside>
 
-        <!-- ===== COLUNA DA DIREITA: o painel branco ===== -->
+        <!-- ===== COLUNA DA DIREITA ===== -->
         <section class="perfil-conteudo">
 
-          <!-- :: sobre mim (função carregarPessoa). A imagem do lado é o retrato
-               do primeiro personagem (função carregarFichas); sem personagem, ela some. -->
-          <div class="perfil-sobre">
+          <!-- sobre mim com a imagem do lado (função carregarPessoa).
+               Sem imagem escolhida, aparece o retrato da última ficha; sem nenhum, a imagem some.
+               Ele some na aba Configurações. -->
+          <div class="perfil-sobre sem-imagem" id="perfilSobre">
             <div>
-              <h2>:: sobre mim</h2>
+              <h2>Sobre mim</h2>
               <p class="perfil-bio" id="perfilBio"></p>
             </div>
             <img class="oculto" id="perfilSobreImagem" src="" alt="">
           </div>
 
-          <!-- ABA PERSONAGENS: uma linha por ficha (função carregarFichas) -->
+          <!-- ABA PERSONAGENS: as cartas iguais às da página Fichas, numa fileira que desliza
+               (função carregarFichas). As setas chamam rolarFila(). -->
           <div id="abaPersonagens">
-            <p class="perfil-faixa-titulo">Personagens</p>
-            <div id="perfilFichas"></div>
+            <div class="perfil-titulo">
+              <h2>Personagens</h2>
+              <div class="perfil-setas">
+                <button type="button" onclick="rolarFila('perfilFichas', -1)" aria-label="Voltar">‹</button>
+                <button type="button" onclick="rolarFila('perfilFichas', 1)" aria-label="Avançar">›</button>
+              </div>
+            </div>
+            <div class="perfil-fila" id="perfilFichas">
+              <div class="carregando"><span></span>Carregando…</div>
+            </div>
           </div>
 
-          <!-- ABA CAMPANHAS: uma linha por campanha (função carregarCampanhas) -->
+          <!-- ABA CAMPANHAS: os cards iguais aos da página Campanhas (função carregarCampanhas) -->
           <div class="oculto" id="abaCampanhas">
-            <p class="perfil-faixa-titulo">Campanhas</p>
-            <div id="perfilCampanhas"></div>
+            <div class="perfil-titulo">
+              <h2>Campanhas</h2>
+              <div class="perfil-setas">
+                <button type="button" onclick="rolarFila('perfilCampanhas', -1)" aria-label="Voltar">‹</button>
+                <button type="button" onclick="rolarFila('perfilCampanhas', 1)" aria-label="Avançar">›</button>
+              </div>
+            </div>
+            <div class="perfil-fila campanhas" id="perfilCampanhas"></div>
           </div>
 
           <!-- ABA CONFIGURAÇÕES (só no meu perfil) -->
           <div class="oculto" id="abaConfiguracoes">
 
-            <div class="card">
-              <h2 class="card-titulo">Foto e capa</h2>
-              <div class="formulario">
-                <div class="campo">
-                  <label class="rotulo" for="fotoArquivo">Foto de perfil (até 1MB)</label>
-                  <div class="campo-com-botao">
-                    <input class="input" type="file" id="fotoArquivo" accept="image/*">
-                    <button type="button" class="botao" onclick="trocarFoto()">Trocar foto</button>
-                  </div>
-                </div>
-                <div class="campo">
-                  <label class="rotulo" for="capaArquivo">Capa do perfil (até 1MB, de preferência deitada)</label>
-                  <div class="campo-com-botao">
-                    <input class="input" type="file" id="capaArquivo" accept="image/*">
-                    <button type="button" class="botao" onclick="trocarCapa()">Trocar capa</button>
-                  </div>
-                </div>
+            <div class="config-card">
+              <h3>Sobre mim</h3>
+              <div class="config-sobre">
+                <textarea class="input" id="bio" maxlength="300" placeholder="Conte um pouco sobre você"></textarea>
+                <!-- a imagem do lado do "sobre mim": clicar abre a escolha de arquivo -->
+                <label class="config-imagem" for="sobreArquivo">
+                  <img class="oculto" id="configSobreImagem" src="" alt="">
+                  <span>Trocar imagem</span>
+                </label>
+              </div>
+
+              <label class="rotulo espaco-topo-pequeno" for="contato">Contato (aparece no seu perfil)</label>
+              <div class="config-salvar">
+                <input class="input" type="text" id="contato" maxlength="120" placeholder="Ex.: Discord: fulano">
+                <button type="button" class="botao botao-principal" onclick="salvarPerfil()">Salvar</button>
               </div>
             </div>
 
-            <div class="card">
-              <h2 class="card-titulo">Sobre mim e contato</h2>
-              <div class="formulario">
-                <div class="campo">
-                  <label class="rotulo" for="bio">Sobre mim</label>
-                  <textarea class="input" id="bio"></textarea>
-                </div>
-                <div class="campo">
-                  <label class="rotulo" for="contato">Contato (aparece no seu perfil)</label>
-                  <input class="input" type="text" id="contato" maxlength="120" placeholder="Ex.: Discord: fulano#1234">
-                </div>
-                <div><button type="button" class="botao botao-principal" onclick="salvarPerfil()">Salvar</button></div>
-              </div>
-            </div>
-
-            <div class="card">
-              <h2 class="card-titulo">Interesses</h2>
-              <p class="card-texto">Marque o que você gosta. Cada clique já salva.</p>
+            <div class="config-card">
+              <h3>Gostos <small>cada clique já salva</small></h3>
               <!-- as caixinhas são criadas pela função carregarOpcoesInteresses() -->
               <div class="chips" id="opcoesInteresses"></div>
-            </div>
 
-            <div class="card">
-              <h2 class="card-titulo">Parcerias</h2>
-              <p class="card-texto">Marque o que você é e o que procura. A Comunidade usa isso para mostrar quem combina com você. Cada clique já salva.</p>
-
-              <p class="rotulo">Eu sou</p>
+              <h3 class="espaco-topo">Eu sou</h3>
               <!-- as caixinhas são criadas pela função carregarOpcoesParcerias() -->
               <div class="chips" id="opcoesSou"></div>
 
-              <p class="rotulo espaco-topo-pequeno">Procuro</p>
+              <h3 class="espaco-topo">Procuro</h3>
               <div class="chips" id="opcoesProcuro"></div>
             </div>
 
-            <!-- VISUAL: MODO ESCURO. mudarTema() está no script.js e guarda a escolha no navegador -->
-            <div class="card">
-              <h2 class="card-titulo">Aparência</h2>
-              <p class="card-texto">Escolha como o site aparece para você.</p>
-              <div class="filtros">
-                <button type="button" class="filtro" id="temaClaro" onclick="escolherTema('claro')">Claro</button>
-                <button type="button" class="filtro" id="temaEscuro" onclick="escolherTema('escuro')">Escuro</button>
+            <!-- VISUAL: MODO ESCURO = o botão de sol e lua (função trocarTema).
+                 O tema fica guardado no navegador (mudarTema do script.js). -->
+            <div class="config-card config-linha">
+              <div>
+                <b>Modo escuro</b>
+                <small>o site fica escuro só para você</small>
               </div>
+              <button type="button" class="tema-botao" id="temaBotao" onclick="trocarTema()" aria-label="Trocar o modo claro e escuro"><span></span></button>
             </div>
 
-            <div class="card">
-              <h2 class="card-titulo">Tutorial</h2>
-              <p class="card-texto">A Zero mostra de novo onde fica cada coisa.</p>
-              <a class="botao" href="inicio.html?tutorial=sim">Ver tutorial de novo</a>
+            <div class="config-card config-linha">
+              <div>
+                <b>Tutorial</b>
+                <small>a Zero mostra de novo onde fica cada coisa</small>
+              </div>
+              <a class="botao" href="inicio.html?tutorial=sim">Ver de novo</a>
             </div>
-
           </div>
         </section>
       </div>

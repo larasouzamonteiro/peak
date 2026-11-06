@@ -648,3 +648,87 @@ a.palavra:hover{
         bottom: 88px;
     }
 }
+
+
+/* ---------- VISUAL: LIVRO IV - EQUIPE, ARTISTAS E AGRADECIMENTOS ---------- */
+/* as quatro fotos quadradas, uma do lado da outra */
+.equipe-fotos{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.membro,
+.artista{
+    margin: 0;
+}
+
+.membro img,
+.artista img{
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;          /* quadrada: a altura é igual à largura */
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 8px 18px rgba(60, 35, 25, 0.18);
+}
+
+.membro figcaption,
+.artista figcaption{
+    padding: 10px 2px 0;
+}
+
+.membro b,
+.artista b{
+    display: block;
+    font-family: var(--serif);
+    font-size: 1.1rem;
+}
+
+.membro small,
+.artista small{
+    color: var(--tinta-3);
+    font-size: 0.78rem;
+}
+
+/* as artes dos artistas: 3 por linha */
+.artistas{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 14px 0;
+}
+
+/* "Obrigada a…": duas colunas, como os créditos de um filme */
+.obrigado{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 20px;
+    margin-top: 10px;
+}
+
+.pagina-dir .obrigado p{
+    margin: 0;
+    color: var(--rosa);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.obrigado b{
+    display: block;
+    color: var(--tinta);
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.6;
+}
+
+@media (max-width: 820px){
+    .equipe-fotos,
+    .artistas{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

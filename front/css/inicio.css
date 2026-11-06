@@ -715,33 +715,33 @@
 
 
 /* ---------- 6. MODO ESCURO ---------- */
-body.escuro .bolinha img{
+html.escuro body .bolinha img{
     filter: brightness(0) invert(1);     /* branco (só invert ficava verde) */
 }
 
-body.escuro .bolinha-foto img{
+html.escuro body .bolinha-foto img{
     filter: none;
 }
 
-body.escuro .criar-ficha,
-body.escuro .vaga-livre{
+html.escuro body .criar-ficha,
+html.escuro body .vaga-livre{
     border-color: rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
 }
 
-body.escuro .criar-foto{
+html.escuro body .criar-foto{
     opacity: 0.18;
     mix-blend-mode: normal;
 }
 
 /* o texto do botão do banner fica escuro, porque o botão é branco */
-body.escuro .destaque-bt{
+html.escuro body .destaque-bt{
     color: #6e1a26;
 }
 
 /* no escuro a estrela usa o rosa mais claro, para aparecer no fundo escuro */
 
-body.escuro .convite-comunidade{
+html.escuro body .convite-comunidade{
     box-shadow: none;
 }

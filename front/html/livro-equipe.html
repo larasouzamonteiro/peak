@@ -8,6 +8,21 @@
   <!-- fontes do site (Poppins nos textos, Lora nos livros) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 
+  <!-- VISUAL: ANTES DE DESENHAR. Este script roda antes da página aparecer:
+       - modo escuro: o <html> já ganha a classe "escuro" e a página não pisca branca;
+       - abertura: na primeira página da visita (logado), o <html> ganha a classe "abrindo"
+         e a página fica escondida até a abertura aparecer (assim o Início não pisca antes).
+       (O resto do tema e da abertura está no script.js.) -->
+  <script>
+    if(localStorage.getItem('tema') == 'escuro'){
+      document.documentElement.classList.add('escuro')
+    }
+
+    if(localStorage.getItem('token') && !sessionStorage.getItem('abriu')){
+      document.documentElement.classList.add('abrindo')
+    }
+  </script>
+
   <!-- style.css = o que é igual em todas as páginas | historia.css = estante e livros -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/historia.css">
@@ -89,6 +104,7 @@
               <li><a class="sumario-item" href="#cap-1"><span>1</span>Por que a Peak existe</a></li>
               <li><a class="sumario-item" href="#cap-2"><span>2</span>Quem somos</a></li>
               <li><a class="sumario-item" href="#cap-3"><span>3</span>Artistas parceiros</a></li>
+              <li><a class="sumario-item" href="#cap-4"><span>4</span>Obrigada a…</a></li>
             </ol>
           </div>
         </div>
@@ -106,12 +122,14 @@
           <section class="cap-texto" id="cap-2">
             <small class="cap-numero">Capítulo 2</small>
             <h3>Quem somos</h3>
-            <!-- as quatro alunas e a parte de cada uma. A letra da bolinha é a inicial do nome. -->
-            <div class="equipe">
-              <div class="pessoa"><span>L</span><b>Lara</b><small>Programação, servidor e login/perfil</small></div>
-              <div class="pessoa"><span>E</span><b>Ester</b><small>Design, index e história</small></div>
-              <div class="pessoa"><span>I</span><b>Isabely</b><small>Campanhas, fichas e mesa</small></div>
-              <div class="pessoa"><span>A</span><b>Amanda</b><small>Bestiário e comunidade</small></div>
+            <!-- VISUAL: as quatro alunas com a foto quadrada e a parte de cada uma.
+                 PARA TROCAR AS FOTOS: salve a foto de cada uma em img/equipe/ e troque o src
+                 (ex.: ../img/equipe/lara.jpg). Foto quadrada fica melhor. -->
+            <div class="equipe-fotos">
+              <figure class="membro"><img src="../img/equipe/1.jpg" alt="Lara"><figcaption><b>Lara</b><small>Programação, servidor e login/perfil</small></figcaption></figure>
+              <figure class="membro"><img src="../img/equipe/2.jpg" alt="Ester"><figcaption><b>Ester</b><small>Design, index e história</small></figcaption></figure>
+              <figure class="membro"><img src="../img/equipe/3.jpg" alt="Isabely"><figcaption><b>Isabely</b><small>Campanhas, fichas e mesa</small></figcaption></figure>
+              <figure class="membro"><img src="../img/equipe/4.jpg" alt="Amanda"><figcaption><b>Amanda</b><small>Bestiário e comunidade</small></figcaption></figure>
             </div>
             <div class="pagina-rodape"><span>2</span></div>
           </section>
@@ -120,8 +138,26 @@
             <small class="cap-numero">Capítulo 3</small>
             <h3>Artistas parceiros</h3>
             <p><span class="capitular">A</span> história Dohomatika é do artista parceiro César, que criou o universo de Openworld. As artes usadas no site têm os créditos dos seus artistas.</p>
+            <!-- VISUAL: a arte de cada artista em quadrado, com o nome e o que fez.
+                 Para colocar mais um artista, copie um <figure class="artista"> inteiro e troque a imagem e os textos. -->
+            <div class="artistas">
+              <figure class="artista"><img src="../img/novas/dohomatika.png" alt="Dohomatika"><figcaption><b>César</b><small>Dohomatika · Openworld</small></figcaption></figure>
+            </div>
             <p>Quer ser parceiro? Na Comunidade, marque "Sou ilustrador" ou "Sou escritor" nas suas parcerias: quem procura vai encontrar você.</p>
             <div class="pagina-rodape"><span>3</span></div>
+          </section>
+
+          <section class="cap-texto" id="cap-4">
+            <small class="cap-numero">Capítulo 4</small>
+            <h3>Obrigada a…</h3>
+            <!-- os agradecimentos, como nos créditos de um filme. Troque pelos nomes de verdade. -->
+            <div class="obrigado">
+              <p>PROFESSORES<b>Professores do Senac</b></p>
+              <p>TURMA<b>Info 1</b></p>
+              <p>PRIMEIROS JOGADORES<b>Todo mundo que testou a Peak</b></p>
+              <p>ARTISTAS<b>Quem emprestou a sua arte</b></p>
+            </div>
+            <div class="pagina-rodape"><span>4</span></div>
           </section>
         </div>
       </div>

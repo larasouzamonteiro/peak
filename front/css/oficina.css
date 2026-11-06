@@ -484,3 +484,24 @@
         overflow-wrap: anywhere;
     }
 }
+
+
+/* ---------- VISUAL: MODO ESCURO DA OFICINA ----------
+   No escuro, os cards da Oficina (criar ficha) ficavam claros.
+   Aqui só trocamos as variáveis lá de cima por cores escuras. */
+html.escuro body .oficina{
+    --papel: rgba(34, 26, 27, 0.85);
+    --papel-2: #2a2022;
+    --marrom: #f3e6e2;
+    --marrom-2: #d3c2be;
+    --marrom-3: #a8928e;
+    --borda: rgba(255, 255, 255, 0.08);
+    --borda-forte: rgba(255, 255, 255, 0.16);
+    --vinho: #e0607a;
+    --vinho-claro: rgba(224, 96, 122, 0.18);
+    --sombra: none;
+}
+
+html.escuro body .oficina .resumo-arte{
+    background: #1d1618;
+}

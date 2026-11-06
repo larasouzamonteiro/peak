@@ -48,7 +48,12 @@ function login(){
         localStorage.setItem('usuarioLogado', JSON.stringify(dados.usuario))
         localStorage.setItem('token', dados.token)
 
-        window.location.href = 'inicio.html'
+        // se a pessoa chegou aqui por um link (ex.: o perfil de alguém), volta para ele;
+        // senão vai para o Início. (quem guarda o link é o verificarLogin do script.js)
+        var destino = sessionStorage.getItem('voltarPara') || 'inicio.html'
+        sessionStorage.removeItem('voltarPara')
+
+        window.location.href = destino
     })
 }
 

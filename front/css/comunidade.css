@@ -16,6 +16,11 @@
     align-items: start;
 }
 
+/* VISUAL: sem isto, as fileiras de filtros que deslizam esticavam a coluna e a página ficava mais larga que o celular */
+.comunidade > div{
+    min-width: 0;
+}
+
 .lado-caixas{
     display: flex;
     flex-direction: column;
@@ -34,10 +39,11 @@
 
 /* ---------- 2. CARD DE UMA PESSOA ---------- */
 /* os cards são criados pela função htmlPessoa() do js/comunidade.js */
+/* VISUAL: 4 pessoas por linha, cards quadrados (a foto aparece inteira) */
 .pessoas{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
 }
 
 /* o aviso "Ninguém encontrado" ocupa a linha toda */
@@ -48,7 +54,7 @@
 .pessoa-card{
     position: relative;
     display: block;
-    height: 300px;
+    aspect-ratio: 1 / 1;          /* VISUAL: quadrado: a altura é igual à largura */
     overflow: hidden;
     border-radius: var(--raio);
     background: var(--escuro);
@@ -80,13 +86,13 @@
     right: 0;
     bottom: 0;
     z-index: 2;
-    padding: 40px 14px 14px;
+    padding: 30px 12px 12px;
     background: var(--painel-foto);
 }
 
 .pessoa-card h3{
     margin: 0;
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: 800;
     line-height: 1.1;
     text-transform: uppercase;
@@ -94,9 +100,38 @@
 }
 
 .pessoa-card small{
+    display: block;
+    overflow: hidden;
     color: var(--rosa-claro);
-    font-size: 0.75rem;
+    font-size: 0.68rem;
     font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;      /* texto grande demais termina em "..." */
+}
+
+/* VISUAL: os chips de interesse não cabem no card quadrado (aparecem no perfil da pessoa) */
+.pessoa-card .info .chip{
+    display: none;
+}
+
+/* VISUAL: os filtros (interesses e "Todo mundo / Só quem combina") ficam numa fileira
+   que desliza para o lado, em vez de ocupar várias linhas quando tem muito interesse */
+#filtroInteresses,
+.filtro-parceria{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+}
+
+#filtroInteresses::-webkit-scrollbar,
+.filtro-parceria::-webkit-scrollbar{
+    display: none;
+}
+
+#filtroInteresses .chip,
+.filtro-parceria .chip{
+    flex: 0 0 auto;
 }
 
 .pessoa-card .chip{
@@ -172,40 +207,30 @@
     }
 
     .pessoas{
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* VISUAL: celular: 2 pessoas por linha, cards menores */
+/* VISUAL: celular: 2 pessoas por linha, continuam quadrados */
 @media (max-width: 520px){
     .pessoas{
         grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
 
-    .pessoa-card{
-        height: 220px;
-    }
-
     .pessoa-card h3{
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .pessoa-card small{
-        font-size: 0.65rem;
-    }
-
-    /* os chips de interesse não cabem no card pequeno */
-    .pessoa-card .info .chip{
-        display: none;
+        font-size: 0.6rem;
     }
 
     .pessoa-card .info{
-        padding: 30px 10px 10px;
+        padding: 24px 10px 9px;
     }
 
-    /* VISUAL: no card pequeno os dois selos não cabem lado a lado e ficavam um em cima
-       do outro. Aqui eles ficam um embaixo do outro, no canto esquerdo. */
+    /* no card pequeno os dois selos ficam um embaixo do outro, no canto esquerdo */
     .pessoa-card .em-comum,
     .selo-combina{
         left: 8px;
@@ -574,5 +599,41 @@
     .mural-postar .avatar{
         display: none;
     }
+}
+
+/* o lixinho do recado: no canto de cima, à direita */
+.recado-apagar{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+/* "Tenho interesse": botão em formato de pílula, embaixo das tags */
+.recado-interesse{
+    margin-top: 10px;
+    padding: 6px 12px;
+    border: 1px solid var(--rosa);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--rosa);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* marcado: fica rosa cheio */
+.recado-interesse.marcado{
+    background: var(--rosa);
+    color: #fff;
+}
+
+/* no meu recado: a lista de quem se interessou */
+.recado-interesse-lista{
+    margin: 10px 0 0 !important;
+    color: var(--rosa);
+    font-size: 0.75rem !important;
+    font-weight: 700;
 }
 

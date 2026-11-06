@@ -23,6 +23,9 @@ function buscar(rota, depois){
     // em que parte o pedido está (explicado em falhaNoPedido, mais abaixo)
     var etapa = 'conexao'
 
+    // VISUAL: a abertura (parte 8) conta os pedidos para saber a porcentagem
+    pedidosFeitos = pedidosFeitos + 1
+
     fetch(SERVIDOR + rota, {
         method: 'GET',
         headers: {
@@ -34,6 +37,8 @@ function buscar(rota, depois){
         return response.json()
     })
     .then(function(dados){
+        pedidosProntos = pedidosProntos + 1
+
         // token velho ou errado: volta para o login
         if(dados.sair){
             sair()
@@ -44,6 +49,7 @@ function buscar(rota, depois){
         depois(dados)
     })
     .catch(function(erro){
+        pedidosProntos = pedidosProntos + 1
         falhaNoPedido(erro, etapa)
     })
 }
@@ -276,6 +282,12 @@ function verificarLogin(){
     var usuario = pegarUsuarioLogado()
 
     if(usuario == null || localStorage.getItem('token') == null){
+        // guarda a página que a pessoa tentou abrir (ex.: o link de um perfil que alguém mandou).
+        // Depois do login, o login.js leva ela de volta para essa página.
+        // Só o nome da página e o "?id=..." (location.pathname tem o caminho inteiro; pegamos só o final).
+        var pagina = window.location.pathname.split('/').pop() + window.location.search
+        sessionStorage.setItem('voltarPara', pagina)
+
         window.location.href = 'login.html'
         return false
     }
@@ -590,17 +602,20 @@ function rolarDado(lados){
 // 7. VISUAL: MODO ESCURO E MENU DO CELULAR
 // =====================================================
 // O tema fica guardado no localStorage (no navegador), igual o token.
-//   'escuro' -> o <body> ganha a classe "escuro" (as cores estão no style.css, parte "MODO ESCURO")
+//   'escuro' -> o <html> ganha a classe "escuro" (as cores estão no style.css, parte "MODO ESCURO")
 //   qualquer outra coisa (ou nada) -> claro
 // O botão para trocar fica em Perfil > Configurações (perfil.html).
+// VISUAL: a classe fica no <html> (document.documentElement) e não no <body> porque
+// o <script> do <head> de cada página já coloca ela antes da página aparecer.
+// Assim a página não pisca branca quando a pessoa usa o modo escuro.
 
 function aplicarTema(){
     var tema = localStorage.getItem('tema')
 
     if(tema == 'escuro'){
-        document.body.classList.add('escuro')
+        document.documentElement.classList.add('escuro')
     }else{
-        document.body.classList.remove('escuro')
+        document.documentElement.classList.remove('escuro')
     }
 }
 
@@ -633,4 +648,123 @@ function verSenha(botao){
         caixa.classList.remove('mostrando')
         botao.setAttribute('aria-label', 'Mostrar senha')
     }
+}
+
+
+
+// =====================================================
+// 8. VISUAL: ABERTURA (a tela escura com o "peak." e a porcentagem)
+// =====================================================
+// Aparece só UMA vez por visita: na primeira página de dentro do site.
+// O sessionStorage é igual ao localStorage, mas se apaga quando a aba fecha.
+//
+// Como a porcentagem funciona:
+//   cada buscar() soma 1 em pedidosFeitos; quando a resposta chega, soma 1 em pedidosProntos.
+//   A porcentagem "de verdade" é prontos / feitos. O número na tela vai subindo de 1 em 1
+//   até ela, e quando chega a 100 a abertura some devagar.
+// A linha rosa é um <progress> (a barrinha de progresso do HTML): o JS só muda o value,
+// e a aparência dela fica no style.css (regra do projeto: JS não escreve CSS).
+var pedidosFeitos = 0
+var pedidosProntos = 0
+var numeroAbertura = 0
+var relogioAbertura = null
+var inicioAbertura = 0
+
+function criarAbertura(){
+    // só nas páginas de dentro (as que têm o menu lateral) e só uma vez por visita.
+    // Se não for para abrir, tira a classe "abrindo" que o <head> colocou (a página aparece normal).
+    if(!document.querySelector('.lateral') || sessionStorage.getItem('abriu')){
+        document.documentElement.classList.remove('abrindo')
+        return
+    }
+
+    document.documentElement.classList.add('abrindo')
+
+    sessionStorage.setItem('abriu', 'sim')
+
+    document.body.insertAdjacentHTML('beforeend', `
+        <div class="abertura" id="abertura">
+            <div class="abertura-logo"><span>peak<i>.</i></span></div>
+            <progress class="abertura-linha" id="aberturaBarra" max="100" value="0"></progress>
+            <div class="abertura-baixo">
+                <small>PREPARANDO A MESA</small>
+                <b><span id="aberturaNumero">0</span><i>%</i></b>
+            </div>
+        </div>`)
+
+    inicioAbertura = Date.now()
+
+    // a cada 15 milésimos de segundo o número sobe um pouco
+    relogioAbertura = setInterval(subirAbertura, 15)
+}
+
+function subirAbertura(){
+    var alvo = 100
+
+    // ainda tem pedido esperando resposta: o número só vai até onde já carregou
+    if(pedidosFeitos > 0 && pedidosProntos < pedidosFeitos){
+        alvo = Math.floor(pedidosProntos / pedidosFeitos * 100)
+    }
+
+    // se o servidor demorar mais de 8 segundos, a abertura sai mesmo assim
+    if(Date.now() - inicioAbertura > 8000){
+        alvo = 100
+    }
+
+    if(numeroAbertura < alvo){
+        numeroAbertura = numeroAbertura + 1
+        document.getElementById('aberturaNumero').textContent = numeroAbertura
+        document.getElementById('aberturaBarra').value = numeroAbertura
+    }
+
+    if(numeroAbertura >= 100){
+        clearInterval(relogioAbertura)
+        tirarAbertura()
+    }
+}
+
+// a saída: o "peak." e o número somem, a tela escura apaga devagar
+// e o site aparece chegando um pouquinho mais perto (as animações estão no style.css)
+function tirarAbertura(){
+    document.getElementById('abertura').classList.add('saindo')
+    document.documentElement.classList.remove('abrindo')
+    document.body.classList.add('chegando')
+
+    // depois que a animação termina, a abertura é apagada da página
+    setTimeout(function(){
+        document.getElementById('abertura').remove()
+        document.body.classList.remove('chegando')
+    }, 1600)
+}
+
+criarAbertura()
+
+
+// =====================================================
+// 9. SEGREDINHO (easter egg)
+// =====================================================
+// 3 cliques rápidos no topo da página ("Boa noite, fulano"; no celular, o "Peak" lá em cima)
+// abrem o livro "A equipe Peak" direto no capítulo "Quem somos".
+var cliquesSegredo = 0
+var relogioSegredo = null
+
+function contarCliqueSegredo(){
+    cliquesSegredo = cliquesSegredo + 1
+
+    // se passar 1 segundo sem clicar, a contagem volta a zero
+    clearTimeout(relogioSegredo)
+    relogioSegredo = setTimeout(function(){
+        cliquesSegredo = 0
+    }, 1000)
+
+    if(cliquesSegredo == 3){
+        cliquesSegredo = 0
+        avisar('Você achou um segredo!', 'Conheça quem fez a Peak…', 'info', function(){
+            window.location.href = 'livro-equipe.html#cap-2'
+        })
+    }
+}
+
+if(document.querySelector('.topo')){
+    document.querySelector('.topo').addEventListener('click', contarCliqueSegredo)
 }

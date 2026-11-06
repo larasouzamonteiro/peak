@@ -166,7 +166,6 @@ p{
         2. por cima, um degradê cor de areia: fechado em cima (onde ficam os links)
            e sumindo aos poucos até mostrar a boneca. -- */
 .lateral{
-
     position: fixed;
 
       position: fixed;
@@ -599,16 +598,6 @@ p{
     box-shadow: 0 8px 20px rgba(110, 26, 47, 0.32), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
 }
 
-.botao-claro{
-    background: rgba(255, 255, 255, 0.92);
-    color: #2b1719;
-}
-
-.botao-perigo{
-    border-color: rgba(255, 255, 255, 0.3);
-    background: linear-gradient(180deg, #d9594c, #b23225);
-    color: #fff;
-}
 
 .botao-largo{
     width: 100%;
@@ -792,9 +781,6 @@ p{
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.grade-3{
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
 
 /* grade das cartas de ficha: cada carta tem 236px de largura e cabem quantas der na linha */
 .grade-cartas{
@@ -826,16 +812,6 @@ p{
     box-shadow: var(--sombra-pequena);
 }
 
-.item-info{
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.item-info strong{
-    font-weight: 700;
-}
 
 /* os 6 atributos de uma ficha, lado a lado */
 .atributos{
@@ -1566,7 +1542,6 @@ button.foto-card{
     }
 
     .grade-2,
-    .grade-3,
     .grade-campanhas{
         grid-template-columns: 1fr;
     }
@@ -1599,12 +1574,13 @@ button.foto-card{
 
 /* =====================================================
    VISUAL: MODO ESCURO
-   Liga quando o <body> ganha a classe "escuro"
-   (função aplicarTema do script.js; o botão fica em Perfil > Configurações).
+   Liga quando o <html> ganha a classe "escuro"
+   (o <script> do <head> de cada página e a função aplicarTema do script.js;
+   o botão fica em Perfil > Configurações).
    Quase tudo muda só trocando as variáveis; o resto são as partes
    que tinham branco escrito direto.
    ===================================================== */
-body.escuro{
+html.escuro body{
     --fundo: #161012;
     --fundo-2: #1e1517;
     --cartao: #221a1b;
@@ -1618,11 +1594,12 @@ body.escuro{
     --linha-forte: rgba(255, 255, 255, 0.16);
     --titulo: #f3e6e2;
 
-    /* no escuro o destaque vira bordô */
-    --rosa: #a8323f;
-    --rosa-escuro: #d9707a;
-    --rosa-claro: #e8a0a6;
-    --degrade: linear-gradient(135deg, #d9707a 0%, #a8323f 55%, #6e1a26 100%);
+    /* no escuro o destaque é um rosa mais suave (o bordô forte cansava a vista) */
+    --rosa: #e0607a;
+    --rosa-escuro: #f08a9c;
+    --rosa-claro: #f4b3c0;
+    --degrade: linear-gradient(135deg, #ec6a7c 0%, #c0304a 100%);
+    --degrade-rosa: linear-gradient(135deg, #ec6a7c, #c0304a);
 
     --veu: linear-gradient(180deg, rgba(18, 12, 13, 0.86), rgba(18, 12, 13, 0.92));
     --vidro: rgba(34, 26, 27, 0.78);
@@ -1632,17 +1609,17 @@ body.escuro{
     --brilho: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-body.escuro::before{
+html.escuro body::before{
     filter: blur(14px) brightness(0.35);
 }
 
 /* menu: fundo escuro e, embaixo, a menina em desenho (versão "sombra") */
-body.escuro .lateral{
+html.escuro body .lateral{
     background-color: #1a1214;
     background-image: none;
 }
 
-body.escuro .lateral::after{
+html.escuro body .lateral::after{
     content: "";
     position: absolute;
     left: 0;
@@ -1656,7 +1633,7 @@ body.escuro .lateral::after{
 }
 
 /* um véu bordô por cima da foto, para ela ficar "na sombra" */
-body.escuro .lateral::before{
+html.escuro body .lateral::before{
     content: "";
     position: absolute;
     left: 0;
@@ -1664,116 +1641,115 @@ body.escuro .lateral::before{
     bottom: 0;
     z-index: 1;
     height: 62%;
-    background: linear-gradient(180deg, transparent, rgba(110, 26, 38, 0.35));
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.35));
     pointer-events: none;
 }
 
 /* os links ficam por cima da foto */
-body.escuro .lateral > *{
+html.escuro body .lateral > *{
     position: relative;
     z-index: 2;
 }
 
 /* os ícones são desenhos escuros: brightness(0) deixa eles pretos e invert(1) deixa brancos.
    Só invert(1) deixava os ícones marrons esverdeados. */
-body.escuro .lateral-link img,
-body.escuro .card-novo img{
+html.escuro body .lateral-link img,
+html.escuro body .card-novo img{
    filter: brightness(0) invert(1);
     opacity: 0.75;
 }
 
-body.escuro .lateral-link:hover{
+html.escuro body .lateral-link:hover{
     background: rgba(255, 255, 255, 0.06);
 }
 
-body.escuro .lateral-link.ativo{
+html.escuro body .lateral-link.ativo{
     background: #2e2224;
     color: #fff;
 }
 
-body.escuro .lateral-rodape .lateral-link,
-body.escuro .lateral-conta{
+html.escuro body .lateral-rodape .lateral-link,
+html.escuro body .lateral-conta{
     background: rgba(30, 21, 23, 0.7);
     color: #fff;
 }
 
-body.escuro .botao,
-body.escuro .contagem,
-body.escuro .chip,
-body.escuro .input{
+html.escuro body .botao,
+html.escuro body .contagem,
+html.escuro body .chip,
+html.escuro body .input{
     background: rgba(255, 255, 255, 0.06);
     color: var(--tinta);
 }
 
-body.escuro .botao-principal{
+html.escuro body .botao-principal{
     background: var(--degrade);
     color: #fff;
 }
 
 /* VISUAL: no modo escuro o botão de ícone fica escuro também */
-body.escuro .botao-icone:not(.na-foto){
+html.escuro body .botao-icone:not(.na-foto){
     background: rgba(255, 255, 255, 0.1);
     color: #f3e6e2;
 }
 
-body.escuro .botao-icone.excluir:hover{
+html.escuro body .botao-icone.excluir:hover{
     background: var(--vermelho);
     color: #fff;
 }
 
-body.escuro .botao-claro{
-    background: #f3e6e2;
-    color: #6e1a26;
-}
 
-body.escuro .input:focus{
+html.escuro body .input:focus{
     background: rgba(255, 255, 255, 0.1);
 }
 
-body.escuro .filtro.ativo,
-body.escuro .abas a.ativo,
-body.escuro .abas button.ativo,
-body.escuro .chip.ativo,
-body.escuro .chip:has(input:checked){
+html.escuro body .filtro.ativo,
+html.escuro body .abas a.ativo,
+html.escuro body .abas button.ativo,
+html.escuro body .chip.ativo,
+html.escuro body .chip:has(input:checked){
     border-color: var(--rosa);
     background: var(--rosa);
     color: #fff;
 }
 
-body.escuro .selo{
+html.escuro body .selo{
     background: rgba(255, 255, 255, 0.1);
 }
 
-body.escuro .foto-card .etiquetas .selo,
-body.escuro .carta .topo-carta .selo{
+html.escuro body .foto-card .etiquetas .selo,
+html.escuro body .carta .topo-carta .selo{
     background: rgba(0, 0, 0, 0.45);
 }
 
-body.escuro .card-novo{
+html.escuro body .card-novo{
     border-color: rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
 }
 
-body.escuro .card-novo-foto{
-    opacity: 0.18;
+/* a foto da carta "Nova ficha"/"Nova campanha": no escuro ela fica cinza e apagadinha
+   (antes ela virava uma mancha branca por causa do filtro das imagens do menu) */
+html.escuro body .card-novo .card-novo-foto{
+    filter: grayscale(0.3) brightness(0.55);
+    opacity: 0.3;
     mix-blend-mode: normal;
 }
 
-body.escuro .modal-fundo{
+html.escuro body .modal-fundo{
     background: rgba(0, 0, 0, 0.55);
 }
 
 @media (max-width: 760px){
-    body.escuro .lateral{
+    html.escuro body .lateral{
         background-color: rgba(30, 21, 23, 0.96);
     }
 
-    body.escuro .lateral::after{
+    html.escuro body .lateral::after{
         display: none;          /* na barra de baixo não cabe a foto */
     }
 
-    body.escuro .lateral.mais-aberto::after{
+    html.escuro body .lateral.mais-aberto::after{
         display: block;
     }
 
@@ -1782,12 +1758,12 @@ body.escuro .modal-fundo{
        a pílula não pode ficar na própria <img> (ela virava branca e o ícone branco sumia).
        A pílula vira um ::before do link: um bloco rosado com o ícone claro por cima.
        margin-bottom negativo (altura 28px + gap 3px) faz o ícone subir para cima da pílula. */
-    body.escuro .lateral-grupo .lateral-link.ativo img{
+    html.escuro body .lateral-grupo .lateral-link.ativo img{
         background: transparent;
         opacity: 1;
     }
 
-    body.escuro .lateral:not(.mais-aberto) .lateral-grupo .lateral-link.ativo::before{
+    html.escuro body .lateral:not(.mais-aberto) .lateral-grupo .lateral-link.ativo::before{
         content: "";
         align-self: center;
         width: 42px;
@@ -1797,15 +1773,15 @@ body.escuro .modal-fundo{
         background: #8a2a36;
     }
 
-    body.escuro .lateral:not(.mais-aberto) .lateral-grupo .lateral-link.ativo{
+    html.escuro body .lateral:not(.mais-aberto) .lateral-grupo .lateral-link.ativo{
         color: #f6c9cf;
     }
 
-    body.escuro .topo{
+    html.escuro body .topo{
         background: rgba(26, 18, 20, 0.92);
     }
 
-    body.escuro .topo::before{
+    html.escuro body .topo::before{
         filter: none;
     }
 }
@@ -2020,21 +1996,194 @@ body.escuro .modal-fundo{
     transform: translateY(-2px);
 }
 
-body.escuro .confirmar-caixa{
+html.escuro body .confirmar-caixa{
     background: #241b1e;
 }
 
-body.escuro .confirmar-caixa h3{
+html.escuro body .confirmar-caixa h3{
     color: #fff;
 }
 
-body.escuro .confirmar-caixa p{
+html.escuro body .confirmar-caixa p{
     color: rgba(255, 255, 255, 0.75);
 }
 
-body.escuro .confirmar-nao{
+html.escuro body .confirmar-nao{
     border-color: rgba(255, 255, 255, 0.5);
     background: transparent;
     color: #fff;
 }
 
+
+/* =====================================================
+   VISUAL: CARREGANDO (o círculo girando)
+   Fica dentro das listas no HTML:
+     <div class="carregando"><span></span>Carregando…</div>
+   Quando o JS escreve a lista com innerHTML, ele some sozinho.
+   ===================================================== */
+.carregando{
+    grid-column: 1 / -1;          /* nas grades, ocupa a linha toda */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 180px;
+    color: var(--tinta-3);
+    font-size: 0.85rem;
+}
+
+.carregando span{
+    width: 34px;
+    height: 34px;
+    border: 3px solid var(--linha-forte);
+    border-top-color: var(--rosa);
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar{
+    to{ transform: rotate(360deg); }
+}
+
+
+/* =====================================================
+   VISUAL: ABERTURA (criada pela função criarAbertura do script.js)
+   Tela escura, "peak." no meio, uma linha rosa fininha e o número subindo.
+   Na saída: o texto some, a tela apaga devagar e o site "chega" mais perto.
+   ===================================================== */
+.abertura{
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    overflow: hidden;
+    background: #141014;
+    color: #fff;
+}
+
+.abertura-logo{
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}
+
+.abertura-logo i,
+.abertura-baixo i{
+    font-style: normal;
+    color: #d1405a;
+}
+
+/* a linha: um <progress> sem a aparência padrão do navegador */
+.abertura-linha{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 90px;
+    width: 100%;
+    height: 1px;
+    border: 0;
+    background: rgba(255, 255, 255, 0.12);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.abertura-linha::-webkit-progress-bar{
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.abertura-linha::-webkit-progress-value{
+    background: #d1405a;
+    box-shadow: 0 0 12px #d1405a;
+}
+
+.abertura-linha::-moz-progress-bar{
+    background: #d1405a;
+}
+
+.abertura-baixo{
+    position: absolute;
+    left: 60px;
+    right: 60px;
+    bottom: 104px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.abertura-baixo small{
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+}
+
+.abertura-baixo b{
+    font-size: 5.2rem;
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    line-height: 0.8;
+}
+
+.abertura-baixo b i{
+    margin-left: 4px;
+    font-size: 1.8rem;
+    font-weight: 400;
+}
+
+/* enquanto a abertura está na tela (classe "abrindo" no <html>, colocada pelo <head>):
+   - a página fica escondida (só a abertura aparece), assim o Início não pisca antes;
+   - sem barra de rolagem. */
+html.abrindo{
+    overflow: hidden;
+    background: #141014;
+}
+
+html.abrindo body{
+    visibility: hidden;
+}
+
+html.abrindo .abertura{
+    visibility: visible;
+}
+
+/* SAÍDA: primeiro o texto some (0.4s), depois a tela escura apaga (1.1s) */
+.abertura.saindo .abertura-logo,
+.abertura.saindo .abertura-linha,
+.abertura.saindo .abertura-baixo{
+    animation: abertura-texto 0.4s ease forwards;
+}
+
+.abertura.saindo{
+    animation: abertura-apaga 1.1s 0.25s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* e o site volta ao tamanho normal e fica nítido junto */
+body.chegando > main,
+body.chegando > .topo{
+    animation: site-chega 1.2s 0.2s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes abertura-texto{
+    to{ opacity: 0; transform: translateY(-12px); }
+}
+
+@keyframes abertura-apaga{
+    to{ opacity: 0; }
+}
+
+@keyframes site-chega{
+    from{ transform: scale(1.04); filter: blur(8px); }
+    to{ transform: scale(1); filter: blur(0); }
+}
+
+@media (max-width: 600px){
+    .abertura-logo{ font-size: 2.8rem; }
+    .abertura-linha{ bottom: 120px; }
+    .abertura-baixo{ left: 24px; right: 24px; bottom: 132px; }
+    .abertura-baixo small{ font-size: 0.62rem; }
+    .abertura-baixo b{ font-size: 3.4rem; }
+}

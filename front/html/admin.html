@@ -8,6 +8,21 @@
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
 
+  <!-- VISUAL: ANTES DE DESENHAR. Este script roda antes da página aparecer:
+       - modo escuro: o <html> já ganha a classe "escuro" e a página não pisca branca;
+       - abertura: na primeira página da visita (logado), o <html> ganha a classe "abrindo"
+         e a página fica escondida até a abertura aparecer (assim o Início não pisca antes).
+       (O resto do tema e da abertura está no script.js.) -->
+  <script>
+    if(localStorage.getItem('tema') == 'escuro'){
+      document.documentElement.classList.add('escuro')
+    }
+
+    if(localStorage.getItem('token') && !sessionStorage.getItem('abriu')){
+      document.documentElement.classList.add('abrindo')
+    }
+  </script>
+
   <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/admin.css">
@@ -86,7 +101,10 @@
               </tr>
             </thead>
             <!-- as linhas entram aqui: função desenharMonstros() -->
-            <tbody id="tabelaMonstros"></tbody>
+            <tbody id="tabelaMonstros">
+              <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+              <tr><td colspan="9"><div class="carregando"><span></span>Carregando…</div></td></tr>
+            </tbody>
           </table>
         </div>
       </section>
@@ -99,7 +117,10 @@
         </div>
 
         <!-- os cards entram aqui: função desenharCampanhas() -->
-        <div class="grade grade-2" id="listaCampanhas"></div>
+        <div class="grade grade-2" id="listaCampanhas">
+          <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+          <div class="carregando"><span></span>Carregando…</div>
+        </div>
       </section>
 
       <!-- ========== ABA RAÇAS OFICIAIS ========== -->
@@ -120,7 +141,10 @@
               </tr>
             </thead>
             <!-- as linhas entram aqui: função desenharRacas() -->
-            <tbody id="tabelaRacas"></tbody>
+            <tbody id="tabelaRacas">
+              <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+              <tr><td colspan="9"><div class="carregando"><span></span>Carregando…</div></td></tr>
+            </tbody>
           </table>
         </div>
       </section>
@@ -142,7 +166,10 @@
               </tr>
             </thead>
             <!-- as linhas entram aqui: função desenharClasses() -->
-            <tbody id="tabelaClasses"></tbody>
+            <tbody id="tabelaClasses">
+              <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+              <tr><td colspan="9"><div class="carregando"><span></span>Carregando…</div></td></tr>
+            </tbody>
           </table>
         </div>
       </section>
@@ -178,7 +205,10 @@
               </tr>
             </thead>
             <!-- as linhas entram aqui: função desenharAvisos() -->
-            <tbody id="tabelaAvisos"></tbody>
+            <tbody id="tabelaAvisos">
+              <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+              <tr><td colspan="9"><div class="carregando"><span></span>Carregando…</div></td></tr>
+            </tbody>
           </table>
         </div>
       </section>

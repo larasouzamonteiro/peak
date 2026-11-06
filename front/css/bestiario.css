@@ -147,8 +147,72 @@
     }
 }
 
+/* VISUAL: celular = "três mini". 3 monstros por linha, só a foto e o nome
+   (antes era 1 por linha e demorava muito para rolar a lista) */
 @media (max-width: 520px){
     .grade-monstros{
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: 150px;
+        gap: 8px;
+    }
+
+    .grade-monstros .foto-card,
+    .grade-monstros .card-novo{
+        border-radius: 14px;
+    }
+
+    .grade-monstros .nome{
+        padding: 26px 8px 8px;
+    }
+
+    .grade-monstros .nome b{
+        font-size: 0.72rem;
+        line-height: 1.15;
+    }
+
+    /* a frase de baixo, a vida e a defesa não cabem no card pequeno (aparecem ao abrir o monstro) */
+    .grade-monstros .nome small,
+    .grade-monstros .etiquetas{
+        display: none;
+    }
+
+    .grade-monstros .card-novo b{
+        font-size: 0.72rem;
+    }
+
+    .grade-monstros .card-novo small{
+        display: none;
+    }
+
+    .grade-monstros .card-novo-mais{
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+
+    /* as faixas viram uma fileira de botões redondinhos que desliza para o lado */
+    .faixas{
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;     /* esconde a barra de rolagem (Firefox) */
+    }
+
+    .faixas::-webkit-scrollbar{
+        display: none;             /* esconde a barra de rolagem (Chrome) */
+    }
+
+    .faixa{
+        flex: 0 0 auto;
+        height: 38px;
+        padding: 0 16px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+    }
+
+    .faixa span{
+        padding: 0;
+        white-space: nowrap;
     }
 }

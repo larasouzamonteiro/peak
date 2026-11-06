@@ -9,6 +9,21 @@
 
   <!-- Os caminhos começam com "/" (e não "../") porque esta página aparece
        em QUALQUER endereço errado, por exemplo /lara ou /html/abc/xyz.html -->
+  <!-- VISUAL: ANTES DE DESENHAR. Este script roda antes da página aparecer:
+       - modo escuro: o <html> já ganha a classe "escuro" e a página não pisca branca;
+       - abertura: na primeira página da visita (logado), o <html> ganha a classe "abrindo"
+         e a página fica escondida até a abertura aparecer (assim o Início não pisca antes).
+       (O resto do tema e da abertura está no script.js.) -->
+  <script>
+    if(localStorage.getItem('tema') == 'escuro'){
+      document.documentElement.classList.add('escuro')
+    }
+
+    if(localStorage.getItem('token') && !sessionStorage.getItem('abriu')){
+      document.documentElement.classList.add('abrindo')
+    }
+  </script>
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="pagina-erro">

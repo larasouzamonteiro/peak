@@ -30,24 +30,13 @@ if(verificarLogin()){
             soMeu[i].classList.remove('oculto')
         }
 
+        marcarTema()
+
         // o link "Configurações" do menu abre perfil.html?aba=configuracoes
         if(parametro('aba') == 'configuracoes'){
             mostrarAba('Configuracoes')
         }
     }
-}
-
-// VISUAL: botões Claro / Escuro da aba Configurações.
-// Troca o tema (mudarTema do script.js) e marca o botão escolhido com a classe "ativo".
-function escolherTema(tema){
-    mudarTema(tema)
-    document.getElementById('temaClaro').classList.toggle('ativo', tema != 'escuro')
-    document.getElementById('temaEscuro').classList.toggle('ativo', tema == 'escuro')
-}
-
-// ao abrir a página, marca o botão do tema que já está salvo
-if(meuPerfil){
-    escolherTema(localStorage.getItem('tema') || 'claro')
 }
 
 // ABAS: mostra <div id="abaPersonagens">, "abaCampanhas" ou "abaConfiguracoes" e esconde as outras
@@ -59,8 +48,57 @@ function mostrarAba(nome){
         document.getElementById('botaoAba' + abas[i]).classList.toggle('ativo', abas[i] == nome)
     }
 
-    // o "sobre mim" some na aba Configurações
-    document.querySelector('.perfil-sobre').classList.toggle('oculto', nome == 'Configuracoes')
+    // na aba Configurações: o "sobre mim" some e aparecem o "Trocar capa" e o lápis da foto
+    document.getElementById('perfilSobre').classList.toggle('oculto', nome == 'Configuracoes')
+    document.getElementById('paginaPerfil').classList.toggle('editando', nome == 'Configuracoes')
+}
+
+// VISUAL: o botão de sol e lua. Troca o tema (mudarTema do script.js) e o botão
+// ganha a classe "noite" (a bolinha vai para o outro lado e vira lua; está no perfil.css).
+function trocarTema(){
+    if(localStorage.getItem('tema') == 'escuro'){
+        mudarTema('claro')
+    }else{
+        mudarTema('escuro')
+    }
+
+    marcarTema()
+}
+
+function marcarTema(){
+    document.getElementById('temaBotao').classList.toggle('noite', localStorage.getItem('tema') == 'escuro')
+}
+
+// As setas ‹ › das fileiras: andam a fileira para o lado (lado: -1 = voltar, 1 = avançar)
+function rolarFila(id, lado){
+    document.getElementById(id).scrollBy({left: lado * 480, behavior: 'smooth'})
+}
+
+// COMPARTILHAR: o link do perfil. No celular abre a janela de compartilhar do aparelho
+// (WhatsApp, Instagram...). No computador o link é copiado e aparece um aviso.
+function compartilharPerfil(){
+    var link = window.location.href.split('?')[0] + '?id=' + perfilId
+
+    if(navigator.share){
+        navigator.share({title: 'Peak', text: 'Meu perfil na Peak', url: link})
+        return
+    }
+
+    navigator.clipboard.writeText(link)
+    avisar('Link copiado!', 'Agora é só colar onde você quiser.', 'certo')
+}
+
+// COPIAR CONTATO: copia o contato da pessoa (o que está escrito na caixa Contato)
+var contatoDaPessoa = ''
+
+function copiarContato(){
+    if(contatoDaPessoa == ''){
+        avisar('Sem contato', 'Essa pessoa ainda não informou um contato.', 'info')
+        return
+    }
+
+    navigator.clipboard.writeText(contatoDaPessoa)
+    avisar('Contato copiado!', contatoDaPessoa, 'certo')
 }
 
 
@@ -68,9 +106,11 @@ function mostrarAba(nome){
 // COLUNA DA ESQUERDA
 // =====================================================
 
-// Nome, foto, capa, "sobre mim" e contato.
+// Nome, foto, capa, "sobre mim" (com a imagem) e contato.
 // Escreve em: <h1 id="perfilNome">, <div id="perfilFoto">, <img id="perfilCapa">,
-//             <p id="perfilBio"> e <p id="perfilContato">
+//             <p id="perfilBio">, <img id="perfilSobreImagem"> e <span id="perfilContato">
+var imagemDasFichas = ''   // o retrato da última ficha (usado quando a pessoa não escolheu imagem)
+var imagemEscolhida = ''   // a imagem que a pessoa escolheu para o "sobre mim"
 function carregarPessoa(){
     buscar('/usuario?id=' + perfilId, function(pessoa){
 
@@ -85,6 +125,11 @@ function carregarPessoa(){
         document.getElementById('perfilArroba').textContent = '@' + pessoa.nomeUsuario
         document.getElementById('perfilBio').textContent = pessoa.bio || 'Ainda não escreveu nada.'
         document.getElementById('perfilContato').textContent = pessoa.contato || 'Não informou um contato.'
+        contatoDaPessoa = pessoa.contato || ''
+
+        // a imagem do "sobre mim" (coluna imagemSobre). Sem ela, fica o retrato da última ficha.
+        imagemEscolhida = pessoa.imagemSobre || ''
+        mostrarImagemSobre()
 
         // foto: a imagem, ou um quadro com a primeira letra do nome
         document.getElementById('perfilFoto').innerHTML = htmlFoto(pessoa.fotoPerfil, pessoa.nomeUsuario)
@@ -96,8 +141,8 @@ function carregarPessoa(){
 
         // no meu perfil, o formulário das Configurações já vem preenchido
         if(meuPerfil){
-            document.getElementById('bio').value = pessoa.bio
-            document.getElementById('contato').value = pessoa.contato
+            document.getElementById('bio').value = pessoa.bio || ''
+            document.getElementById('contato').value = pessoa.contato || ''
         }
     })
 }
@@ -105,14 +150,14 @@ function carregarPessoa(){
 // Os interesses da pessoa viram chips em <div id="perfilInteresses">
 function carregarInteresses(){
     buscar('/usuario/interesses?id=' + perfilId, function(lista){
-        // VISUAL: os interesses numa linha só, separados por " | " (ex.: RPG | D&D | Anime)
-        var nomes = []
+        // VISUAL: cada interesse vira um selo clarinho embaixo do nome
+        var html = ''
 
         for(var i = 0; i < lista.length; i++){
-            nomes.push(seguro(lista[i].nome))
+            html += '<span class="selo-perfil claro">' + seguro(lista[i].nome) + '</span> '
         }
 
-        document.getElementById('perfilInteresses').innerHTML = nomes.join(' <i>|</i> ') || 'Nenhum interesse marcado.'
+        document.getElementById('perfilInteresses').innerHTML = html
 
         // no meu perfil, monta também as caixinhas das Configurações
         if(meuPerfil){
@@ -129,14 +174,15 @@ function carregarParcerias(){
         var htmlProcuro = ''
 
         for(var i = 0; i < lista.length; i++){
+            // VISUAL: o que a pessoa É vira selo rosa embaixo do nome; o que ela PROCURA vai para a caixa da esquerda
             if(lista[i].tipo == 'sou'){
-                htmlSou += '<span class="chip">' + seguro(lista[i].nome) + '</span> '
+                htmlSou += '<span class="selo-perfil">' + seguro(lista[i].nome) + '</span> '
             }else{
-                htmlProcuro += '<span class="chip">' + seguro(lista[i].nome) + '</span> '
+                htmlProcuro += '<span class="selo-perfil">' + seguro(lista[i].nome) + '</span> '
             }
         }
 
-        document.getElementById('perfilSou').innerHTML = htmlSou || '<span class="texto-suave">Nada marcado.</span>'
+        document.getElementById('perfilSou').innerHTML = htmlSou
         document.getElementById('perfilProcuro').innerHTML = htmlProcuro || '<span class="texto-suave">Nada marcado.</span>'
 
         if(meuPerfil){
@@ -172,48 +218,67 @@ function carregarCombina(parceriasDela){
 // ABAS PERSONAGENS E CAMPANHAS
 // =====================================================
 
-// VISUAL: cada ficha vira uma LINHA (foto | nome e dados | atributos e vida)
-// em <div id="perfilFichas">. O retrato da ÚLTIMA ficha criada aparece no "sobre mim".
+// VISUAL: as fichas viram as mesmas cartas da página Fichas (htmlCarta do script.js),
+// numa fileira que desliza para o lado em <div id="perfilFichas">.
+// No MEU perfil, a primeira carta é a "Nova ficha" (a da boneca).
 function carregarFichas(){
     buscar('/usuario/fichas?id=' + perfilId, function(fichas){
         var html = ''
 
-        for(var i = 0; i < fichas.length; i++){
-            var f = fichas[i]
-
+        if(meuPerfil){
             html += `
-                <a class="perfil-linha" href="ficha.html?id=${f.id}">
-                    <div class="perfil-linha-foto">${htmlFoto(f.retrato, f.nome)}</div>
-                    <div class="perfil-linha-dados">
-                        <b>${seguro(f.nome)}</b>
-                        <span><small>Raça</small>${seguro(f.raca)}</span>
-                        <span><small>Classe</small>${seguro(f.classe)}</span>
-                        <span><small>Nível</small>${f.nivel}</span>
-                    </div>
-                    <div class="perfil-linha-dados">
-                        <b>Atributos</b>
-                        <span><small>FOR ${f.forca} · DES ${f.destreza} · CON ${f.constituicao}</small></span>
-                        <span><small>INT ${f.inteligencia} · SAB ${f.sabedoria} · CAR ${f.carisma}</small></span>
-                        <span><small>Vida</small>${f.vidaAtual} / ${f.vidaMaxima}</span>
-                    </div>
+                <a class="card-novo" href="criar-ficha.html">
+                    <img class="card-novo-foto" src="../img/criar/nova-ficha.jpg" alt="">
+                    <span class="card-novo-mais">+</span>
+                    <b>Nova ficha</b>
+                    <small>criar na Oficina</small>
                 </a>`
         }
 
-        document.getElementById('perfilFichas').innerHTML = html || '<p class="texto-suave">Nenhum personagem ainda.</p>'
+        for(var i = 0; i < fichas.length; i++){
+            html += htmlCarta(fichas[i], '')
+        }
+
+        if(html == ''){
+            html = '<p class="texto-suave">Nenhum personagem ainda.</p>'
+        }
+
+        document.getElementById('perfilFichas').innerHTML = html
         document.getElementById('numFichas').textContent = fichas.length
 
-        // a imagem do lado do "sobre mim": o retrato da última ficha que a pessoa fez
-        // (as fichas vêm em ordem de id, então a última da lista é a mais nova)
-        var ultima = fichas[fichas.length - 1]
-
-        if(fichas.length > 0 && ultima.retrato){
-            document.getElementById('perfilSobreImagem').src = ultima.retrato
-            document.getElementById('perfilSobreImagem').classList.remove('oculto')
+        // o retrato da última ficha que a pessoa fez (as fichas vêm em ordem de id,
+        // então a última da lista é a mais nova). Ele aparece no "sobre mim" quando
+        // a pessoa não escolheu uma imagem.
+        if(fichas.length > 0){
+            imagemDasFichas = fichas[fichas.length - 1].retrato || ''
         }
+
+        mostrarImagemSobre()
     })
 }
 
-// VISUAL: cada campanha vira uma LINHA em <div id="perfilCampanhas">
+// A imagem do lado do "sobre mim": a escolhida pela pessoa, senão a da última ficha.
+// Sem nenhuma das duas, a imagem some e o texto ocupa o card inteiro (classe "sem-imagem").
+function mostrarImagemSobre(){
+    var imagem = imagemEscolhida || imagemDasFichas
+    var img = document.getElementById('perfilSobreImagem')
+
+    if(imagem){
+        img.src = imagem
+    }
+
+    img.classList.toggle('oculto', imagem == '')
+    document.getElementById('perfilSobre').classList.toggle('sem-imagem', imagem == '')
+
+    // a prévia nas Configurações
+    if(meuPerfil){
+        document.getElementById('configSobreImagem').src = imagem
+        document.getElementById('configSobreImagem').classList.toggle('oculto', imagem == '')
+    }
+}
+
+// VISUAL: as campanhas viram os mesmos cards da página Campanhas, numa fileira que desliza.
+// No MEU perfil o card abre a campanha; no perfil de outra pessoa é só para ver.
 function carregarCampanhas(){
     buscar('/usuario/campanhas?id=' + perfilId, function(campanhas){
         var html = ''
@@ -221,20 +286,23 @@ function carregarCampanhas(){
         for(var i = 0; i < campanhas.length; i++){
             var c = campanhas[i]
             var mestre = (c.usuarioMestreId == perfilId)
+            var tag = 'div'
+            var link = ''
+
+            if(meuPerfil){
+                tag = 'a'
+                link = 'href="campanha.html?id=' + c.id + '"'
+            }
 
             html += `
-                <div class="perfil-linha">
-                    <div class="perfil-linha-foto">${htmlFoto(c.imagemCapa, c.nome)}</div>
-                    <div class="perfil-linha-dados">
+                <${tag} class="foto-card" ${link}>
+                    ${htmlFoto(c.imagemCapa, c.nome)}
+                    <div class="etiquetas"><span class="selo ${mestre ? 'selo-escuro' : ''}">${mestre ? 'Mestre' : 'Jogando'}</span></div>
+                    <div class="nome">
                         <b>${seguro(c.nome)}</b>
-                        <span><small>Papel</small>${mestre ? 'Mestre' : 'Jogador'}</span>
-                        <span><small>Mestre</small>${seguro(c.mestre)}</span>
+                        <small>${mestre ? 'é o mestre' : 'mestre: ' + seguro(c.mestre)}</small>
                     </div>
-                    <div class="perfil-linha-dados perfil-linha-texto">
-                        <b>Resumo</b>
-                        <p>${seguro(c.descricao || 'Sem resumo.')}</p>
-                    </div>
-                </div>`
+                </${tag}>`
         }
 
         document.getElementById('perfilCampanhas').innerHTML = html || '<p class="texto-suave">Nenhuma campanha ainda.</p>'
@@ -266,10 +334,11 @@ function carregarCompanheiros(){
             return
         }
 
-        // a foto redonda e o nome embaixo; sem foto, aparece a primeira letra do nome
+        // VISUAL: as fotos redondas uma em cima da outra (o nome aparece passando o mouse).
+        // Mostra até 6; se tiver mais, a última bolinha diz "+3", "+10"...
         var html = ''
 
-        for(var i = 0; i < companheiros.length; i++){
+        for(var i = 0; i < companheiros.length && i < 6; i++){
             var c = companheiros[i]
             var foto = seguro(String(c.nomeUsuario).charAt(0).toUpperCase())
 
@@ -278,10 +347,11 @@ function carregarCompanheiros(){
             }
 
             html += `
-                <a class="companheiro" href="perfil.html?id=${c.id}" title="${seguro(c.nomeUsuario)}">
-                    <span class="companheiro-foto">${foto}</span>
-                    <span class="companheiro-nome">${seguro(c.nomeUsuario)}</span>
-                </a>`
+                <a class="companheiro" href="perfil.html?id=${c.id}" title="${seguro(c.nomeUsuario)}">${foto}</a>`
+        }
+
+        if(companheiros.length > 6){
+            html += '<span class="companheiro mais">+' + (companheiros.length - 6) + '</span>'
         }
 
         lugar.innerHTML = html
@@ -325,6 +395,28 @@ function trocarCapa(){
 
         enviar('/perfil/capa', {imagem: imagem}, function(dados){
             // arquivo inválido ou erro no servidor: mostra o erro (antes aparecia "undefined")
+            if(dados.error){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
+
+            avisar(dados.message, '', 'certo')
+            carregarPessoa()
+        })
+    })
+}
+
+// ---------- imagem do "sobre mim" ----------
+// precisa da coluna imagemSobre na tabela usuarios (ALTER TABLE, explicado no LEIA-ME)
+function trocarImagemSobre(){
+    lerImagem(document.getElementById('sobreArquivo'), function(imagem){
+
+        if(imagem == ''){
+            avisar('Falta a imagem', 'Escolha uma imagem primeiro.', 'info')
+            return
+        }
+
+        enviar('/perfil/sobre-imagem', {imagem: imagem}, function(dados){
             if(dados.error){
                 avisar('Não deu certo', dados.error, 'erro')
                 return

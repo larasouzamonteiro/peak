@@ -8,6 +8,21 @@
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
 
+  <!-- VISUAL: ANTES DE DESENHAR. Este script roda antes da página aparecer:
+       - modo escuro: o <html> já ganha a classe "escuro" e a página não pisca branca;
+       - abertura: na primeira página da visita (logado), o <html> ganha a classe "abrindo"
+         e a página fica escondida até a abertura aparecer (assim o Início não pisca antes).
+       (O resto do tema e da abertura está no script.js.) -->
+  <script>
+    if(localStorage.getItem('tema') == 'escuro'){
+      document.documentElement.classList.add('escuro')
+    }
+
+    if(localStorage.getItem('token') && !sessionStorage.getItem('abriu')){
+      document.documentElement.classList.add('abrindo')
+    }
+  </script>
+
   <!-- style.css = o que é igual em todas as páginas | os outros = só desta página -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/inicio.css">
@@ -95,7 +110,10 @@
         </article>
 
         <!-- as 2 primeiras campanhas oficiais (função carregarOficiais) -->
-        <div class="destaques-lado" id="oficiais"></div>
+        <div class="destaques-lado" id="oficiais">
+          <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+          <div class="carregando"><span></span>Carregando…</div>
+        </div>
       </section>
 
       <!-- SEUS PERSONAGENS (carregarFichas) -->
@@ -103,7 +121,10 @@
         <h2>Seus personagens</h2>
         <a href="fichas.html">ver todas ›</a>
       </div>
-      <section class="fila-cartas" id="filaCartas"></section>
+      <section class="fila-cartas" id="filaCartas">
+        <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+        <div class="carregando"><span></span>Carregando…</div>
+      </section>
 
       <section class="inicio-baixo">
 
@@ -113,7 +134,10 @@
             <h2>Novidades na Peak</h2>
             <a href="racas.html">ver tudo ›</a>
           </div>
-          <div class="novidades" id="novidades"></div>
+          <div class="novidades" id="novidades">
+          <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+          <div class="carregando"><span></span>Carregando…</div>
+        </div>
         </div>
 
         <!-- COMUNIDADE: só um convite com foto e o botão (sem JavaScript) -->

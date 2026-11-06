@@ -4,90 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Peak | Mesa de RPG</title>
-<style>
-    
-</style>
-    <!-- fontes: Poppins (textos e "peak.") e Lora (o menu com letras espaçadas) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@400;600;800&display=swap">
-
-    <!-- esta página tem um CSS só dela (não usa o style.css). É todo VISUAL. -->
-    <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/index.css">
   </head>
   <body>
 
-    <!-- =====================================================
-        CAPA (VISUAL): menu estilo jogo.
-        Passar o mouse num item do menu troca o fundo, o texto de baixo
-        e o "Capítulo". Clicar abre a página. Tudo no <script> do fim desta página.
-        ===================================================== -->
-    <section class="capa">
+  <section class="capa">
+           <div class="fundos-pc">
 
-      <!-- ===== FUNDOS DO COMPUTADOR =====
-          São 4 versões. Só UMA pode ficar sem comentário (comentário = o que está entre os sinais de abrir e fechar comentário do HTML).
-          Cada versão tem 6 fundos, um para cada item do menu, na mesma ordem
-          (INÍCIO, CAMPANHAS, COMUNIDADE, FICHAS, SOBRE NÓS, ENTRAR). -->
-      <div class="fundos-pc">
-
-        <!-- VERSÃO VÍDEOS LEVES (é a que está valendo)
-            Vídeos de 1 a 2 MB: o .webm vem primeiro (mais leve) e o .mp4 é reserva
-            para navegador que não abre webm. O poster é a foto (.jpg) que aparece
-            enquanto o vídeo não carrega. preload="none" = só baixa quando for tocar. -->
-
-        <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video>
+    <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video>
         <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/AhriHD.mp4" type="video/webm"><source src="../img/index/videos/AhriHD.mp4" type="video/mp4"></video>
         <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ireliaHD.mp4" type="video/webm"><source src="../img/index/videos/ireliaHD.mp4" type="video/mp4"></video>
         <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/sorakaHD.mp4" type="video/webm"><source src="../img/index/videos/sorakaHD.mp4" type="video/mp4"></video>
         <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LuxHD.mp4" type="video/webm"><source src="../img/index/videos/LuxHD.mp4" type="video/mp4"></video>
         <video class="fundo" poster="../img/index/videos/akali.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/akaliHD.mp4" type="video/webm"><source src="../img/index/videos/akaliHD.mp4" type="video/mp4"></video>
 
-        <!-- VERSÃO VÍDEOS ORIGINAIS (pesados, de 33 a 73 MB cada: demoram muito para abrir)
-            Ficou guardada só como opção. Para usar: coloque os vídeos leves acima
-            dentro de um comentário e tire o comentário destas 6 linhas.
-            Esses vídeos só existem em .mp4, então só tem um <source> com type="video/mp4".
-            O poster usa as fotos .jpg dos vídeos leves (o 6º usa a v1.jpg).
-
-        <video class="fundo" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/the-radiant-dawn-leona-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
-        <video class="fundo" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/spirit-blossom-ahri-league-of-legends-1-moewalls-com.mp4" type="video/mp4"></video>
-        <video class="fundo" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/mythmaker-irelia-lol.3840x2160.mp4" type="video/mp4"></video>
-        <video class="fundo" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/dawnbringer-soraka-league-of-legends-1-moewalls-com.mp4" type="video/mp4"></video>
-        <video class="fundo" poster="../img/index/videos/lux.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/lux-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
-        <video class="fundo" poster="../img/index/videos/v1.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/pool-party-taliyah-league-of-legends-moewalls-com.mp4" type="video/mp4"></video>
-        -->
-
-        <!-- VERSÃO FOTOS 1 (dragão)
-            Para usar: coloque os 6 <video> leves acima dentro de um comentário
-            e tire o comentário destas 6 linhas.
-        <img class="fundo" src="../img/index/fotos1/1.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/2.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/3.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/4.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/5.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos1/6.jpg" alt="">
-        -->
-
-        <!-- VERSÃO FOTOS 2 (personagens)
-            Para usar: coloque os 6 <video> leves acima dentro de um comentário
-            e tire o comentário destas 6 linhas.
-        <img class="fundo" src="../img/index/fotos2/1.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/2.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/3.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/4.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/5.jpg" alt="">
-        <img class="fundo" src="../img/index/fotos2/6.jpg" alt="">
-        -->
       </div>
 
-      <!-- ===== FUNDOS DO CELULAR =====
-          São 6 fundos, um para cada item do menu, na mesma ordem do computador.
-          O script do fim da página dá play no vídeo escolhido também no celular,
-          por isso aqui usamos os mesmos vídeos leves. Com preload="none" o celular
-          só baixa o vídeo do item escolhido; os outros mostram só o poster (.jpg). -->
-      <div class="fundos-cel">
-        <!-- VISUAL: no celular cada fundo ocupa a tela inteira. O "object-position" diz
-             qual parte do vídeo aparece (o 1º número move para os lados): assim a personagem
-             fica no meio da tela. Se trocar um vídeo, ajuste esse número.
-             Aqui são os vídeos LEVES (1 a 2 MB), para o celular abrir rápido. -->
-        <video class="fundo" style="object-position: 46% center" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video>
+        <div class="fundos-cel">
+       <video class="fundo" style="object-position: 46% center" poster="../img/index/videos/leona.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video>
         <video class="fundo" style="object-position: 46% center" poster="../img/index/videos/ahri.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/AhriHD.mp4" type="video/webm"><source src="../img/index/videos/AhriHD.mp4" type="video/mp4"></video>
         <video class="fundo" style="object-position: 57% center" poster="../img/index/videos/irelia.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/ireliaHD.mp4" type="video/webm"><source src="../img/index/videos/ireliaHD.mp4" type="video/mp4"></video>
         <video class="fundo" style="object-position: 39% center" poster="../img/index/videos/soraka.jpg" muted loop playsinline preload="none"><source src="../img/index/videos/sorakaHD.mp4" type="video/webm"><source src="../img/index/videos/sorakaHD.mp4" type="video/mp4"></video>
@@ -130,78 +65,7 @@
       <button class="cel-abrir" type="button" onclick="abrirAtual()">ABRIR ›</button>
     </section>
 
-  <!--
-  =====================================================
-        DEPOIS DA CAPA: classes, campanhas e raças (VISUAL, só HTML e CSS)
-        ===================================================== 
-    <main id="conhecer">
 
-      CLASSES: 6 cartas, uma mais alta e outra mais baixa (o "sobe e desce" é só CSS)
-      <section class="bloco">
-        <div class="bloco-topo">
-          <h2>Classes</h2>
-          <p>Escolha quem você vai ser. Cada classe tem seu jeito de lutar, curar ou enganar.</p>
-        </div>
-        <div class="classes">
-          <div class="classe"><img src="../img/classes/guerreiro.jpg" alt=""><b>Guerreiro</b></div>
-          <div class="classe"><img src="../img/classes/mago.jpg" alt=""><b>Mago</b></div>
-          <div class="classe"><img src="../img/classes/ladrao.jpg" alt=""><b>Ladrão</b></div>
-          <div class="classe"><img src="../img/classes/clerigo.jpg" alt=""><b>Clérigo</b></div>
-          <div class="classe"><img src="../img/classes/paladino.jpg" alt=""><b>Paladino</b></div>
-          <div class="classe"><img src="../img/classes/barbaro.jpg" alt=""><b>Bárbaro</b></div>
-        </div>
-      </section>
-
-      OBJETIVO 
-      <section class="objetivo">
-        <img src="../img/logo.png" alt="">
-        <p>Nosso objetivo é levar o RPG de mesa para qualquer pessoa, com histórias que falam do nosso mundo.</p>
-      </section>
-  -->
-      <!-- CAMPANHAS: uma faixa grande e 3 quadrados 
-      <section class="bloco">
-        <a class="faixa-campanhas" href="login.html">
-          <img src="../img/editorial/grupo-cor.jpg" alt="">
-          <b>CAMPANHAS</b>
-        </a>
-        <div class="quadrados">
-          <a class="quadrado alto" href="login.html"><img src="../img/monstros/devorador.jpg" alt=""><b>Bestiário<br>vivo</b></a>
-          <a class="quadrado" href="login.html"><img src="../img/mascote/fundo-login-escuro.jpg" alt=""><b>Mapa<br>da mesa</b></a>
-          <a class="quadrado" href="login.html"><img src="../img/editorial/mestra-flor.jpg" alt=""><b>Comunidade</b></a>
-        </div>
-      </section>
-  -->
-      <!-- RAÇAS: fotos em arco 
-      <section class="bloco">
-        <div class="bloco-topo">
-          <h2>Raças</h2>
-          <p>Do humano ao centauro. Ou crie a sua.</p>
-        </div>
-        <div class="racas">
-          <div class="raca"><small>HUMANO</small><img src="../img/racas/humano.jpg" alt=""></div>
-          <div class="raca"><small>ELFO</small><img src="../img/racas/elfo.jpg" alt=""></div>
-          <div class="raca"><small>FADA</small><img src="../img/racas/fada.jpg" alt=""></div>
-          <div class="raca"><small>GOBLIN</small><img src="../img/racas/goblin.jpg" alt=""></div>
-          <div class="raca"><small>HALFLING</small><img src="../img/racas/halfling.jpg" alt=""></div>
-          <div class="raca"><small>CENTAURO</small><img src="../img/racas/centauro.jpg" alt=""></div>
-        </div>
-      </section>
-  -->
-      <!-- CHAMADA FINAL -->
-      <!--  <section class="chamada">
-        <h2>Chama o grupo.<br>A mesa <em>tá pronta.</em></h2>
-        <a class="botao-coral" href="login.html?cadastro=sim">criar conta</a>
-      </section>
-
-    </main>
-
-    <footer class="rodape">
-      <b>peak<span>.</span></b>
-      <span>Projeto Integrador · Info 1 · Senac</span>
-      <span><a href="login.html">entrar</a> / <a href="login.html?cadastro=sim">criar conta</a></span>
-    </footer>
-
-  -->
     <script>
       // =====================================================
       // MENU DA CAPA (VISUAL)

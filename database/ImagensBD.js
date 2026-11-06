@@ -24,6 +24,7 @@ const LUGAR_DA_FOTO = {
     'ficha':    {tabela: 'fichas',    coluna: 'retrato'},
     'perfil':   {tabela: 'usuarios',  coluna: 'fotoPerfil'},     // a foto da pessoa (menu, comunidade, perfil)
     'capa':     {tabela: 'usuarios',  coluna: 'capaPerfil'},     // a capa do perfil
+    'sobre':    {tabela: 'usuarios',  coluna: 'imagemSobre'},    // a imagem do "sobre mim" do perfil
     'recado':   {tabela: 'recados',   coluna: 'foto'}            // a foto de um recado do mural
 }
 
@@ -31,7 +32,7 @@ class ImagensBD{
 
     // lista -> o que veio do banco (ex.: os monstros)
     // campo -> o nome da coluna da foto (ex.: 'imagem')
-    // tipo  -> 'monstro', 'campanha', 'ficha', 'perfil', 'capa' ou 'recado'
+    // tipo  -> 'monstro', 'campanha', 'ficha', 'perfil', 'capa', 'sobre' ou 'recado'
     // campoId -> opcional: de qual coluna vem o id (normalmente 'id').
     //            Ex.: num recado, a foto da PESSOA usa o 'usuarioId', não o id do recado.
     static trocarFotos(lista, campo, tipo, campoId){

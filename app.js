@@ -251,6 +251,7 @@ const callback = (req, res)=>{
                 UsuariosBD.getUsuario(rota.query.id, (pessoa)=>{
                     ImagensBD.trocarFotos([pessoa], 'fotoPerfil', 'perfil')     // FOTOS MAIS RÁPIDAS
                     ImagensBD.trocarFotos([pessoa], 'capaPerfil', 'capa')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos([pessoa], 'imagemSobre', 'sobre')   // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(pessoa))
                 })
@@ -672,6 +673,16 @@ const callback = (req, res)=>{
 
                 exigirLogin(req, res, (usuario)=>{
                     UsuariosBD.atualizarFoto(dados.imagem, usuario.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            // a imagem do lado do "sobre mim" (nov/2026)
+            }else if(rota.pathname == '/perfil/sobre-imagem'){
+
+                exigirLogin(req, res, (usuario)=>{
+                    UsuariosBD.atualizarImagemSobre(dados.imagem, usuario.id, (message)=>{
                         res.writeHead(200, {'Content-Type': 'application/json'})
                         res.end(JSON.stringify(message))
                     })
