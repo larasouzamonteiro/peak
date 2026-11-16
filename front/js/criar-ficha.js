@@ -38,8 +38,46 @@ function carregarListas(){
         itens = lista
         desenharItens()
     })
-}
 
+     // os retratos de presente que a pessoa ganhou nos eventos (ex.: a Noel do Natal)
+    buscar('/retratos/ganhos', function(lista){
+        desenharRetratosGanhos(lista)
+    })
+    
+}
+   
+
+// Coloca os retratos de presente no COMEÇO da lista de retratos.
+// O servidor só manda o tema e o "novo"; o nome e a imagem vêm do retratoDePresente (script.js).
+function desenharRetratosGanhos(lista){
+    var html = ''
+
+    for(var i = 0; i < lista.length; i++){
+        var presente = retratoDePresente(lista[i].tema)
+
+        // um tema que o site não conhece: pula
+        if(presente == null){
+            continue
+        }
+
+        // o selo NOVO só aparece nos 7 primeiros dias
+        var selo = ''
+
+        if(lista[i].novo == 1){
+            selo = '<span class="selo-novo">NOVO</span>'
+        }
+
+        html += `<label class="retrato-opcao retrato-presente">
+            <input type="radio" name="retrato" value="${presente.imagem}" onchange="escolherRetratoPronto()">
+            ${selo}
+            <img class="retrato" src="${presente.imagem}" alt="">${presente.nome}
+        </label>`
+    }
+
+    // os retratos de presente entram ANTES dos que já estão na lista
+    var caixa = document.getElementById('escolhasRetrato')
+    caixa.innerHTML = html + caixa.innerHTML
+}
 
 // =====================================================
 // ETAPAS
@@ -63,17 +101,37 @@ function mostrarEtapa(numero){
     var marcas = document.querySelectorAll('#indicadorEtapas .etapa-marca')
 
     for(var i = 0; i < marcas.length; i++){
-        marcas[i].classList.toggle('ativa', i + 1 == etapaAtual)
-        marcas[i].classList.toggle('feita', i + 1 < etapaAtual)
+        if(i + 1 == etapaAtual){
+            marcas[i].classList.add('ativa')
+        }else{
+            marcas[i].classList.remove('ativa')
+        }
+        if(i + 1 < etapaAtual){
+            marcas[i].classList.add('feita')
+        }else{
+            marcas[i].classList.remove('feita')
+        }
     }
 
     document.getElementById('textoEtapa').textContent = 'Etapa ' + etapaAtual + ' de ' + totalEtapas
     document.getElementById('alert').textContent = ''
 
     // Voltar não aparece na 1ª etapa; na última, o Próximo dá lugar ao Salvar
-    document.getElementById('botaoVoltar').classList.toggle('oculto', etapaAtual == 1)
-    document.getElementById('botaoProximo').classList.toggle('oculto', etapaAtual == totalEtapas)
-    document.getElementById('botaoSalvarFicha').classList.toggle('oculto', etapaAtual != totalEtapas)
+    if(etapaAtual == 1){
+        document.getElementById('botaoVoltar').classList.add('oculto')
+    }else{
+        document.getElementById('botaoVoltar').classList.remove('oculto')
+    }
+    if(etapaAtual == totalEtapas){
+        document.getElementById('botaoProximo').classList.add('oculto')
+    }else{
+        document.getElementById('botaoProximo').classList.remove('oculto')
+    }
+    if(etapaAtual != totalEtapas){
+        document.getElementById('botaoSalvarFicha').classList.add('oculto')
+    }else{
+        document.getElementById('botaoSalvarFicha').classList.remove('oculto')
+    }
 
     window.scrollTo(0, 0)
 }
@@ -86,6 +144,14 @@ function proximo(){
 
 function voltar(){
     mostrarEtapa(etapaAtual - 1)
+}
+
+// Clicar numa etapa lá em cima: só volta para uma etapa que já passou
+// (para ir para frente tem que usar o Próximo, que confere os campos)
+function irParaEtapa(numero){
+    if(numero < etapaAtual){
+        mostrarEtapa(numero)
+    }
 }
 
 // Confere os campos de uma etapa. Devolve true se estiver tudo certo.
@@ -109,14 +175,20 @@ function etapaValida(numero){
         var maxima = Number(document.getElementById('vidaMaxima').value)
         var atual = Number(document.getElementById('vidaAtual').value)
 
-        if(maxima < 1){
-            erro = 'A vida máxima precisa ser pelo menos 1'
+        if(maxima < 1 || maxima > 1000){
+            erro = 'A vida máxima precisa ser de 1 a 1000'
         }else if(atual < 0 || atual > maxima){
             erro = 'A vida atual precisa ficar entre 0 e a vida máxima'
         }
     }
 
     document.getElementById('alert').textContent = erro
+
+    // deu erro: sobe a página para a pessoa ver a mensagem (ela fica em cima)
+    if(erro != ''){
+        window.scrollTo(0, 0)
+    }
+
     return erro == ''
 }
 
@@ -129,8 +201,25 @@ function etapaValida(numero){
 function usarRetratoEnviado(){
     lerImagem(document.getElementById('retratoArquivo'), function(imagem){
         retratoEnviado = imagem
+
+        // desmarca o retrato pronto: assim, clicar nele de novo "volta atrás"
+        var marcado = document.querySelector('input[name="retrato"]:checked')
+
+        if(marcado != null){
+            marcado.checked = false
+        }
+
         desenharResumo()
     })
+}
+
+// A pessoa clicou num retrato pronto (onchange de cada <input name="retrato">):
+// esquece a foto enviada e limpa o campo do arquivo.
+// (antes, depois de enviar uma foto, não dava mais para voltar para um retrato pronto)
+function escolherRetratoPronto(){
+    retratoEnviado = ''
+    document.getElementById('retratoArquivo').value = ''
+    desenharResumo()
 }
 
 // O retrato que vale: o enviado, ou o retrato pronto que está marcado
@@ -139,7 +228,14 @@ function retratoEscolhido(){
         return retratoEnviado
     }
 
-    return document.querySelector('input[name="retrato"]:checked').value
+    var marcado = document.querySelector('input[name="retrato"]:checked')
+
+    // nenhum marcado: usa o primeiro da lista
+    if(marcado == null){
+        marcado = document.querySelector('input[name="retrato"]')
+    }
+
+    return marcado.value
 }
 
 
@@ -149,13 +245,25 @@ function retratoEscolhido(){
 
 // Um card de raça. A classe "selecionado" marca a que foi escolhida.
 function htmlCardRaca(raca){
+    var selecionado = ''
+
+    if(raca.id == racaEscolhida){
+        selecionado = 'selecionado'
+    }
+
+    // a linha pequena embaixo do nome: da Peak ou de quem criou
+    var origem = 'Peak'
+
+    if(raca.autor){
+        origem = 'por ' + raca.autor
+    }
+
+    // VISUAL: o mesmo card dos monstros do Bestiário (foto-card)
     return `
-        <button type="button" class="galeria-card ${raca.id == racaEscolhida ? 'selecionado' : ''}" onclick="escolherRaca(${raca.id})">
-            <div class="galeria-img">${htmlFoto(raca.imagem, raca.nome)}</div>
-            <span class="galeria-info">
-                <strong>${seguro(raca.nome)}</strong>
-                <small>Vida ${raca.vidaMaxima}</small>
-            </span>
+        <button type="button" class="foto-card ${selecionado}" onclick="escolherRaca(${raca.id})">
+            ${htmlFoto(raca.imagem, 'raca')}
+            <div class="etiquetas"><span class="selo">♥ ${raca.vidaMaxima}</span></div>
+            <div class="nome"><b>${seguro(raca.nome)}</b><small>${seguro(origem)}</small></div>
         </button>`
 }
 
@@ -175,7 +283,7 @@ function desenharRacas(){
     }
 
     if(comunidade == ''){
-        comunidade = '<p class="texto-suave">Ninguém criou uma raça ainda. Crie a sua em Fichas > Raças.</p>'
+        comunidade = '<p class="texto-suave">Nenhuma raça da comunidade ainda.</p>'
     }
 
     document.getElementById('gradeRacas').innerHTML = oficiais
@@ -198,13 +306,23 @@ function escolherRaca(id){
 }
 
 function htmlCardClasse(classe){
+    var selecionado = ''
+
+    if(classe.id == classeEscolhida){
+        selecionado = 'selecionado'
+    }
+
+    var origem = 'Peak'
+
+    if(classe.autor){
+        origem = 'por ' + classe.autor
+    }
+
+    // VISUAL: o mesmo card dos monstros do Bestiário (foto-card)
     return `
-        <button type="button" class="galeria-card ${classe.id == classeEscolhida ? 'selecionado' : ''}" onclick="escolherClasse(${classe.id})">
-            <div class="galeria-img">${htmlFoto(classe.imagem, classe.nome)}</div>
-            <span class="galeria-info">
-                <strong>${seguro(classe.nome)}</strong>
-                <small>${seguro(classe.descricao)}</small>
-            </span>
+        <button type="button" class="foto-card ${selecionado}" onclick="escolherClasse(${classe.id})">
+            ${htmlFoto(classe.imagem, 'classe')}
+            <div class="nome"><b>${seguro(classe.nome)}</b><small>${seguro(origem)}</small></div>
         </button>`
 }
 
@@ -222,7 +340,7 @@ function desenharClasses(){
     }
 
     if(comunidade == ''){
-        comunidade = '<p class="texto-suave">Ninguém criou uma classe ainda. Crie a sua em Fichas > Classes.</p>'
+        comunidade = '<p class="texto-suave">Nenhuma classe da comunidade ainda.</p>'
     }
 
     document.getElementById('gradeClasses').innerHTML = oficiais
@@ -251,10 +369,15 @@ function desenharItens(){
 
     for(var i = 0; i < itens.length; i++){
         var item = itens[i]
-        var escolhido = itensEscolhidos.indexOf(item.id) != -1
+        // indexOf procura o item na lista dos escolhidos (-1 = não está lá)
+        var selecionado = ''
+
+        if(itensEscolhidos.indexOf(item.id) != -1){
+            selecionado = 'selecionado'
+        }
 
         html += `
-            <button type="button" class="item-card ${escolhido ? 'selecionado' : ''}" onclick="trocarItem(${item.id})">
+            <button type="button" class="item-card ${selecionado}" onclick="trocarItem(${item.id})">
                 <div class="item-img"><img src="${seguro(item.imagem)}" alt=""></div>
                 <span><strong>${seguro(item.nome)}</strong><small>${seguro(item.tipo)}</small></span>
             </button>`
@@ -340,10 +463,10 @@ function desenharResumo(){
     }
 
     document.getElementById('resumoRetrato').src = retratoEscolhido()
-    document.getElementById('resumoNome').textContent = nome || 'Seu personagem'
+    document.getElementById('resumoNome').textContent = textoOuPadrao(nome, 'Seu personagem')
 
     if(partes.length == 0){
-        document.getElementById('resumoLinha').textContent = 'Escolha a raça e a classe nas próximas etapas.'
+        document.getElementById('resumoLinha').textContent = ''
     }else{
         partes.push('Vida ' + document.getElementById('vidaMaxima').value)
         document.getElementById('resumoLinha').textContent = partes.join(' · ')
@@ -381,6 +504,15 @@ function salvarFicha(){
         }
     }
 
+    // etapa 5: o nível (as outras etapas já foram conferidas acima)
+    var nivel = Number(document.getElementById('nivel').value)
+
+    if(nivel < 1 || nivel > 100){
+        document.getElementById('alert').textContent = 'O nível precisa ser de 1 a 100'
+        window.scrollTo(0, 0)
+        return
+    }
+
     var ficha = {
         nome: document.getElementById('nome').value.trim(),
         retrato: retratoEscolhido(),
@@ -405,6 +537,7 @@ function salvarFicha(){
 
         if(dados.hasOwnProperty('error')){
             document.getElementById('alert').textContent = dados.error
+            window.scrollTo(0, 0)
             return
         }
 

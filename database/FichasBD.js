@@ -21,8 +21,8 @@ function conferirNumeros(ficha){
         return 'O nível precisa ser de 1 a 100'
     }
 
-    if(!(Number(ficha.vidaMaxima) >= 1 && Number(ficha.vidaMaxima) <= 9999)){
-        return 'A vida máxima precisa ser de 1 a 9999'
+    if(!(Number(ficha.vidaMaxima) >= 1 && Number(ficha.vidaMaxima) <= 1000)){
+        return 'A vida máxima precisa ser de 1 a 1000'
     }
 
     if(!(Number(ficha.vidaAtual) >= 0) || Number(ficha.vidaAtual) > Number(ficha.vidaMaxima)){
@@ -134,7 +134,12 @@ class FichasBD{
             return callback({'error': erro})
         }
 
-        var itemIds = ficha.itemIds || []
+        var itemIds = ficha.itemIds
+
+        // sem itens, fica uma lista vazia
+        if(itemIds == null){
+            itemIds = []
+        }
 
         // versão servidor: itemIds tem que ser uma lista de números inteiros
         if(!Array.isArray(itemIds)){

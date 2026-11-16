@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Administração | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -68,7 +70,6 @@
       <div class="cabecalho-pagina">
         <div>
           <h1 class="titulo">Administração</h1>
-          <p class="texto-suave">Área da equipe da Peak. Aqui você cuida do que é oficial: os monstros, as campanhas, as raças e as classes.</p>
         </div>
       </div>
 
@@ -79,6 +80,7 @@
         <button type="button" id="botaoAbaRacas" onclick="mostrarAba('Racas')">Raças oficiais</button>
         <button type="button" id="botaoAbaClasses" onclick="mostrarAba('Classes')">Classes oficiais</button>
         <button type="button" id="botaoAbaAvisos" onclick="mostrarAba('Avisos')">Avisos</button>
+                <button type="button" id="botaoAbaEventos" onclick="mostrarAba('Eventos')">Eventos</button>
       </nav>
 
       <!-- ========== ABA MONSTROS OFICIAIS ========== -->
@@ -213,6 +215,72 @@
         </div>
       </section>
 
+      
+      <!-- ========== ABA EVENTOS DE TEMA ==========
+           Natal entre o início e o fim aparece o presente no Início. -->
+      <section class="oculto" id="abaEventos">
+        <div class="secao-titulo">
+          <h2>Eventos de tema</h2>
+        </div>
+
+        <div class="card">
+          <div class="formulario">
+            <div class="linha-campos">
+              <div class="campo">
+                <label class="rotulo" for="eventoTitulo">Título</label>
+                <input class="input" type="text" id="eventoTitulo" maxlength="80" placeholder="Ex.: Natal na Peak">
+              </div>
+              <div class="campo">
+                <label class="rotulo" for="eventoTema">Tema</label>
+                <select class="input" id="eventoTema">
+                  <option value="natal">Natal</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo">
+                <label class="rotulo" for="eventoInicio">Começa</label>
+                <input class="input" type="datetime-local" id="eventoInicio">
+              </div>
+              <div class="campo">
+                <label class="rotulo" for="eventoFim">Termina</label>
+                <input class="input" type="datetime-local" id="eventoFim">
+              </div>
+            </div>
+
+            <div class="campo">
+              <label class="rotulo" for="eventoNovidade">Novidade</label>
+              <textarea class="input" id="eventoNovidade" rows="3"></textarea>
+            </div>
+
+            <!-- mensagem de erro do servidor (função criarEvento) -->
+            <p class="alerta" id="alertEvento"></p>
+
+            <div><button type="button" class="botao botao-principal" onclick="criarEvento()">Criar evento</button></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Tema</th>
+                <th>Começa</th>
+                <th>Termina</th>
+                <th>Já viram</th>
+                <th></th>
+              </tr>
+            </thead>
+            <!-- as linhas entram aqui: função carregarEventos() -->
+            <tbody id="tabelaEventos">
+              <tr><td colspan="9"><div class="carregando"><span></span>Carregando…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -222,7 +290,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2 id="tituloMonstro">Novo monstro oficial</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaMonstro')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaMonstro')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -244,19 +312,24 @@
 
         <div class="linha-campos">
           <div class="campo">
-            <label class="rotulo" for="monstroVida">Vida</label>
-            <input class="input" type="number" id="monstroVida" value="10" min="1">
+            <label class="rotulo" for="monstroVida">Vida (1 a 1000)</label>
+            <input class="input" type="number" id="monstroVida" value="10" min="1" max="1000">
           </div>
           <div class="campo">
-            <label class="rotulo" for="monstroDefesa">Defesa</label>
-            <input class="input" type="number" id="monstroDefesa" value="10" min="0">
+            <label class="rotulo" for="monstroDefesa">Defesa (0 a 1000)</label>
+            <input class="input" type="number" id="monstroDefesa" value="10" min="0" max="1000">
           </div>
         </div>
 
         <div class="campo">
           <label class="rotulo" for="monstroImagem">Imagem (até 2,5 MB)</label>
           <input class="input" type="file" id="monstroImagem" accept="image/*">
-          <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
+        </div>
+
+        <!-- EVENTO: marcado = o monstro só aparece no Bestiário durante o evento de Natal (coluna tema = 'natal') -->
+        <div class="campo">
+          <label><input type="checkbox" id="monstroEvento"> Somente em eventos</label>
+          <p class="ajuda">Só aparece durante o evento.</p>
         </div>
 
         <!-- mensagem de erro do servidor (função salvarMonstro) -->
@@ -272,7 +345,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2 id="tituloCampanha">Nova campanha oficial</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaCampanha')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaCampanha')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -299,7 +372,13 @@
         <div class="campo">
           <label class="rotulo" for="campanhaCapa">Imagem de capa (até 2,5 MB)</label>
           <input class="input" type="file" id="campanhaCapa" accept="image/*">
-          <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
+        </div>
+
+
+        <!-- EVENTO: marcado = a campanha só aparece durante o evento de Natal (coluna tema = 'natal') -->
+        <div class="campo">
+          <label><input type="checkbox" id="campanhaEvento"> Somente em eventos</label>
+          <p class="ajuda">Só aparece durante o evento.</p>
         </div>
 
         <!-- mensagem de erro do servidor (função salvarCampanha) -->
@@ -316,7 +395,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2 id="tituloRaca">Nova raça oficial</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaRaca')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaRaca')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -331,14 +410,19 @@
         </div>
 
         <div class="campo">
-          <label class="rotulo" for="racaVida">Vida máxima</label>
-          <input class="input" type="number" id="racaVida" value="8" min="1">
+          <label class="rotulo" for="racaVida">Vida máxima (1 a 1000)</label>
+          <input class="input" type="number" id="racaVida" value="8" min="1" max="1000">
         </div>
 
         <div class="campo">
           <label class="rotulo" for="racaImagem">Imagem (até 2,5 MB)</label>
           <input class="input" type="file" id="racaImagem" accept="image/*">
-          <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
+        </div>
+
+              <!-- EVENTO: marcado = a raça só aparece durante o evento de Natal (coluna tema = 'natal') -->
+        <div class="campo">
+          <label><input type="checkbox" id="racaEvento"> Somente em eventos</label>
+          <p class="ajuda">Só aparece durante o evento.</p>
         </div>
 
         <!-- mensagem de erro do servidor (função salvarRaca) -->
@@ -354,7 +438,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2 id="tituloClasse">Nova classe oficial</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaClasse')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaClasse')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -371,8 +455,14 @@
         <div class="campo">
           <label class="rotulo" for="classeImagem">Imagem (até 2,5 MB)</label>
           <input class="input" type="file" id="classeImagem" accept="image/*">
-          <p class="ajuda">Ao editar: se não escolher uma imagem nova, a atual continua.</p>
         </div>
+
+        <!-- EVENTO: marcado = a classe só aparece durante o evento de Natal (coluna tema = 'natal') -->
+        <div class="campo">
+          <label><input type="checkbox" id="classeEvento"> Somente em eventos</label>
+          <p class="ajuda">Só aparece durante o evento.</p>
+        </div>
+
 
         <!-- mensagem de erro do servidor (função salvarClasse) -->
         <p class="alerta" id="alertClasse"></p>
@@ -399,6 +489,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/admin.js"></script>
 </body>
 </html>

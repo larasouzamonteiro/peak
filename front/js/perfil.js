@@ -44,16 +44,32 @@ function mostrarAba(nome){
     var abas = ['Personagens', 'Campanhas', 'Configuracoes']
 
     for(var i = 0; i < abas.length; i++){
-        document.getElementById('aba' + abas[i]).classList.toggle('oculto', abas[i] != nome)
-        document.getElementById('botaoAba' + abas[i]).classList.toggle('ativo', abas[i] == nome)
+        if(abas[i] != nome){
+            document.getElementById('aba' + abas[i]).classList.add('oculto')
+        }else{
+            document.getElementById('aba' + abas[i]).classList.remove('oculto')
+        }
+        if(abas[i] == nome){
+            document.getElementById('botaoAba' + abas[i]).classList.add('ativo')
+        }else{
+            document.getElementById('botaoAba' + abas[i]).classList.remove('ativo')
+        }
     }
 
     // na aba Configurações: o "sobre mim" some e aparecem o "Trocar capa" e o lápis da foto
-    document.getElementById('perfilSobre').classList.toggle('oculto', nome == 'Configuracoes')
-    document.getElementById('paginaPerfil').classList.toggle('editando', nome == 'Configuracoes')
+    if(nome == 'Configuracoes'){
+        document.getElementById('perfilSobre').classList.add('oculto')
+    }else{
+        document.getElementById('perfilSobre').classList.remove('oculto')
+    }
+    if(nome == 'Configuracoes'){
+        document.getElementById('paginaPerfil').classList.add('editando')
+    }else{
+        document.getElementById('paginaPerfil').classList.remove('editando')
+    }
 }
 
-// VISUAL: o botão de sol e lua. Troca o tema (mudarTema do script.js) e o botão
+// VISUAL: o botão de sol e lua. Troca o tema (mudarTema do visual.js) e o botão
 // ganha a classe "noite" (a bolinha vai para o outro lado e vira lua; está no perfil.css).
 function trocarTema(){
     if(localStorage.getItem('tema') == 'escuro'){
@@ -66,7 +82,11 @@ function trocarTema(){
 }
 
 function marcarTema(){
-    document.getElementById('temaBotao').classList.toggle('noite', localStorage.getItem('tema') == 'escuro')
+    if(localStorage.getItem('tema') == 'escuro'){
+        document.getElementById('temaBotao').classList.add('noite')
+    }else{
+        document.getElementById('temaBotao').classList.remove('noite')
+    }
 }
 
 // As setas ‹ › das fileiras: andam a fileira para o lado (lado: -1 = voltar, 1 = avançar)
@@ -123,16 +143,16 @@ function carregarPessoa(){
 
         document.getElementById('perfilNome').textContent = pessoa.nomeUsuario
         document.getElementById('perfilArroba').textContent = '@' + pessoa.nomeUsuario
-        document.getElementById('perfilBio').textContent = pessoa.bio || 'Ainda não escreveu nada.'
-        document.getElementById('perfilContato').textContent = pessoa.contato || 'Não informou um contato.'
-        contatoDaPessoa = pessoa.contato || ''
+        document.getElementById('perfilBio').textContent = textoOuPadrao(pessoa.bio, 'Ainda não escreveu nada.')
+        document.getElementById('perfilContato').textContent = textoOuPadrao(pessoa.contato, 'Não informou um contato.')
+        contatoDaPessoa = textoOuPadrao(pessoa.contato, '')
 
         // a imagem do "sobre mim" (coluna imagemSobre). Sem ela, fica o retrato da última ficha.
-        imagemEscolhida = pessoa.imagemSobre || ''
+        imagemEscolhida = textoOuPadrao(pessoa.imagemSobre, '')
         mostrarImagemSobre()
 
-        // foto: a imagem, ou um quadro com a primeira letra do nome
-        document.getElementById('perfilFoto').innerHTML = htmlFoto(pessoa.fotoPerfil, pessoa.nomeUsuario)
+        // foto: a da pessoa, ou a foto padrão (fotoDePerfil, do script.js)
+        document.getElementById('perfilFoto').innerHTML = '<img class="foto" src="' + seguro(fotoDePerfil(pessoa.fotoPerfil)) + '" alt="">'
 
         if(pessoa.capaPerfil){
             document.getElementById('perfilCapa').src = pessoa.capaPerfil
@@ -141,8 +161,8 @@ function carregarPessoa(){
 
         // no meu perfil, o formulário das Configurações já vem preenchido
         if(meuPerfil){
-            document.getElementById('bio').value = pessoa.bio || ''
-            document.getElementById('contato').value = pessoa.contato || ''
+            document.getElementById('bio').value = textoOuPadrao(pessoa.bio, '')
+            document.getElementById('contato').value = textoOuPadrao(pessoa.contato, '')
         }
     })
 }
@@ -183,7 +203,7 @@ function carregarParcerias(){
         }
 
         document.getElementById('perfilSou').innerHTML = htmlSou
-        document.getElementById('perfilProcuro').innerHTML = htmlProcuro || '<span class="texto-suave">Nada marcado.</span>'
+        document.getElementById('perfilProcuro').innerHTML = textoOuPadrao(htmlProcuro, '<span class="texto-suave">Nada marcado.</span>')
 
         if(meuPerfil){
             carregarOpcoesParcerias(lista)
@@ -250,7 +270,7 @@ function carregarFichas(){
         // então a última da lista é a mais nova). Ele aparece no "sobre mim" quando
         // a pessoa não escolheu uma imagem.
         if(fichas.length > 0){
-            imagemDasFichas = fichas[fichas.length - 1].retrato || ''
+            imagemDasFichas = textoOuPadrao(fichas[fichas.length - 1].retrato, '')
         }
 
         mostrarImagemSobre()
@@ -260,20 +280,29 @@ function carregarFichas(){
 // A imagem do lado do "sobre mim": a escolhida pela pessoa, senão a da última ficha.
 // Sem nenhuma das duas, a imagem some e o texto ocupa o card inteiro (classe "sem-imagem").
 function mostrarImagemSobre(){
-    var imagem = imagemEscolhida || imagemDasFichas
+    var imagem = textoOuPadrao(imagemEscolhida, imagemDasFichas)
     var img = document.getElementById('perfilSobreImagem')
 
     if(imagem){
         img.src = imagem
     }
 
-    img.classList.toggle('oculto', imagem == '')
-    document.getElementById('perfilSobre').classList.toggle('sem-imagem', imagem == '')
+    if(imagem == ''){
+        img.classList.add('oculto')
+        document.getElementById('perfilSobre').classList.add('sem-imagem')
+    }else{
+        img.classList.remove('oculto')
+        document.getElementById('perfilSobre').classList.remove('sem-imagem')
+    }
 
     // a prévia nas Configurações
     if(meuPerfil){
         document.getElementById('configSobreImagem').src = imagem
-        document.getElementById('configSobreImagem').classList.toggle('oculto', imagem == '')
+        if(imagem == ''){
+            document.getElementById('configSobreImagem').classList.add('oculto')
+        }else{
+            document.getElementById('configSobreImagem').classList.remove('oculto')
+        }
     }
 }
 
@@ -294,18 +323,29 @@ function carregarCampanhas(){
                 link = 'href="campanha.html?id=' + c.id + '"'
             }
 
+            // o selo e a frase mudam se a pessoa é o mestre ou está jogando
+            var classeSelo = ''
+            var selo = 'Jogando'
+            var frase = 'mestre: ' + seguro(c.mestre)
+
+            if(mestre){
+                classeSelo = 'selo-escuro'
+                selo = 'Mestre'
+                frase = 'é o mestre'
+            }
+
             html += `
                 <${tag} class="foto-card" ${link}>
-                    ${htmlFoto(c.imagemCapa, c.nome)}
-                    <div class="etiquetas"><span class="selo ${mestre ? 'selo-escuro' : ''}">${mestre ? 'Mestre' : 'Jogando'}</span></div>
+                    ${htmlFoto(c.imagemCapa, 'campanha')}
+                    <div class="etiquetas"><span class="selo ${classeSelo}">${selo}</span></div>
                     <div class="nome">
                         <b>${seguro(c.nome)}</b>
-                        <small>${mestre ? 'é o mestre' : 'mestre: ' + seguro(c.mestre)}</small>
+                        <small>${frase}</small>
                     </div>
                 </${tag}>`
         }
 
-        document.getElementById('perfilCampanhas').innerHTML = html || '<p class="texto-suave">Nenhuma campanha ainda.</p>'
+        document.getElementById('perfilCampanhas').innerHTML = textoOuPadrao(html, '<p class="texto-suave">Nenhuma campanha ainda.</p>')
         document.getElementById('numCampanhas').textContent = campanhas.length
     })
 }
@@ -340,11 +380,7 @@ function carregarCompanheiros(){
 
         for(var i = 0; i < companheiros.length && i < 6; i++){
             var c = companheiros[i]
-            var foto = seguro(String(c.nomeUsuario).charAt(0).toUpperCase())
-
-            if(c.fotoPerfil){
-                foto = '<img src="' + seguro(c.fotoPerfil) + '" alt="">'
-            }
+            var foto = '<img src="' + seguro(fotoDePerfil(c.fotoPerfil)) + '" alt="">'
 
             html += `
                 <a class="companheiro" href="perfil.html?id=${c.id}" title="${seguro(c.nomeUsuario)}">${foto}</a>`
@@ -454,17 +490,18 @@ function carregarOpcoesInteresses(meus){
         var html = ''
 
         for(var i = 0; i < todos.length; i++){
-            var marcado = false
+            // "checked" deixa a caixinha marcada
+            var marcado = ''
 
             for(var j = 0; j < meus.length; j++){
                 if(meus[j].id == todos[i].id){
-                    marcado = true
+                    marcado = 'checked'
                 }
             }
 
             html += `
                 <label class="chip">
-                    <input type="checkbox" ${marcado ? 'checked' : ''} onchange="marcarInteresse(this, ${todos[i].id})">
+                    <input type="checkbox" ${marcado} onchange="marcarInteresse(this, ${todos[i].id})">
                     ${seguro(todos[i].nome)}
                 </label>`
         }
@@ -496,28 +533,29 @@ function carregarOpcoesParcerias(minhas){
         var htmlProcuro = ''
 
         for(var i = 0; i < todas.length; i++){
-            var sou = false
-            var procuro = false
+            // "checked" deixa a caixinha marcada
+            var sou = ''
+            var procuro = ''
 
             for(var j = 0; j < minhas.length; j++){
                 if(minhas[j].id == todas[i].id && minhas[j].tipo == 'sou'){
-                    sou = true
+                    sou = 'checked'
                 }
 
                 if(minhas[j].id == todas[i].id && minhas[j].tipo == 'procuro'){
-                    procuro = true
+                    procuro = 'checked'
                 }
             }
 
             htmlSou += `
                 <label class="chip">
-                    <input type="checkbox" ${sou ? 'checked' : ''} onchange="marcarParceria(this, ${todas[i].id}, 'sou')">
+                    <input type="checkbox" ${sou} onchange="marcarParceria(this, ${todas[i].id}, 'sou')">
                     ${seguro(todas[i].nome)}
                 </label>`
 
             htmlProcuro += `
                 <label class="chip">
-                    <input type="checkbox" ${procuro ? 'checked' : ''} onchange="marcarParceria(this, ${todas[i].id}, 'procuro')">
+                    <input type="checkbox" ${procuro} onchange="marcarParceria(this, ${todas[i].id}, 'procuro')">
                     ${seguro(todas[i].nome)}
                 </label>`
         }

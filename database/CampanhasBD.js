@@ -33,8 +33,8 @@ class CampanhasBD{
 
         // o "in (select ...)" pega as campanhas em que a pessoa aparece como jogadora
         var sql = `
-            select c.id, c.nome, c.descricao, c.imagemCapa, c.usuarioMestreId, u.nomeUsuario as mestre
-            from campanhas c
+            select c.id, c.nome, c.descricao, c.imagemCapa, c.usuarioMestreId, u.nomeUsuario as mestre,
+                   (select o.tema from campanhas o where o.id = c.oficialId) as tema            from campanhas c
             join usuarios u on u.id = c.usuarioMestreId
             where c.oficial = 0
             and (c.usuarioMestreId = ? or c.id in (select campanhaId from campanha_jogadores where usuarioId = ?))
@@ -49,13 +49,24 @@ class CampanhasBD{
         connection.end()
     }
 
-    // As campanhas oficiais da Peak
-    static getOficiais(callback){
+    // As campanhas oficiais da Peak.
+    // As de tema só aparecem no evento delas (ou para o admin, que vê tudo).
+    static getOficiais(tipo, callback){
         const connection = CampanhasBD.connect()
 
-        var sql = 'select id, nome, descricao, historia, imagemCapa, criadaPor from campanhas where oficial = 1 order by id'
+        var sql = `
+            select id, nome, descricao, historia, imagemCapa, criadaPor, tema,
+                   (select count(*) from eventos e
+                    where e.tema = campanhas.tema
+                    and date_sub(utc_timestamp(), interval 3 hour) between e.inicio and date_add(e.inicio, interval 7 day)) as novo            from campanhas
+            where oficial = 1
+            and (tema is null
+                 or tema in (select tema from eventos
+                             where date_sub(utc_timestamp(), interval 3 hour) between inicio and fim)
+                 or ? = 'admin')
+            order by id`
 
-        connection.query(sql, (error, results)=>{
+        connection.query(sql, [tipo], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             callback(results)
@@ -198,7 +209,7 @@ class CampanhasBD{
         connection.query('insert into campanhas set ?', nova, (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
-            callback({'message': 'Campanha criada! Código de convite: ' + nova.codigoConvite, id: results.insertId})
+            callback({'message': 'Campanha criada!', codigo: nova.codigoConvite, id: results.insertId})
         })
 
         connection.end()
@@ -425,6 +436,13 @@ class CampanhasBD{
             return callback({'error': 'Dê um nome para a campanha'})
         }
 
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(campanha.tema){
+            tema = campanha.tema
+        }
+
         var nova = {
             usuarioMestreId: null,
             nome: campanha.nome,
@@ -432,7 +450,8 @@ class CampanhasBD{
             historia: campanha.historia,
             imagemCapa: campanha.imagemCapa,
             oficial: 1,
-            criadaPor: campanha.criadaPor
+            criadaPor: campanha.criadaPor,
+            tema: tema
         }
 
         const connection = CampanhasBD.connect()
@@ -454,12 +473,19 @@ class CampanhasBD{
             return callback({'error': 'Dê um nome para a campanha'})
         }
 
-        var sql = 'update campanhas set nome = ?, descricao = ?, historia = ?, criadaPor = ? where id = ? and oficial = 1'
-        var valores = [campanha.nome, campanha.descricao, campanha.historia, campanha.criadaPor, campanha.id]
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(campanha.tema){
+            tema = campanha.tema
+        }
+
+        var sql = 'update campanhas set nome = ?, descricao = ?, historia = ?, criadaPor = ?, tema = ? where id = ? and oficial = 1'
+        var valores = [campanha.nome, campanha.descricao, campanha.historia, campanha.criadaPor, tema, campanha.id]
 
         if(campanha.imagemCapa){
-            sql = 'update campanhas set nome = ?, descricao = ?, historia = ?, criadaPor = ?, imagemCapa = ? where id = ? and oficial = 1'
-            valores = [campanha.nome, campanha.descricao, campanha.historia, campanha.criadaPor, campanha.imagemCapa, campanha.id]
+            sql = 'update campanhas set nome = ?, descricao = ?, historia = ?, criadaPor = ?, tema = ?, imagemCapa = ? where id = ? and oficial = 1'
+            valores = [campanha.nome, campanha.descricao, campanha.historia, campanha.criadaPor, tema, campanha.imagemCapa, campanha.id]
         }
 
         const connection = CampanhasBD.connect()

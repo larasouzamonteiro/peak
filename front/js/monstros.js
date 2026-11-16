@@ -38,11 +38,23 @@ function carregarMonstros(){
 
 // Um botão de faixa. valor: o que vai para a função escolherFaixa()
 function htmlFaixa(valor, nome, imagem){
-    var ativa = (valor == faixaEscolhida)
+    // a faixa escolhida ganha a classe "ativa"
+    var ativa = ''
+
+    if(valor == faixaEscolhida){
+        ativa = 'ativa'
+    }
+
+    // a imagem de fundo (Todos e Meus não têm)
+    var fundo = ''
+
+    if(imagem){
+        fundo = '<img src="' + seguro(imagem) + '" alt="">'
+    }
 
     return `
-        <button type="button" class="faixa ${ativa ? 'ativa' : ''}" onclick="escolherFaixa('${valor}')">
-            ${imagem ? '<img src="' + seguro(imagem) + '" alt="">' : ''}
+        <button type="button" class="faixa ${ativa}" onclick="escolherFaixa('${valor}')">
+            ${fundo}
             <span>${seguro(nome)}</span>
         </button>`
 }
@@ -150,21 +162,40 @@ function desenharMonstros(){
             origem = 'por ' + m.autor
         }
 
+        // VISUAL: o monstro de evento (ex.: Natal) ganha a classe "card-evento", a neve e o "Tempo limitado"
+        var classeCard = 'foto-card'
+        var extras = ''
+        var prazo = ''
+
+        if(m.tema){
+            classeCard += ' card-evento'
+            extras = '<span class="neve-carta"></span>'
+            prazo = '<span class="prazo-evento">Tempo limitado</span>'
+
+            // o NOVO só nos 7 primeiros dias do evento
+            if(m.novo > 0){
+                extras += '<span class="selo-novo">NOVO</span>'
+            }
+        }
+
         html += `
-            <button type="button" class="foto-card" onclick="abrirMonstro(${m.id})">
-                ${htmlFoto(m.imagem, m.nome)}
+            <button type="button" class="${classeCard}" onclick="abrirMonstro(${m.id})">
+                ${extras}
+                ${htmlFoto(m.imagem, 'monstro')}
                 <div class="etiquetas">
                     <span class="selo">♥ ${m.vidaMaxima}</span>
                     <span class="selo selo-escuro">DEF ${m.defesa}</span>
                 </div>
                 <div class="nome"><b>${seguro(m.nome)}</b><small>${seguro(origem)}</small></div>
+                ${prazo}
             </button>`
-    }
+           } 
 
     // na faixa Meus (sem busca), o último quadro é o "Criar monstro"
     if(faixaEscolhida == 'meus' && busca == ''){
         html += `
             <button type="button" class="card-novo" onclick="abrirJanela('janelaNovo')">
+                <img class="card-novo-foto" src="../img/criar/nova-ficha.jpg" alt="">
                 <span class="card-novo-mais">+</span>
                 <b>Novo monstro</b>
                 <small>criar no Bestiário</small>
@@ -197,7 +228,7 @@ function abrirMonstro(id){
     document.getElementById('monstroNome').textContent = m.nome
     document.getElementById('monstroVida').textContent = '♥ Vida ' + m.vidaMaxima
     document.getElementById('monstroDefesa').textContent = 'Defesa ' + m.defesa
-    document.getElementById('monstroDescricao').textContent = m.descricao || 'Sem descrição.'
+    document.getElementById('monstroDescricao').textContent = textoOuPadrao(m.descricao, 'Sem descrição.')
 
     if(m.campanhaOficial){
         document.getElementById('monstroOrigem').textContent = 'Campanha ' + m.campanhaOficial
@@ -207,12 +238,11 @@ function abrirMonstro(id){
         document.getElementById('monstroOrigem').textContent = 'Oficial da Peak'
     }
 
-    // sem imagem, a foto da janela fica escondida
+    // sem imagem, entra a imagem padrão de monstro (fotoPadrao, do script.js)
     if(m.imagem){
         document.getElementById('monstroImagem').src = m.imagem
-        document.getElementById('monstroImagem').classList.remove('oculto')
     }else{
-        document.getElementById('monstroImagem').classList.add('oculto')
+        document.getElementById('monstroImagem').src = fotoPadrao('monstro')
     }
 
     // a parte de editar só aparece se o monstro for meu
@@ -296,6 +326,11 @@ function salvarMonstro(){
             document.getElementById('alert').textContent = ''
 
             fecharJanela('janelaNovo')
+            avisar('Monstro criado!', 'Ele está na faixa "Meus".', 'certo')
+
+            // mostra a faixa "Meus", onde o monstro novo aparece
+            faixaEscolhida = 'meus'
+            desenharFaixas()
             carregarMonstros()
         })
     })

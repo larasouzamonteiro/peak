@@ -19,13 +19,38 @@ function carregarClasses(){
 // Um card de classe.
 // botoes: HTML dos botões Editar e Excluir (só nas minhas; nas outras vem '')
 function htmlCardClasse(classe, botoes){
+    // VISUAL: a classe de evento (ex.: Natal) ganha a classe "card-evento", a neve e o "Tempo limitado"
+    var classeCss = 'galeria-card'
+    var extras = ''
+    var prazo = ''
+
+    if(classe.tema){
+        classeCss += ' card-evento'
+        extras = '<span class="neve-carta"></span>'
+        prazo = '<span class="prazo-evento">Tempo limitado</span>'
+
+        // o NOVO só nos 7 primeiros dias do evento
+        if(classe.novo > 0){
+            extras += '<span class="selo-novo">NOVO</span>'
+        }
+    }
+
+    // quem criou: alguém da comunidade ou a Peak
+    var autor = 'Classe da Peak'
+
+    if(classe.autor){
+        autor = 'por ' + seguro(classe.autor)
+    }
+
     return `
-        <div class="galeria-card">
-            <div class="galeria-img">${htmlFoto(classe.imagem, classe.nome)}</div>
+        <div class="${classeCss}">
+            ${extras}
+            <div class="galeria-img">${htmlFoto(classe.imagem, 'classe')}</div>
             <div class="galeria-info">
                 <strong>${seguro(classe.nome)}</strong>
-                <small>${classe.autor ? 'por ' + seguro(classe.autor) : 'Classe da Peak'}</small>
+                <small>${autor}</small>
                 <p>${seguro(classe.descricao)}</p>
+                ${prazo}
                 ${botoes}
             </div>
         </div>`
@@ -48,9 +73,15 @@ function desenharClasses(){
             oficiais += htmlCardClasse(c, '')
 
         }else if(c.usuarioId == eu.id){
+            var visivel = 'Só eu vejo'
+
+            if(c.publico == 1){
+                visivel = 'Pública'
+            }
+
             var botoes = `
                 <div class="botoes">
-                    <span class="selo">${c.publico == 1 ? 'Pública' : 'Só eu vejo'}</span>
+                    <span class="selo">${visivel}</span>
                     <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="abrirEdicao(${c.id})"></button>
                     <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirClasse(${c.id})"></button>
                 </div>`

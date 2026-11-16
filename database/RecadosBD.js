@@ -80,11 +80,19 @@ class RecadosBD{
     // recado: { texto, tipo, usuarioId }  (as tags e a foto entram nos próximos passos)
     static publicar(recado, callback){
 
-        var texto = String(recado.texto || '').trim()
+        var texto = ''
+
+        if(recado.texto){
+            texto = String(recado.texto).trim()     // trim tira os espaços do começo e do fim
+        }
+
 
         if(texto == ''){ return callback({'error': 'Escreva o seu recado'}) }
         if(texto.length > 280){ return callback({'error': 'O recado pode ter no máximo 280 letras'}) }
-        if(recado.tipo != 'procuro' && recado.tipo != 'ofereco'){ return callback({'error': 'Escolha Procuro ou Ofereço'}) }
+        // o tipo é opcional: 'procuro', 'ofereco' ou nenhum (fica vazio no banco)
+        if(recado.tipo != 'procuro' && recado.tipo != 'ofereco'){
+            recado.tipo = null
+        }
 
          // TAGS: chegam num texto com os ids separados por vírgula. Ex.: "2,6"
         var tags = []
@@ -105,11 +113,18 @@ class RecadosBD{
         if(tags.length > 3){ return callback({'error': 'Escolha no máximo 3 tags'}) }
         
 
-         var novo = {
+        // sem foto, fica vazio (null)
+        var foto = null
+
+        if(recado.foto){
+            foto = recado.foto
+        }
+
+        var novo = {
             usuarioId: recado.usuarioId,
             texto: texto,
             tipo: recado.tipo,
-            foto: recado.foto || null      // sem foto, fica vazio (null)
+            foto: foto
         }
 
         const connection = RecadosBD.connect()

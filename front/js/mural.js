@@ -8,7 +8,7 @@
 // a lista de recados que veio do servidor (fica guardada para os filtros usarem depois)
 var recados = []
 // o que a pessoa escolheu para o recado novo
-var tipoEscolhido = 'procuro'      // começa em "Procuro" (o botão já vem escuro no HTML)
+var tipoEscolhido = ''             // '' = nenhum (Procuro e Ofereço são opcionais)
 var tagsEscolhidas = []            // os ids das tags marcadas (no máximo 3)
 
 var filtro = 'tudo'                // 'tudo', 'procuro', 'ofereco' ou 'combina'
@@ -23,11 +23,28 @@ if(verificarLogin()){
     document.getElementById('tipoProcuro').onclick = function(){ escolherTipo('procuro') }
     document.getElementById('tipoOfereco').onclick = function(){ escolherTipo('ofereco') }     
     
-        document.getElementById('botaoPublicar').onclick = publicarRecado
+    document.getElementById('botaoPublicar').onclick = publicarRecado
+
+    // ENTER na caixa do recado também publica (igual a clicar em "Publicar")
+    document.getElementById('recadoTexto').onkeydown = function(evento){
+        if(evento.key == 'Enter'){
+            publicarRecado()
+        }
+    }
+
+    // VISUAL (celular): tocou na caixa do recado, aparecem o Procuro/Ofereço e as tags
+    // (o CSS só mostra essa fileira quando a caixa tem a classe "escrevendo")
+    document.getElementById('recadoTexto').onfocus = function(){
+        document.querySelector('.mural-postar').classList.add('escrevendo')
+    }
 
     // quando escolhe uma foto, o botão da foto fica escuro (para a pessoa saber que tem foto)
     document.getElementById('recadoFoto').onchange = function(){
-        document.querySelector('.mural-foto-bt').classList.toggle('ativo', this.files.length > 0)
+        if(this.files.length > 0){
+            document.querySelector('.mural-foto-bt').classList.add('ativo')
+        }else{
+            document.querySelector('.mural-foto-bt').classList.remove('ativo')
+        }
     }
 
     carregarEmAlta()
@@ -49,10 +66,10 @@ function carregarRecados(){
     buscar('/recados', function(lista){
         recados = lista
 
-            desenharRecados()
+            desenharRecados()// desenha de novo, agora sabendo o que eu procuro
+            carregarPessoasMural() // a fileira de pessoas também precisa saber o que eu procuro
     })
 }
-// Coloca os recados nas duas colunas: 1º na esquerda, 2º na direita, 3º na esquerda...
 // Coloca os recados nas duas colunas: 1º na esquerda, 2º na direita, 3º na esquerda...
 // Só entram os recados que passam no filtro escolhido.
 function desenharRecados(){
@@ -89,18 +106,22 @@ function desenharRecados(){
         vazio.textContent = 'Nenhum recado neste filtro.'
     }
 
-    vazio.classList.toggle('oculto', quantos > 0)
+    if(quantos > 0){
+        vazio.classList.add('oculto')
+    }else{
+        vazio.classList.remove('oculto')
+    }
 }
 
 // Monta o HTML de UM recado (o modelo está no comentário do comunidade.html)
 function htmlRecado(r){
-    // Procuro ou Ofereço
-    var tipo = 'Ofereço'
-    var classeTipo = 'recado-tipo'
+    // Procuro, Ofereço ou nenhum (sem tipo, a etiqueta não aparece)
+    var etiqueta = ''
 
     if(r.tipo == 'procuro'){
-        tipo = 'Procuro'
-        classeTipo = 'recado-tipo procuro'
+        etiqueta = '<span class="recado-tipo procuro">Procuro</span>'
+    }else if(r.tipo == 'ofereco'){
+        etiqueta = '<span class="recado-tipo">Ofereço</span>'
     }
 
     // as tags vêm juntas com vírgula ("Fantasia,Terror") e viram "#Fantasia #Terror"
@@ -110,8 +131,8 @@ function htmlRecado(r){
         tags = '#' + r.tags.split(',').join(' #')
     }
 
-    // foto de quem postou (se a pessoa não tiver, usa a da Zero)
-    var fotoPessoa = r.fotoPerfil || '../img/mascote/zero.jpg'
+    // foto de quem postou (se a pessoa não tiver, usa a foto padrão)
+    var fotoPessoa = fotoDePerfil(r.fotoPerfil)
 
     // com foto: a foto em cima | sem foto: vira cartão de frase
     var foto = ''
@@ -161,26 +182,41 @@ function htmlRecado(r){
         <div class="${classeRecado}">
             ${foto}
             ${lixo}
-            <span class="${classeTipo}">${tipo}</span>
+            ${etiqueta}
             <div class="recado-corpo">
                 <p>${seguro(r.texto)}</p>
                 <div class="recado-tags">${seguro(tags)}</div>
                 ${interesse}
                 <div class="recado-autor">
                     <img src="${seguro(fotoPessoa)}" alt="">
-                    <div><b>${seguro(r.nomeUsuario)}</b><small>${seguro(r.sou || '')}</small></div>
+                    <div><b>${seguro(r.nomeUsuario)}</b><small>${seguro(r.sou)}</small></div>
                     <a class="recado-chamar" href="perfil.html?id=${r.usuarioId}">Chamar ›</a>
                 </div>
             </div>
         </div>`
 }
 
-// Procuro ou Ofereço: guarda a escolha e deixa só o botão escolhido escuro
+// Procuro ou Ofereço: guarda a escolha e deixa só o botão escolhido escuro.
+// Clicar de novo no que já está escolhido DESMARCA (fica sem tipo nenhum).
 function escolherTipo(tipo){
-    tipoEscolhido = tipo
+    if(tipoEscolhido == tipo){
+        tipoEscolhido = ''
+    }else{
+        tipoEscolhido = tipo
+    }
 
-    document.getElementById('tipoProcuro').classList.toggle('ativo', tipo == 'procuro')
-    document.getElementById('tipoOfereco').classList.toggle('ativo', tipo == 'ofereco')
+    tipo = tipoEscolhido
+
+    if(tipo == 'procuro'){
+        document.getElementById('tipoProcuro').classList.add('ativo')
+    }else{
+        document.getElementById('tipoProcuro').classList.remove('ativo')
+    }
+    if(tipo == 'ofereco'){
+        document.getElementById('tipoOfereco').classList.add('ativo')
+    }else{
+        document.getElementById('tipoOfereco').classList.remove('ativo')
+    }
 }
 
 // Busca a lista de interesses e desenha uma tag (chip) para cada um em <div id="recadoTags">
@@ -212,7 +248,11 @@ function marcarTag(id){
     }
 
     // a tag fica escura quando está marcada
-    document.getElementById('tag' + id).classList.toggle('ativo', posicao == -1)
+    if(posicao == -1){
+        document.getElementById('tag' + id).classList.add('ativo')
+    }else{
+        document.getElementById('tag' + id).classList.remove('ativo')
+    }
 }
 
 // Publica o recado novo (rota POST /recados/publicar do app.js)
@@ -254,12 +294,18 @@ function limparRecado(){
     document.getElementById('recadoTexto').value = ''
     document.getElementById('recadoFoto').value = ''
     document.querySelector('.mural-foto-bt').classList.remove('ativo')
+    document.querySelector('.mural-postar').classList.remove('escrevendo')
 
     // desmarca as tags
     for(var i = 0; i < tagsEscolhidas.length; i++){
         document.getElementById('tag' + tagsEscolhidas[i]).classList.remove('ativo')
     }
     tagsEscolhidas = []
+
+    // o tipo também volta para "nenhum"
+    tipoEscolhido = ''
+    document.getElementById('tipoProcuro').classList.remove('ativo')
+    document.getElementById('tipoOfereco').classList.remove('ativo')
 }
 
 // "Em alta no mural": as tags mais usadas (rota GET /recados/em-alta)
@@ -298,12 +344,8 @@ function mostrarMinhaFoto(){
     buscar('/usuario?id=' + eu.id, function(pessoa){
         var lugar = document.getElementById('muralMinhaFoto')
 
-        if(pessoa.fotoPerfil){
-            lugar.innerHTML = '<img src="' + seguro(pessoa.fotoPerfil) + '" alt="">'
-        }else{
-            // sem foto: a primeira letra do nome
-            lugar.textContent = eu.nomeUsuario.charAt(0).toUpperCase()
-        }
+        // sem foto: a foto padrão (fotoDePerfil, do script.js)
+        lugar.innerHTML = '<img src="' + seguro(fotoDePerfil(pessoa.fotoPerfil)) + '" alt="">'
     })
 }
 
@@ -327,8 +369,8 @@ function carregarMinhaParceria(){
             }
         }
 
-        document.getElementById('meuSou').innerHTML = sou || '<small class="texto-suave">nada marcado</small>'
-        document.getElementById('meuProcuro').innerHTML = procuro || '<small class="texto-suave">nada marcado</small>'
+        document.getElementById('meuSou').innerHTML = textoOuPadrao(sou, '<small class="texto-suave">nada marcado</small>')
+        document.getElementById('meuProcuro').innerHTML = textoOuPadrao(procuro, '<small class="texto-suave">nada marcado</small>')
 
         desenharRecados()     // desenha de novo, agora sabendo o que eu procuro
     })
@@ -356,10 +398,26 @@ function combina(r){
 function escolherFiltro(nome){
     filtro = nome
 
-    document.getElementById('filtroTudo').classList.toggle('ativo', nome == 'tudo')
-    document.getElementById('filtroProcuro').classList.toggle('ativo', nome == 'procuro')
-    document.getElementById('filtroOfereco').classList.toggle('ativo', nome == 'ofereco')
-    document.getElementById('filtroCombina').classList.toggle('ativo', nome == 'combina')
+    if(nome == 'tudo'){
+        document.getElementById('filtroTudo').classList.add('ativo')
+    }else{
+        document.getElementById('filtroTudo').classList.remove('ativo')
+    }
+    if(nome == 'procuro'){
+        document.getElementById('filtroProcuro').classList.add('ativo')
+    }else{
+        document.getElementById('filtroProcuro').classList.remove('ativo')
+    }
+    if(nome == 'ofereco'){
+        document.getElementById('filtroOfereco').classList.add('ativo')
+    }else{
+        document.getElementById('filtroOfereco').classList.remove('ativo')
+    }
+    if(nome == 'combina'){
+        document.getElementById('filtroCombina').classList.add('ativo')
+    }else{
+        document.getElementById('filtroCombina').classList.remove('ativo')
+    }
 
     desenharRecados()
 }
@@ -398,5 +456,53 @@ function marcarInteresse(id){
         }
 
         carregarRecados()     // busca de novo para atualizar o número
+    })
+}
+
+// A fileira de pessoas (tipo stories) em <div id="muralPessoas">
+// Rotas: GET /comunidade/pessoas e GET /comunidade/parcerias
+function carregarPessoasMural(){
+    var eu = pegarUsuarioLogado()
+
+    buscar('/comunidade/pessoas', function(pessoas){
+        buscar('/comunidade/parcerias', function(parcerias){
+            var html = ''
+
+            for(var i = 0; i < pessoas.length; i++){
+                var p = pessoas[i]
+
+                // eu não apareço na minha própria fileira
+                if(p.id == eu.id){
+                    continue
+                }
+
+                // a pessoa combina se ela É algo que eu PROCURO
+                var combinaComigo = false
+
+                for(var j = 0; j < parcerias.length; j++){
+                    if(parcerias[j].usuarioId == p.id && parcerias[j].tipo == 'sou' && meuProcuro.indexOf(parcerias[j].nome) != -1){
+                        combinaComigo = true
+                    }
+                }
+
+               
+
+                var classe = 'pessoa-bola'
+                var selo = ''
+
+                if(combinaComigo){
+                    classe = 'pessoa-bola combina'   // o anel colorido (está no comunidade.css)
+                    selo = '<small>combina</small>'
+                }
+
+                html += '<a class="' + classe + '" href="perfil.html?id=' + p.id + '">' +
+                            '<span><img class="foto" src="' + seguro(fotoDePerfil(p.fotoPerfil)) + '" alt=""></span>' +
+                            '<b>' + seguro(p.nomeUsuario) + '</b>' +
+                            selo +
+                        '</a>'
+            }
+
+            document.getElementById('muralPessoas').innerHTML = html
+        })
     })
 }

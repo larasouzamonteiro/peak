@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Início | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -87,24 +89,34 @@
       <!-- DESTAQUES: o banner com as fotos da equipe (esquerda) e as campanhas oficiais (direita) -->
       <section class="destaques">
 
-        <!-- BANNER: as fotos ficam em img/equipe/. Para trocar, substitua 1.jpg, 2.jpg, 3.jpg e 4.jpg
-             pelas fotos de vocês (mesmos nomes). Para ter mais fotos, copie uma linha <img> e mude o número.
-             Quem troca a foto é o js/inicio.js (mostrarFoto): ele só coloca e tira a classe "on". -->
+        <!-- BANNER: para trocar, coloque o arquivo em img/banners/ e mude o "src" de uma linha.
+             Para ter mais um, copie uma linha inteira. A ordem das linhas é a ordem que aparece.
+             O quadro do banner é mais ou menos 3 x 2: numa foto mais comprida, as laterais ficam cortadas (o importante deve ficar no meio).
+               - foto:  <img class="banner-foto" src="../img/banners/NOME.jpg" alt="">
+               - vídeo: <video class="banner-foto" src="../img/banners/NOME.mp4" autoplay muted loop playsinline></video>
+             As que têm "natal" na classe só aparecem no evento de Natal (e as outras somem nessa hora).
+             Quem troca qual aparece é o js/inicio.js: ele só coloca e tira a classe "on". -->
         <article class="destaque-grande">
-          <video class="banner-foto" src="../img/index/videos/ahri.webm"  autoplay muted loop playsinline alt="" alt=""></video>
+          <div id="bannerFotos">
+            <!-- os banners de sempre -->
+            <img class="banner-foto" src="../img/banners/banner1.jpg" alt="">
+            <img class="banner-foto" src="../img/banners/banner2.jpg" alt="">
+            <img class="banner-foto" src="../img/banners/banner3.jpg" alt="">
+            <img class="banner-foto" src="../img/banners/banner4.jpg" alt="">
 
-      <video class="banner-foto" src="../img/index/videos/soraka.webm"  autoplay muted loop playsinline alt=""></video>
-          <video class="banner-foto" src="../img/index/videos/lux.webm"  autoplay muted loop playsinline alt="" alt=""></video>
-          <video class="banner-foto" src="../img/index/videos/leona.webm" autoplay muted loop playsinline alt=""  alt=""></video>
-          <video class="banner-foto" src="../img/index/videos/irelia.webm" autoplay muted loop playsinline></video>
-        
-          <div class="destaque-chips"><span>Equipe Peak</span><span>Senac · Info 1</span></div>
+            <!-- os banners do NATAL -->
+            <video class="banner-foto natal" src="../img/eventos/natal-video2.mp4" autoplay muted loop playsinline></video>
+            <video class="banner-foto natal" src="../img/eventos/natal-video1.mp4" autoplay muted loop playsinline></video>
+            <video class="banner-foto natal" src="../img/eventos/casanatal.mp4" autoplay muted loop playsinline></video>
+            <video class="banner-foto natal" src="../img/eventos/jinxnatal.mp4" autoplay muted loop playsinline></video>
+          </div>
+
           <!-- os tracinhos de qual foto está aparecendo (feitos pelo js/inicio.js) -->
           <div class="banner-pontos" id="bannerPontos"></div>
 
           <div class="destaque-texto">
           <div class="destaque-botoes">
-              <a class="destaque-bt" href="livro-equipe.html">▶ Conhecer a equipe</a>
+              <a class="destaque-bt" href="livro-equipe.html">Conhecer a equipe &nbsp;→</a>
             </div>
           </div>
         </article>
@@ -147,12 +159,12 @@
             <a href="comunidade.html">ver ›</a>
           </div>
           <a class="convite-comunidade" href="comunidade.html">
-            <img src="../img/editorial/grupo-cor.jpg" alt="">
+            <img src="../img/index/videos/grupo.jpg" alt="">
             <div>
               <small>Comunidade Peak</small>
               <b>Ninguém joga RPG sozinho.</b>
               <p>Encontre jogadores, mestres e artistas que gostam das mesmas coisas que você.</p>
-              <span class="convite-bt">Encontrar meu grupo →</span>
+              <span class="convite-bt">Encontrar meu grupo &nbsp;→</span>
             </div>
           </a>
         </div>
@@ -182,6 +194,55 @@
     </div>
   </div>
 
+
+  <!-- a decoração do site (aparece depois de "Coletar tudo": classe "decorado" no body) -->
+  <div class="deco-evento"></div>
+
+  <!-- a neve do Natal: um vídeo de flocos caindo num fundo preto.
+       O CSS (mix-blend-mode: screen) some com o preto e deixa só os flocos. -->
+
+  <!-- a tela do presente: aparece sozinha na primeira vez que a pessoa entra durante o evento -->
+  <div class="evento-tela oculto" id="eventoTela">
+
+        <!-- a neve caindo devagar atrás das cartas (vídeo de flocos em fundo preto) -->
+    <video class="ev-neve" src="../img/eventos/neve-presente.mp4" autoplay muted loop playsinline></video>
+
+
+    <!-- PASSO 1: o presente que treme. Cada toque acende uma bolinha (função tocarPresente) -->
+    <div class="ev-presente-area">
+      <button type="button" class="ev-presente" id="evPresente" onclick="tocarPresente()" aria-label="Abrir presente"></button>
+      <div class="ev-pontos" id="evPontos"><i></i><i></i><i></i></div>
+      <p class="ev-dica">Toque 3 vezes para abrir</p>
+    </div>
+
+    <!-- os confetes (só aparecem quando o presente abre) -->
+    <div class="ev-confetes"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <!-- PASSO 2: as 3 cartas. O JS escreve a frente de cada uma (função montarCartas) -->
+    <span class="ev-contador" id="evContador">1 / 3</span>
+
+    <div class="ev-cartas">
+      <div class="ev-carta"><div class="ev-verso"><b>peak<i>.</i></b><small id="evVerso1"></small></div><div class="ev-frente" id="evCarta1"></div></div>
+      <div class="ev-carta"><div class="ev-verso"><b>peak<i>.</i></b><small id="evVerso2"></small></div><div class="ev-frente" id="evCarta2"></div></div>
+      <div class="ev-carta"><div class="ev-verso"><b>peak<i>.</i></b><small id="evVerso3"></small></div><div class="ev-frente" id="evCarta3"></div></div>
+    </div>
+
+    <!-- "Próxima ›" vira uma carta por vez; na última vira "Ver tudo ›" -->
+    <button type="button" class="ev-botao" id="evProxima" onclick="proximaCarta()">Próxima ›</button>
+
+    <!-- PASSO 3: as 3 cartas lado a lado -->
+    <button type="button" class="ev-botao ev-coletar" onclick="coletarPresente()">Coletar tudo</button>
+  </div>
+
+    <!-- PRESENTE DO EVENTO: a caixinha em cima do dado. Aparece depois de "Coletar tudo"
+       e abre as 3 cartas de novo (função reabrirPresente do evento.js) -->
+  <button type="button" class="presente-canto oculto" id="presenteCanto" onclick="reabrirPresente()" title="Ver o presente de Natal">
+    <img src="../img/eventos/presente-natal.png" alt="Presente de Natal">
+  </button>
+
+  <!-- MÚSICA DE NATAL: aparece quando a música começa (abriu o presente) e continua
+       depois de fechar as cartas. Clicar pausa ou volta a tocar (função trocarMusicaNatal do evento.js) -->
+  
   <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
   <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
   <div class="dado-menu oculto" id="dadoMenu">
@@ -263,7 +324,9 @@
 </script>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/tutorial.js"></script>
+  <script src="../js/evento.js"></script>     <!-- o presente do evento de tema (Natal) -->
   <script src="../js/inicio.js"></script>
 </body>
 </html>

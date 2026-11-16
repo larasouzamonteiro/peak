@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Campanha | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -161,7 +163,7 @@
           <div class="painel-coluna">
             <div class="card">
               <h2 class="card-titulo">Código de convite</h2>
-              <p class="card-texto">Passe este código para os jogadores. Eles digitam em Campanhas, em "Tem um código?".</p>
+              <p class="card-texto">Passe este código para os jogadores.</p>
               <p class="codigo-convite" id="campanhaCodigo"></p>
             </div>
 
@@ -194,7 +196,6 @@
             <div class="card">
               <!-- o número do lado do título é escrito pela função carregarMonstros() -->
               <h2 class="card-titulo">Monstros da campanha <span class="contagem-monstros" id="contagemMonstros"></span></h2>
-              <p class="card-texto">Escolha quais monstros aparecem nesta aventura.</p>
 
               <div class="campo-com-botao">
                 <!-- as opções são criadas pela função carregarOpcoesDeMonstros() -->
@@ -231,6 +232,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/campanha.js"></script>
 </body>
 </html>

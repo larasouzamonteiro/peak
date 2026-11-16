@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>O que é RPG | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Lora nos livros) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
@@ -74,21 +76,19 @@
         </div>
       </div>
 
-      <div class="aberto-topo">
-        <a class="botao" href="historia.html">‹ Voltar à estante</a>
+      <!-- ABAS DE LEITURA: penduradas no alto da tela, só com o desenho (as funções estão no js/historia.js).
+           O nome de cada uma aparece ao passar o mouse (title). -->
+      <nav class="abas-leitura">
+        <a class="aba-leitura" href="historia.html" title="Voltar à estante" aria-label="Voltar à estante"><img src="../img/icones/estante.svg" alt=""></a>
+        <button type="button" class="aba-leitura" id="botaoAudio" onclick="tocarAudio()" title="Ouvir" aria-label="Ouvir">
+          <img class="icone-ouvir" src="../img/icones/ouvir.svg" alt="">
+          <img class="icone-pausar" src="../img/icones/pausar.svg" alt="">
+        </button>
+        <button type="button" class="aba-leitura" id="botaoMarcaTexto" onclick="ligarMarcaTexto()" title="Marca-texto" aria-label="Marca-texto"><img src="../img/icones/marca-texto.svg" alt=""></button>
+      </nav>
 
-        <!-- BOTÕES DE LEITURA (as funções estão no js/historia.js) -->
-        <div class="barra-leitura">
-          <button type="button" class="botao botao-principal" id="botaoAudio" onclick="tocarAudio()">▶ Ouvir</button>
-          <button type="button" class="botao" id="botaoMarcaTexto" onclick="ligarMarcaTexto()">Marca-texto</button>
-        </div>
-      </div>
-
-      <!-- a narração deste livro: grave e salve em front/sons/livro-rpg.mp3
-           Enquanto o arquivo não existir, o historia.js esconde o botão "Ouvir".
-           preload="metadata" = o navegador só confere se o arquivo existe (não baixa o áudio todo). -->
+      <!-- a narração deste livro, gravada pela equipe: front/sons/livro-rpg.mp3 -->
       <audio id="audio" src="../sons/livro-rpg.mp3" preload="metadata" onended="audioTerminou()"></audio>
-      <p class="alerta" id="avisoAudio"></p>
 
       <!-- O LIVRO: página da esquerda = arte e sumário (links #cap-1, #cap-2...)
            página da direita = os capítulos, um embaixo do outro (id="cap-1", id="cap-2"...).
@@ -114,7 +114,9 @@
             <small class="cap-numero">Capítulo 1</small>
             <h3>Uma história contada em grupo</h3>
             <p><span class="capitular">R</span>PG é a sigla de <i>role-playing game</i>, que quer dizer "jogo de interpretação de papéis". Cada jogador cria um personagem e decide o que ele faz, e uma pessoa, o Mestre, descreve o mundo e o que acontece.</p>
-            <p>Não tem tabuleiro fixo nem fim certo. A história vai sendo inventada na hora, pelas escolhas do grupo e pela sorte dos dados.</p>
+            <p>Não existe tabuleiro fixo nem um final definido. A história é construída durante o jogo, a partir das escolhas do grupo e do resultado dos dados.</p>
+            <p>O Mestre funciona como narrador: apresenta os lugares, interpreta os outros personagens e decide as consequências das ações dos jogadores.</p>
+            <p>No RPG não existe vencedor. O objetivo é contar uma história em grupo, e por isso o jogo exercita a imaginação, a comunicação e o trabalho em equipe.</p>
             <div class="pagina-rodape"><span>1</span></div>
           </section>
 
@@ -122,7 +124,9 @@
             <small class="cap-numero">Capítulo 2</small>
             <h3>De onde veio</h3>
             <p><span class="capitular">O</span> primeiro RPG, <i>Dungeons &amp; Dragons</i>, foi lançado em 1974 nos Estados Unidos por Gary Gygax e Dave Arneson.</p>
-            <p>Desde então surgiram centenas de sistemas e mundos diferentes, de fantasia, terror, ficção científica e muito mais. Hoje dá para jogar em volta de uma mesa ou pela internet, como aqui na Peak.</p>
+            <p>Ele surgiu a partir dos jogos de guerra com miniaturas. A diferença foi trocar o exército por um único personagem para cada jogador, com nome e história próprios.</p>
+            <p>Desde então surgiram centenas de sistemas e mundos diferentes, de fantasia, terror, ficção científica e outros gêneros. O RPG também influenciou muitos videogames, que usam ideias como nível, vida e atributos.</p>
+            <p>Hoje é possível jogar em volta de uma mesa ou pela internet, como aqui na Peak.</p>
             <div class="pagina-rodape"><span>2</span></div>
           </section>
 
@@ -201,7 +205,71 @@
   </div>
 
   <!-- script.js: funções usadas em todas as páginas (menu, dado...) -->
+  <!-- ACESSIBILIDADE: tradutor de Libras do governo (VLibras) -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script>
+  // ACESSIBILIDADE: o avatar de Libras é pesado. Para não reabrir sozinho (e travar)
+  // a cada página nova, apagamos o que o VLibras guardou da página anterior:
+  // ele sempre começa fechado, e a pessoa abre quando quiser.
+  for(var k = localStorage.length - 1; k >= 0; k--){
+      var nomeGuardado = localStorage.key(k)
+
+      if(nomeGuardado && nomeGuardado.toLowerCase().indexOf('vlibras') != -1){
+          localStorage.removeItem(nomeGuardado)
+      }
+  }
+</script>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+
+<script>
+  // VISUAL: muda a cor e a posição do botão de Libras.
+  // O VLibras desenha o botão dentro de um "shadow root" (uma caixinha fechada)
+  // que o CSS do site não alcança. Então, a cada 1/4 de segundo, procuramos essa
+  // caixinha; quando ela aparece, colocamos o nosso estilo lá dentro e paramos.
+  var tentativasLibras = 0
+
+  var procurarLibras = setInterval(function(){
+      tentativasLibras++
+
+      var todos = document.querySelectorAll('*')
+
+      for(var i = 0; i < todos.length; i++){
+          var caixa = todos[i].shadowRoot
+
+          if(caixa && caixa.getElementById('vlibras-access')){
+              var estilo = document.createElement('style')
+
+                            estilo.textContent =
+                  // posição: embaixo à direita, do lado ESQUERDO do botão de voltar ao topo (↑), sem ficar em cima dele.
+                  // cor: o filtro vai na caixinha TODA (botão + fundo), para não sobrar azul nos cantos
+                  '#vlibras-access{ top: auto !important; bottom: 36px !important; right: 162px !important; left: auto !important; transform: none !important;' +
+                  ' filter: hue-rotate(140deg) saturate(0.85) brightness(0.95); border-radius: 14px; overflow: hidden; background: transparent !important; }' +
+                  // o botão de dentro: mesmo arredondado da caixinha
+                  '#vlibras-button{ border-radius: 14px; }' +
+                  // celular: acima da barra de baixo
+                  '@media (max-width: 760px){ #vlibras-access{ bottom: 96px !important; right: 12px !important; } }'
+              caixa.appendChild(estilo)
+              clearInterval(procurarLibras)
+              return
+          }
+      }
+
+      // se em 10 segundos não achou (internet lenta, VLibras fora do ar), desiste
+      if(tentativasLibras > 40){
+          clearInterval(procurarLibras)
+      }
+  }, 250)
+</script>
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
 
   <!-- historia.js: o áudio e o marca-texto deste livro -->
   <script src="../js/historia.js"></script>

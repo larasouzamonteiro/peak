@@ -43,8 +43,8 @@ function carregarFicha(){
         document.getElementById('fichaSabedoria').textContent = ficha.sabedoria
         document.getElementById('fichaCarisma').textContent = ficha.carisma
 
-        document.getElementById('fichaPersonalidade').textContent = ficha.personalidade || 'Ainda não escreveu.'
-        document.getElementById('fichaHistoria').textContent = ficha.historia || 'Ainda não escreveu.'
+        document.getElementById('fichaPersonalidade').textContent = textoOuPadrao(ficha.personalidade, 'Ainda não escreveu.')
+        document.getElementById('fichaHistoria').textContent = textoOuPadrao(ficha.historia, 'Ainda não escreveu.')
 
         document.getElementById('fichaRacaTitulo').textContent = 'Raça: ' + ficha.raca
         document.getElementById('fichaRacaDescricao').textContent = ficha.racaDescricao

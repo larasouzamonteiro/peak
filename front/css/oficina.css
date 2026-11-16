@@ -65,16 +65,21 @@
     border-radius: 8px;
     background: var(--papel);
     color: var(--marrom-3);
+    font-family: inherit;
     font-size: 0.85rem;
 }
 
+/* as etapas que já terminaram: a letra fica vermelha e dá para clicar para voltar */
 .oficina .etapa-marca.feita{
-    color: #9a3f39;
+    color: var(--rosa);
+    font-weight: 600;
+    cursor: pointer;
 }
 
+/* a etapa de agora: preta */
 .oficina .etapa-marca.ativa{
-    border-color: var(--vinho);
-    background: var(--vinho);
+    border-color: var(--tinta);
+    background: var(--tinta);
     color: #fff;
     font-weight: 600;
 }
@@ -261,6 +266,37 @@
     box-shadow: 0 0 0 4px var(--vinho-claro);
 }
 
+/* VISUAL: o retrato de presente do evento (ex.: a Noel do Natal), no começo da lista */
+.oficina .retrato-presente{
+    position: relative;
+    color: #b3202f;
+    font-weight: 700;
+}
+
+.oficina .retrato-presente .retrato{
+    border-color: #c62a3a;
+}
+
+/* o selo "★ NOVO" no canto (o JS só coloca o <span> nos 7 primeiros dias) */
+.oficina .retrato-presente .selo-novo{
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    z-index: 2;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #f2c14e;
+    color: #5a2a00;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.oficina .retrato-presente .selo-novo::before{
+    content: '★ ';
+}
+
 
 /* ---------- 6. ETAPAS 2 E 3: RAÇAS E CLASSES ---------- */
 .oficina .galeria{
@@ -286,7 +322,18 @@
     color: #f6ece3;
 }
 
+/* VISUAL: raças e classes usam o card dos monstros (foto-card, do style.css), só um pouco mais alto */
+.oficina .galeria .foto-card{
+    min-height: 260px;
+    border: 3px solid transparent;
+}
+
+.oficina .galeria .foto-card .nome b{
+    font-size: 1.2rem;
+}
+
 /* a raça (ou classe) escolhida: o js/criar-ficha.js coloca a classe "selecionado" */
+.oficina .galeria .foto-card.selecionado,
 .oficina .galeria-card.selecionado{
     border-color: var(--rosa);
     box-shadow: 0 0 0 4px rgba(140, 42, 64, 0.3);
@@ -316,7 +363,6 @@
 }
 
 .oficina .galeria-info strong{
-    font-family: "Playfair Display", Georgia, serif;
     font-size: 1.15rem;
     font-weight: 700;
 }
@@ -407,18 +453,20 @@
 
 /* ---------- 9. RESUMO DO PERSONAGEM ---------- */
 /* acompanha a rolagem da página */
+/* VISUAL: o retrato ocupa o card inteiro e o texto fica por cima, num degradê escuro (sem a parte branca) */
 .oficina .resumo{
     position: sticky;
     top: 20px;
+    min-height: 470px;
     overflow: hidden;
     border-radius: 18px;
-    background: var(--papel);
-    box-shadow: 0 20px 50px rgba(90, 70, 45, 0.18);
+    background: #1d1416;
+    box-shadow: var(--sombra-foto);
 }
 
 .oficina .resumo-arte{
-    height: 340px;
-    background: #fff;
+    position: absolute;
+    inset: 0;
 }
 
 .oficina .resumo-arte img{
@@ -429,21 +477,28 @@
 }
 
 .oficina .resumo-texto{
-    padding: 16px 18px 20px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 80px 20px 20px;
+    background: linear-gradient(180deg, rgba(29, 20, 22, 0) 0%, rgba(29, 20, 22, 0.55) 40%, rgba(29, 20, 22, 0.92) 100%);
+    color: #fff;
 }
 
 .oficina .resumo-texto h3{
     margin: 6px 0 4px;
-    font-family: "Playfair Display", Georgia, serif;
-    font-size: 1.5rem;
-    font-weight: 700;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 800;
     overflow-wrap: anywhere;
 }
 
 .oficina .resumo-texto p{
     margin: 0 0 6px;
-    color: var(--marrom-2);
+    color: var(--rosa-claro);
     font-size: 0.88rem;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -457,7 +512,8 @@
     }
 
     .oficina .resumo{
-        position: static;
+        position: relative;      /* relative (e não static): a foto e o texto ficam presos dentro do card */
+        min-height: 380px;
     }
 
     .oficina .galeria,
@@ -504,4 +560,9 @@ html.escuro body .oficina{
 
 html.escuro body .oficina .resumo-arte{
     background: #1d1618;
+}
+
+/* no escuro a cor "--tinta" fica clara: a etapa de agora fica clara com a letra escura */
+html.escuro body .oficina .etapa-marca.ativa{
+    color: #1a1a1c;
 }

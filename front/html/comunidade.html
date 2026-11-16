@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Comunidade | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -102,9 +104,9 @@
             <input class="oculto" type="file" id="recadoFoto" accept="image/*">
             <button type="button" class="botao botao-principal" id="botaoPublicar">Publicar</button>
 
-            <!-- Procuro / Ofereço e as tags do recado (até 3): o mural.js desenha as tags -->
+            <!-- Procuro / Ofereço (opcional: pode não escolher nenhum) e as tags do recado (até 3): o mural.js desenha as tags -->
             <div class="mural-escolhas">
-              <button type="button" class="chip chip-botao ativo" id="tipoProcuro">Procuro</button>
+              <button type="button" class="chip chip-botao" id="tipoProcuro">Procuro</button>
               <button type="button" class="chip chip-botao" id="tipoOfereco">Ofereço</button>
               <span class="mural-separa"></span>
               <div class="chips" id="recadoTags"></div>
@@ -150,7 +152,7 @@
           </div>
 
           <!-- aparece enquanto não tem nenhum recado (o mural.js esconde quando tiver) -->
-          <p class="texto-suave mural-vazio" id="muralVazio">Ainda não tem recados. Seja a primeira pessoa a postar!</p>
+          <p class="texto-suave mural-vazio oculto" id="muralVazio">Ainda não tem recados. Seja a primeira pessoa a postar!</p>
         </div>
 
         <!-- ===== COLUNA DA DIREITA ===== -->
@@ -170,13 +172,12 @@
           <!-- EM ALTA: as tags mais usadas nos recados (o mural.js escreve as linhas) -->
           <div class="card">
             <h2 class="card-titulo">Em alta no mural</h2>
-            <p class="texto-suave">as tags mais usadas nos recados</p>
             <div class="em-alta" id="emAlta"></div>
           </div>
 
           <!-- VISUAL: convite embaixo das caixas -->
           <a class="convite-lado" href="pessoas.html">
-            <img src="../img/editorial/grupo-cor.jpg" alt="">
+            <img src="../img/index/videos/grupo.jpg" alt="">
             <div>
               <b>Ninguém joga RPG sozinho.</b>
               <p>Monte seu grupo e chame para a sua mesa.</p>
@@ -269,6 +270,7 @@
 </script>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/mural.js"></script>
 </body>
 </html>

@@ -102,6 +102,11 @@ body.entrada::after{
     transition: opacity 0.5s;
 }
 
+.entrada-frase a{
+    color: inherit;
+    text-decoration: none;
+}
+
 .entrada-frase h2{
     margin: 0;
     font-size: min(9vw, 160px);
@@ -113,7 +118,7 @@ body.entrada::after{
 
 /* o pontinho coral do "peak." */
 .entrada-frase h2 span{
-    color: #ffb59a;
+    color:  #c45d70;
 }
 
 .entrada-frase p{
@@ -246,11 +251,11 @@ body.entrada .entrada-form .input{
 }
 
 body.entrada .entrada-form .input:focus{
-    border-color: #f57f6c;
+    border-color: #c48792;
     box-shadow: 0 0 0 4px rgba(245, 127, 108, 0.15);
 }
 
-/* campo de senha com o botão de olho DENTRO da caixa (função verSenha do js/script.js) */
+/* campo de senha com o botão de olho DENTRO da caixa (função verSenha do js/visual.js) */
 .campo-senha{
     position: relative;
 }
@@ -325,10 +330,10 @@ body.entrada .entrada-form .rotulo-opcional{
 body.entrada .entrada-form .botao-largo{
     min-height: min(6.4vh, 54px);
     border-radius: 16px;
-    background: linear-gradient(135deg, #ffb59a, #f57f6c 55%, #cf4f55);
+    background: linear-gradient(135deg, #ec6a7c 0%, #c0304a 100%);
     color: #fff;
-    letter-spacing: 0.1em;
-    box-shadow: 0 12px 24px rgba(245, 127, 108, 0.4);
+    letter-spacing: 0.2em;
+  
 }
 
 .entrada-rodape{
@@ -369,6 +374,7 @@ body.cadastro .frase-login{
 
 body.cadastro .frase-cadastro{
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* ...e o formulário também */
@@ -523,7 +529,7 @@ body.cadastro .form-cadastro{
 .link-trocar,
 .entrada-esqueci,
 .entrada-rodape a{
-    color: #ff9a86;
+    color: linear-gradient(135deg, #ec6a7c 0%, #c74c63 100%);;
 }
 
 /* as abas Entrar | Criar conta */

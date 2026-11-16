@@ -22,6 +22,11 @@ function carregarOficiais(){
     buscar('/campanhas/oficiais', function(lista){
         oficiais = lista
         desenharOficiais()
+
+        // veio do presente de Natal (campanhas.html?oficial=9): já abre a janela dessa campanha
+        if(parametro('oficial') != null){
+            abrirOficial(parametro('oficial'))
+        }
     })
 }
 
@@ -53,13 +58,35 @@ function desenharMinhas(){
         var c = campanhas[i]
         var souMestre = (c.usuarioMestreId == eu.id)
 
+             // VISUAL: a campanha copiada de uma oficial de Natal fica decorada para sempre
+        // (sem "Tempo limitado" e sem NOVO: ela é da pessoa e não some depois do evento)
+        var classeCard = 'foto-card'
+        var neve = ''
+
+        if(c.tema){
+            classeCard += ' card-evento'
+            neve = '<span class="neve-carta"></span>'
+        }
+
+        // o selo e a frase mudam se eu sou o mestre ou estou jogando
+        var classeSelo = ''
+        var selo = 'Jogando'
+        var frase = 'mestre: ' + seguro(c.mestre)
+
+        if(souMestre){
+            classeSelo = 'selo-escuro'
+            selo = 'Mestre'
+            frase = 'você é o mestre'
+        }
+
         html += `
-            <a class="foto-card" href="campanha.html?id=${c.id}">
-                ${htmlFoto(c.imagemCapa, c.nome)}
-                <div class="etiquetas"><span class="selo ${souMestre ? 'selo-escuro' : ''}">${souMestre ? 'Mestre' : 'Jogando'}</span></div>
+            <a class="${classeCard}" href="campanha.html?id=${c.id}">
+                ${neve}
+                ${htmlFoto(c.imagemCapa, 'campanha')}
+                <div class="etiquetas"><span class="selo ${classeSelo}">${selo}</span></div>
                 <div class="nome">
                     <b>${seguro(c.nome)}</b>
-                    <small>${souMestre ? 'você é o mestre' : 'mestre: ' + seguro(c.mestre)}</small>
+                    <small>${frase}</small>
                 </div>
             </a>`
     }
@@ -107,14 +134,39 @@ function desenharOficiais(){
     for(var i = 0; i < oficiais.length; i++){
         var c = oficiais[i]
 
+        // VISUAL: a campanha de evento (ex.: Natal) ganha a classe "card-evento", a neve e o "Tempo limitado"
+        var classeCard = 'foto-card'
+        var extras = ''
+        var prazo = ''
+
+        if(c.tema){
+            classeCard += ' card-evento'
+            extras = '<span class="neve-carta"></span>'
+            prazo = '<span class="prazo-evento">Tempo limitado</span>'
+
+            // o NOVO só nos 7 primeiros dias do evento
+            if(c.novo > 0){
+                extras += '<span class="selo-novo">NOVO</span>'
+            }
+        }
+
+        // quem criou a campanha (se não tiver nome, é uma aventura pronta)
+        var criadaPor = 'aventura pronta'
+
+        if(c.criadaPor){
+            criadaPor = 'criada por ' + seguro(c.criadaPor)
+        }
+
         html += `
-            <button type="button" class="foto-card" onclick="abrirOficial(${c.id})">
-                ${htmlFoto(c.imagemCapa, c.nome)}
+            <button type="button" class="${classeCard}" onclick="abrirOficial(${c.id})">
+                ${extras}
+                ${htmlFoto(c.imagemCapa, 'campanha')}
                 <div class="etiquetas"><span class="selo">Oficial</span></div>
                 <div class="nome">
                     <b>${seguro(c.nome)}</b>
-                    <small>${c.criadaPor ? 'criada por ' + seguro(c.criadaPor) : 'aventura pronta'}</small>
+                    <small>${criadaPor}</small>
                 </div>
+                ${prazo}
             </button>`
     }
 
@@ -135,22 +187,35 @@ function abrirOficial(id){
 
             document.getElementById('oficialNome').textContent = c.nome
 
-            // sem capa, o src ficaria "null" e apareceria o ícone de imagem quebrada:
-            // então a imagem só aparece quando a campanha tem capa (igual a capa do perfil)
+            // sem capa, entra a capa padrão (fotoPadrao, do script.js)
             if(c.imagemCapa){
                 document.getElementById('oficialCapa').src = c.imagemCapa
-                document.getElementById('oficialCapa').classList.remove('oculto')
             }else{
-                document.getElementById('oficialCapa').classList.add('oculto')
+                document.getElementById('oficialCapa').src = fotoPadrao('campanha')
             }
 
             document.getElementById('oficialDescricao').textContent = c.descricao
             document.getElementById('oficialHistoria').textContent = c.historia
-            document.getElementById('oficialCriadaPor').textContent = c.criadaPor ? 'Criada por ' + c.criadaPor : ''
+            if(c.criadaPor){
+                document.getElementById('oficialCriadaPor').textContent = 'Criada por ' + c.criadaPor
+            }else{
+                document.getElementById('oficialCriadaPor').textContent = ''
+            }
         }
     }
 
     abrirJanela('janelaOficial')
+}
+
+// Fechar a janela da campanha oficial.
+// Se a pessoa veio do presente de Natal (?voltar=presente), volta para o Início com as cartas abertas.
+function fecharOficial(){
+    if(parametro('voltar') == 'presente'){
+        window.location.href = 'inicio.html?presente=1'
+        return
+    }
+
+    fecharJanela('janelaOficial')
 }
 
 // Botão "Usar como minha campanha": o servidor cria uma cópia com a pessoa de Mestre

@@ -50,7 +50,7 @@ function login(){
 
         // se a pessoa chegou aqui por um link (ex.: o perfil de alguém), volta para ele;
         // senão vai para o Início. (quem guarda o link é o verificarLogin do script.js)
-        var destino = sessionStorage.getItem('voltarPara') || 'inicio.html'
+        var destino = textoOuPadrao(sessionStorage.getItem('voltarPara'), 'inicio.html')
         sessionStorage.removeItem('voltarPara')
 
         window.location.href = destino

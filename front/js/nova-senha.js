@@ -8,8 +8,16 @@ var via = 'email'
 
 function escolherVia(escolha){
     via = escolha
-    document.getElementById('viaEmail').classList.toggle('ativo', via == 'email')
-    document.getElementById('viaSms').classList.toggle('ativo', via == 'sms')
+    if(via == 'email'){
+        document.getElementById('viaEmail').classList.add('ativo')
+    }else{
+        document.getElementById('viaEmail').classList.remove('ativo')
+    }
+    if(via == 'sms'){
+        document.getElementById('viaSms').classList.add('ativo')
+    }else{
+        document.getElementById('viaSms').classList.remove('ativo')
+    }
 }
 
 // Passo 1: manda o e-mail e a escolha. O servidor guarda um código e manda
@@ -27,11 +35,13 @@ function pedirCodigoSenha(){
             return
         }
 
-        // o texto do passo 2 (seguro() porque o e-mail foi digitado pela pessoa)
+        // o texto do passo 2 (seguro() porque o e-mail foi digitado pela pessoa).
+        // SEGURANÇA: o servidor responde igual existindo ou não a conta (assim ninguém descobre
+        // quais e-mails usam a Peak). Por isso o texto diz "se tiver uma conta" e lembra de conferir o e-mail.
         if(via == 'sms'){
-            document.getElementById('ondeChegou').innerHTML = 'Se a conta <b>' + seguro(email) + '</b> tiver celular, o código chegou por SMS. Se não tiver, foi para o e-mail. Ele só vale uma vez.'
+            document.getElementById('ondeChegou').innerHTML = 'Se <b>' + seguro(email) + '</b> tiver uma conta na Peak com celular, o código chega por SMS (sem celular, ele vai para o e-mail). Não chegou? Confira se digitou o e-mail certo. O código só vale uma vez.'
         }else{
-            document.getElementById('ondeChegou').innerHTML = 'Enviamos o código para <b>' + seguro(email) + '</b>. Ele só vale uma vez.'
+            document.getElementById('ondeChegou').innerHTML = 'Se <b>' + seguro(email) + '</b> tiver uma conta na Peak, o código chega em instantes. Não chegou? Confira se digitou o e-mail certo e olhe também o spam. O código só vale uma vez.'
         }
 
         // esconde o passo 1 e mostra o passo 2

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Campanhas | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -72,7 +74,6 @@
       <!-- ENTRAR COM CÓDIGO: o Mestre passa o código; o jogador escolhe com qual ficha entra -->
       <div class="faixa-codigo">
         <b>Tem um código?</b>
-        <small>O mestre te manda um código para entrar na campanha dele.</small>
         <input class="input" type="text" id="codigo" placeholder="PEDRA-4821" aria-label="Código de convite">
         <!-- as opções deste select (as minhas fichas) são criadas pela função carregarFichas() -->
         <select class="input" id="ficha" aria-label="Sua ficha"></select>
@@ -102,21 +103,21 @@
   <!-- JANELA DA CAMPANHA OFICIAL: começa escondida. Abre ao clicar numa campanha oficial
        (função abrirOficial). Os textos e a imagem são preenchidos pelo js/campanhas.js. -->
   <div class="modal-fundo oculto" id="janelaOficial">
-    <div class="modal-caixa modal-larga">
+    <div class="modal-caixa modal-larga modal-arte">
       <div class="modal-cabecalho">
         <h2 id="oficialNome"></h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaOficial')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharOficial()" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
-      <img class="capa-grande" id="oficialCapa" src="../img/logo.png" alt="">
+      <img class="capa-grande" id="oficialCapa" alt="">
 
       <p class="espaco-topo-pequeno"><b id="oficialDescricao"></b></p>
       <p class="texto-suave" id="oficialCriadaPor"></p>
       <p class="historia" id="oficialHistoria"></p>
 
-      <p class="texto-suave espaco-baixo">Você recebe uma cópia só sua e vira o Mestre. A original continua igual, e os monstros desta história já vêm prontos no seu Painel do Mestre.</p>
+      <p class="texto-suave espaco-baixo">Você vira o Mestre de uma cópia só sua.</p>
 
-      <button type="button" class="botao botao-principal" onclick="usarOficial()">▶ Usar como minha campanha</button>
+      <button type="button" class="botao botao-principal" onclick="usarOficial()">Usar como minha campanha</button>
     </div>
   </div>
 
@@ -137,6 +138,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/campanhas.js"></script>
 </body>
 </html>

@@ -36,6 +36,7 @@ const MonstrosBD = require('./database/MonstrosBD')
 const CampanhasBD = require('./database/CampanhasBD')
 const SessoesBD = require('./database/SessoesBD')
 const AvisosBD = require('./database/AvisosBD')
+const EventosBD = require('./database/EventosBD') 
 const RecadosBD = require('./database/RecadosBD')
 const ImagensBD = require('./database/ImagensBD')     // FOTOS MAIS RÁPIDAS (explicado lá embaixo)
 
@@ -48,11 +49,42 @@ const ImagensBD = require('./database/ImagensBD')     // FOTOS MAIS RÁPIDAS (ex
 // Só a pasta front/ é entregue. database/, app.js, as senhas... nunca.
 const PASTA_FRONT = path.join(__dirname, 'front')
 
-const TIPOS = {
-    '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-    '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.svg': 'image/svg+xml',
-    '.webp': 'image/webp', '.ico': 'image/x-icon', '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg',
-    '.mp4': 'video/mp4', '.webm': 'video/webm'     // VISUAL: os vídeos do fundo do index
+// O tipo de cada arquivo, pela extensão (o navegador precisa saber se é página, imagem, som...)
+// Devolve '' se for uma extensão que o site não entrega.
+function tipoDoArquivo(extensao){
+    if(extensao == '.html'){
+        return 'text/html; charset=utf-8'
+    }else if(extensao == '.css'){
+        return 'text/css; charset=utf-8'
+    }else if(extensao == '.js'){
+        return 'text/javascript; charset=utf-8'
+    }else if(extensao == '.png'){
+        return 'image/png'
+    }else if(extensao == '.jpg' || extensao == '.jpeg'){
+        return 'image/jpeg'
+    }else if(extensao == '.gif'){
+        return 'image/gif'
+    }else if(extensao == '.svg'){
+        return 'image/svg+xml'
+    }else if(extensao == '.webp'){
+        return 'image/webp'
+    }else if(extensao == '.ico'){
+        return 'image/x-icon'
+    }else if(extensao == '.wav'){
+        return 'audio/wav'
+    }else if(extensao == '.mp3'){
+        return 'audio/mpeg'
+    }else if(extensao == '.ogg'){
+        return 'audio/ogg'
+    }else if(extensao == '.mp4'){
+        return 'video/mp4'               // VISUAL: os vídeos do fundo do index e dos banners
+    }else if(extensao == '.webm'){
+        return 'video/webm'
+    }else if(extensao == '.woff2'){
+        return 'font/woff2'              // VISUAL: a letra dos livros (css/fontes/)
+    }
+
+    return ''
 }
 
 // Página de erro bonita (front/html/404.html) para endereço que não existe.
@@ -67,6 +99,20 @@ function paginaNaoEncontrada(res){
         res.writeHead(404, {'Content-Type': 'text/html; charset=utf-8'})
         res.end(conteudo)
     })
+}
+
+// O endereço é de um arquivo do site? (a página inicial "/" ou algo dentro das pastas html, css, js, img e sons)
+// indexOf(...) == 0 quer dizer "começa com"
+function ehArquivoDoSite(pathname){
+    if(pathname == '/'){
+        return true
+    }else if(pathname.indexOf('/html/') == 0 || pathname.indexOf('/css/') == 0 || pathname.indexOf('/js/') == 0){
+        return true
+    }else if(pathname.indexOf('/img/') == 0 || pathname.indexOf('/sons/') == 0){
+        return true
+    }
+
+    return false
 }
 
 function entregarArquivo(pathname, res){
@@ -91,18 +137,20 @@ function entregarArquivo(pathname, res){
         return res.end()
     }
 
-    var tipo = TIPOS[path.extname(caminho).toLowerCase()]
+    var extensao = path.extname(caminho).toLowerCase()     // ex.: '.jpg'
+    var tipo = tipoDoArquivo(extensao)
 
     fs.readFile(caminho, (erro, conteudo)=>{
-        if(erro || !tipo){
+        if(erro || tipo == ''){
             return paginaNaoEncontrada(res)
         }
 
-        // fotos, vídeos e sons ficam guardados no navegador por 7 dias:
-        // quem volta ao site não baixa tudo de novo (economiza a banda do Render)
-        var cache = 'no-cache'
-        if(/\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|mp3)$/i.test(caminho)){
-            cache = 'public, max-age=604800'
+        // fotos, vídeos, sons e letras ficam guardados no navegador por 7 dias:
+        // quem volta ao site não baixa tudo de novo (economiza a banda).
+        // Páginas, CSS e JS não: assim uma atualização aparece na hora.
+        var cache = 'public, max-age=604800'
+        if(extensao == '.html' || extensao == '.css' || extensao == '.js'){
+            cache = 'no-cache'
         }
 
         res.writeHead(200, {'Content-Type': tipo, 'Cache-Control': cache})
@@ -116,7 +164,7 @@ function entregarArquivo(pathname, res){
 // o "where id = ?" em outra coisa e o SQL pode mexer em linhas que não devia.
 function temObjeto(dados){
     for(var campo in dados){
-        if(campo != 'itemIds' && dados[campo] !== null && typeof dados[campo] == 'object'){
+        if(campo != 'itemIds' && dados[campo] != null && typeof dados[campo] == 'object'){
             return true
         }
     }
@@ -177,6 +225,18 @@ function exigirLogin(req, res, depois){
     })
 }
 
+// As coisas de evento (ex.: Natal) só aparecem durante o evento.
+// A ÚNICA exceção é a página de Administração, que pede com "?todos=1"
+// (para o admin conseguir editar a campanha de Natal fora do Natal).
+// Nas outras páginas, até o admin vê igual a todo mundo.
+function verTudo(usuario, rota){
+    if(usuario.tipo == 'admin' && rota.query.todos == '1'){
+        return 'admin'
+    }
+
+    return 'comum'
+}
+
 // Igual ao exigirLogin, mas só deixa passar quem é administrador.
 function exigirAdmin(req, res, depois){
 
@@ -200,7 +260,7 @@ const callback = (req, res)=>{
     var rota = url.parse(req.url, true)
 
     // VERSÃO SERVIDOR: arquivos do site (páginas, css, js, imagens, sons)
-    if(req.method == 'GET' && (rota.pathname == '/' || /^\/(html|css|js|img|sons)\//.test(rota.pathname))){
+    if(req.method == 'GET' && ehArquivoDoSite(rota.pathname)){
         entregarArquivo(rota.pathname, res)
         return
     }
@@ -396,7 +456,7 @@ const callback = (req, res)=>{
         }else if(rota.pathname == '/racas'){
 
             exigirLogin(req, res, (usuario)=>{
-                RacasBD.getRacas(usuario.id, (racas)=>{
+            RacasBD.getRacas(usuario.id, verTudo(usuario, rota), (racas)=>{
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(racas))
                 })
@@ -405,7 +465,7 @@ const callback = (req, res)=>{
         }else if(rota.pathname == '/classes'){
 
             exigirLogin(req, res, (usuario)=>{
-                ClassesBD.getClasses(usuario.id, (classes)=>{
+                 ClassesBD.getClasses(usuario.id, verTudo(usuario, rota), (classes)=>{
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(classes))
                 })
@@ -415,7 +475,7 @@ const callback = (req, res)=>{
         }else if(rota.pathname == '/monstros'){
 
             exigirLogin(req, res, (usuario)=>{
-                MonstrosBD.getMonstros(usuario.id, (monstros)=>{
+              MonstrosBD.getMonstros(usuario.id, verTudo(usuario, rota), (monstros)=>{
                     ImagensBD.trocarFotos(monstros, 'imagem', 'monstro')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
@@ -436,7 +496,7 @@ const callback = (req, res)=>{
         }else if(rota.pathname == '/campanhas/oficiais'){
 
             exigirLogin(req, res, (usuario)=>{
-                CampanhasBD.getOficiais((oficiais)=>{
+                 CampanhasBD.getOficiais(verTudo(usuario, rota), (oficiais)=>{
                     ImagensBD.trocarFotos(oficiais, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(oficiais))
@@ -471,6 +531,38 @@ const callback = (req, res)=>{
                     ImagensBD.trocarFotos(monstros, 'imagem', 'monstro', 'monstroId')     // FOTOS MAIS RÁPIDAS
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
+                })
+            })
+
+
+        // EVENTOS: o evento de agora (ou {} se não tiver)
+        }else if(rota.pathname == '/eventos/ativo'){
+
+            exigirLogin(req, res, (usuario)=>{
+                EventosBD.getAtivo(usuario.id, (evento)=>{
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(evento))
+                })
+            })
+
+        // EVENTOS: os retratos de presente que a pessoa ganhou (Oficina)
+        }else if(rota.pathname == '/retratos/ganhos'){
+
+            exigirLogin(req, res, (usuario)=>{
+                EventosBD.getRetratosGanhos(usuario.id, (retratos)=>{
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(retratos))
+                })
+            })
+
+
+        // EVENTOS: a lista de todos os eventos (só admin)
+        }else if(rota.pathname == '/admin/eventos'){
+
+            exigirAdmin(req, res, (usuario)=>{
+                EventosBD.getEventos((eventos)=>{
+                    res.writeHead(200, {'Content-Type': 'application/json'})
+                    res.end(JSON.stringify(eventos))
                 })
             })
 
@@ -1119,6 +1211,46 @@ const callback = (req, res)=>{
                         res.end(JSON.stringify(message))
                     })
                 })
+               
+            // EVENTOS: a pessoa clicou em "Coletar tudo" no presente
+            }else if(rota.pathname == '/eventos/visto'){
+
+                exigirLogin(req, res, (usuario)=>{
+                    EventosBD.marcarVisto(usuario.id, dados.eventoId, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            // EVENTOS (admin): criar
+            }else if(rota.pathname == '/admin/eventos/criar'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    EventosBD.addEvento(dados, (message)=>{
+                        res.writeHead(201, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            // EVENTOS (admin): apagar
+            }else if(rota.pathname == '/admin/eventos/excluir'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    EventosBD.excluir(dados.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                })
+
+            // EVENTOS (admin): "Mostrar de novo" (apaga quem já viu)
+            }else if(rota.pathname == '/admin/eventos/mostrar-de-novo'){
+
+                exigirAdmin(req, res, (usuario)=>{
+                    EventosBD.mostrarDeNovo(dados.id, (message)=>{
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        res.end(JSON.stringify(message))
+                    })
+                }) 
 
             }else{
                 res.writeHead(404, {'Content-Type': 'application/json'})
@@ -1180,7 +1312,12 @@ if(require.main === module){
     const server = http.createServer(callback)
 
     // VERSÃO SERVIDOR: o Render escolhe a porta e avisa pelo process.env.PORT
-    const PORTA = process.env.PORT || 3000
+    var PORTA = process.env.PORT
+
+    // no computador não tem process.env.PORT: usa a 3000
+    if(PORTA == null){
+        PORTA = 3000
+    }
 
     server.listen(PORTA, ()=>{
         console.log('Servidor rodando na porta ' + PORTA)

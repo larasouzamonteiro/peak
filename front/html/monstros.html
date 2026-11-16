@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bestiário | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -91,13 +93,13 @@
   <!-- JANELA: VER UM MONSTRO. Começa escondida; abre ao clicar num card (função abrirMonstro).
        Os textos são preenchidos pelo js/monstros.js. -->
   <div class="modal-fundo oculto" id="janelaMonstro">
-    <div class="modal-caixa">
+    <div class="modal-caixa modal-arte">
       <div class="modal-cabecalho">
         <h2 id="monstroNome"></h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaMonstro')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaMonstro')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
-      <img class="monstro-imagem" id="monstroImagem" src="../img/logo.png" alt="">
+      <img class="monstro-imagem" id="monstroImagem" alt="">
 
       <div class="chips">
         <span class="selo" id="monstroVida"></span>
@@ -129,7 +131,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2>Criar monstro</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaNovo')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaNovo')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -150,12 +152,12 @@
 
         <div class="linha-campos">
           <div class="campo">
-            <label class="rotulo" for="vidaMaxima">Vida</label>
-            <input class="input" type="number" id="vidaMaxima" value="10" min="1">
+            <label class="rotulo" for="vidaMaxima">Vida (1 a 1000)</label>
+            <input class="input" type="number" id="vidaMaxima" value="10" min="1" max="1000">
           </div>
           <div class="campo">
-            <label class="rotulo" for="defesa">Defesa</label>
-            <input class="input" type="number" id="defesa" value="10" min="0">
+            <label class="rotulo" for="defesa">Defesa (0 a 1000)</label>
+            <input class="input" type="number" id="defesa" value="10" min="0" max="1000">
           </div>
         </div>
 
@@ -186,6 +188,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/monstros.js"></script>
 </body>
 </html>

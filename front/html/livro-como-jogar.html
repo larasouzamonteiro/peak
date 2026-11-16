@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Como jogar | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Lora nos livros) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
@@ -73,21 +75,19 @@
         </div>
       </div>
 
-      <div class="aberto-topo">
-        <a class="botao" href="historia.html">‹ Voltar à estante</a>
+      <!-- ABAS DE LEITURA: penduradas no alto da tela, só com o desenho (as funções estão no js/historia.js).
+           O nome de cada uma aparece ao passar o mouse (title). -->
+      <nav class="abas-leitura">
+        <a class="aba-leitura" href="historia.html" title="Voltar à estante" aria-label="Voltar à estante"><img src="../img/icones/estante.svg" alt=""></a>
+        <button type="button" class="aba-leitura" id="botaoAudio" onclick="tocarAudio()" title="Ouvir" aria-label="Ouvir">
+          <img class="icone-ouvir" src="../img/icones/ouvir.svg" alt="">
+          <img class="icone-pausar" src="../img/icones/pausar.svg" alt="">
+        </button>
+        <button type="button" class="aba-leitura" id="botaoMarcaTexto" onclick="ligarMarcaTexto()" title="Marca-texto" aria-label="Marca-texto"><img src="../img/icones/marca-texto.svg" alt=""></button>
+      </nav>
 
-        <!-- BOTÕES DE LEITURA (as funções estão no js/historia.js) -->
-        <div class="barra-leitura">
-          <button type="button" class="botao botao-principal" id="botaoAudio" onclick="tocarAudio()">▶ Ouvir</button>
-          <button type="button" class="botao" id="botaoMarcaTexto" onclick="ligarMarcaTexto()">Marca-texto</button>
-        </div>
-      </div>
-
-      <!-- a narração deste livro: grave e salve em front/sons/livro-como-jogar.mp3
-           Enquanto o arquivo não existir, o historia.js esconde o botão "Ouvir".
-           preload="metadata" = o navegador só confere se o arquivo existe (não baixa o áudio todo). -->
+      <!-- a narração deste livro, gravada pela equipe: front/sons/livro-como-jogar.mp3 -->
       <audio id="audio" src="../sons/livro-como-jogar.mp3" preload="metadata" onended="audioTerminou()"></audio>
-      <p class="alerta" id="avisoAudio"></p>
 
       <!-- O LIVRO: página da esquerda = arte e sumário (links #cap-1, #cap-2...)
            página da direita = os capítulos, um embaixo do outro (id="cap-1", id="cap-2"...).
@@ -112,33 +112,42 @@
           <section class="cap-texto" id="cap-1">
             <small class="cap-numero">Capítulo 1</small>
             <h3>Crie a sua ficha</h3>
-            <p><span class="capitular">T</span>odo aventureiro começa numa folha em branco. Em <b>Fichas</b>, a Oficina leva você por cinco etapas: identidade, raça, classe, combate e itens, atributos e detalhes.</p>
-            <p>A <a class="palavra" href="#raca" data-def="O povo do personagem: elfo, humano, goblin... Define a vida inicial.">raça</a> define quanto de vida o personagem tem no começo. A <a class="palavra" href="#classe" data-def="A profissão de aventureiro: o que o personagem sabe fazer.">classe</a> diz o que ele sabe fazer. Os seis <a class="palavra" href="#atributos" data-def="Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma.">atributos</a> mostram no que ele é bom e no que é desastrado.</p>
-            <p>Não existe ficha errada: um mago com pouca inteligência só rende histórias mais engraçadas.</p>
+            <p><span class="capitular">T</span>odo jogador começa criando a sua ficha. Em <b>Fichas</b>, a Oficina guia a criação em cinco etapas: identidade, <a class="palavra" href="#raca" data-def="O povo do personagem: elfo, humano, goblin... Define a vida inicial.">raça</a>, <a class="palavra" href="#classe" data-def="A profissão de aventureiro: o que o personagem sabe fazer.">classe</a>, combate e itens, e por último <a class="palavra" href="#atributos" data-def="Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma.">atributos</a> e detalhes.</p>
+            <p>Na identidade você escolhe o nome do personagem e o retrato. Dá para usar um dos retratos prontos ou enviar uma imagem do computador. O nome é obrigatório para passar para a próxima etapa.</p>
+            <p>A raça define a vida inicial do personagem. A classe define o que ele sabe fazer em uma aventura. As duas podem ser oficiais da Peak ou criadas pela comunidade.</p>
+            <p>Em combate e itens você confere a vida e escolhe até três itens para o personagem levar.</p>
+            <p>Nos atributos existem três formas de preencher os valores: Equilibrado deixa todos iguais, Aleatório sorteia com dados e Personalizado deixa você digitar cada um. Os seis atributos são Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma.</p>
+            <p>Para terminar, escreva a história e a personalidade do personagem. Ao salvar, a ficha aparece em <b>Fichas</b> e pode ser editada a qualquer momento.</p>
             <div class="pagina-rodape"><span>1</span></div>
           </section>
 
           <section class="cap-texto" id="cap-2">
             <small class="cap-numero">Capítulo 2</small>
             <h3>Entre numa campanha</h3>
-            <p><span class="capitular">O</span> <a class="palavra" href="#mestre" data-def="Quem conduz a história: descreve o mundo e interpreta os monstros.">Mestre</a> cria a <a class="palavra" href="#campanha" data-def="A aventura inteira, do começo ao fim. É formada por várias sessões.">campanha</a> e recebe um código de convite. Você digita esse código em <b>Campanhas</b>, escolhe com qual ficha vai jogar, e pronto: já faz parte do grupo.</p>
-            <p>Quer mestrar? Crie a sua campanha do zero ou use uma campanha oficial da Peak como ponto de partida. Você recebe uma cópia só sua, com a história e os monstros prontos.</p>
+            <p><span class="capitular">U</span>ma <a class="palavra" href="#campanha" data-def="A aventura inteira, do começo ao fim. É formada por várias sessões.">campanha</a> é a aventura que o grupo vai jogar. Ela é criada pelo <a class="palavra" href="#mestre" data-def="Quem conduz a história: descreve o mundo e interpreta os monstros.">Mestre</a>, que recebe um código de convite assim que a campanha é salva.</p>
+            <p>Para entrar, vá em <b>Campanhas</b>, digite o código que o Mestre enviou e escolha qual das suas fichas vai participar. A partir daí você faz parte do grupo.</p>
+            <p>Para ser o Mestre, crie uma campanha nova ou use uma campanha oficial da Peak como ponto de partida. Ao usar uma oficial, você recebe uma cópia só sua, com a história e os monstros prontos.</p>
+            <p>Dentro da campanha ficam a história do mundo, a lista de jogadores, as sessões já jogadas e os monstros escolhidos pelo Mestre. Se quiser sair, use o botão de sair da campanha: a sua ficha continua com você.</p>
             <div class="pagina-rodape"><span>2</span></div>
           </section>
 
           <section class="cap-texto" id="cap-3">
             <small class="cap-numero">Capítulo 3</small>
             <h3>Jogue as sessões</h3>
-            <p><span class="capitular">C</span>ada encontro do grupo é uma <a class="palavra" href="#sessao" data-def="Um encontro do grupo para jogar um pedaço da campanha.">sessão</a>. O Mestre mostra o mapa, coloca música e sons, e descreve o que acontece. Os jogadores dizem o que os seus personagens fazem.</p>
-            <p>Ninguém joga contra ninguém: o grupo inteiro joga junto para ver até onde a história vai. Depois, o Mestre anota o resultado na aba <b>Sessões</b>, e cada um atualiza a vida e o nível da própria ficha.</p>
+            <p><span class="capitular">C</span>ada encontro do grupo para jogar é uma <a class="palavra" href="#sessao" data-def="Um encontro do grupo para jogar um pedaço da campanha.">sessão</a>. Nela, o Mestre descreve o que está acontecendo e os jogadores dizem o que os seus personagens fazem.</p>
+            <p>Durante a sessão, o Mestre pode abrir o mapa da campanha. Lá é possível escolher um dos mapas prontos ou enviar uma imagem, e tocar uma música para dar clima à cena.</p>
+            <p>O grupo joga junto, e não um contra o outro. O objetivo é avançar na história e resolver os desafios que o Mestre apresenta.</p>
+            <p>Ao final, o Mestre registra a sessão na aba <b>Sessões</b>, com o nome, a data e um resumo do que aconteceu. Cada jogador atualiza a vida e o nível da própria ficha.</p>
             <div class="pagina-rodape"><span>3</span></div>
           </section>
 
           <section class="cap-texto" id="cap-4">
             <small class="cap-numero">Capítulo 4</small>
             <h3>Role os dados</h3>
-            <p><span class="capitular">Q</span>uando não dá para saber se uma ação vai dar certo (pular um abismo, enganar um guarda), quem decide é o <a class="palavra" href="#dado" data-def="Decide o que depende da sorte. d20 é o dado de 20 lados.">dado</a>.</p>
-            <p>O botão vermelho no canto da tela rola d4, d6, d8, d10, d12 e d20. Quanto maior o número, melhor o resultado. O Mestre diz qual dado rolar e quanto precisa tirar.</p>
+            <p><span class="capitular">Q</span>uando o resultado de uma ação não é certo, como pular um abismo ou convencer um guarda, quem decide é o <a class="palavra" href="#dado" data-def="Decide o que depende da sorte. d20 é o dado de 20 lados.">dado</a>.</p>
+            <p>O botão no canto da tela rola os dados d4, d6, d8, d10, d12 e d20. O número depois do "d" é a quantidade de lados.</p>
+            <p>O mais usado é o d20, o dado de vinte lados. O Mestre diz qual dado rolar e qual valor é preciso alcançar. Quanto maior o resultado, melhor.</p>
+            <p>Os outros dados costumam ser usados para valores específicos, como o dano de uma arma ou a cura de uma poção.</p>
             <div class="pagina-rodape"><span>4</span></div>
           </section>
         </div>
@@ -189,7 +198,71 @@
   </div>
 
   <!-- script.js: funções usadas em todas as páginas (menu, dado...) -->
+  <!-- ACESSIBILIDADE: tradutor de Libras do governo (VLibras) -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script>
+  // ACESSIBILIDADE: o avatar de Libras é pesado. Para não reabrir sozinho (e travar)
+  // a cada página nova, apagamos o que o VLibras guardou da página anterior:
+  // ele sempre começa fechado, e a pessoa abre quando quiser.
+  for(var k = localStorage.length - 1; k >= 0; k--){
+      var nomeGuardado = localStorage.key(k)
+
+      if(nomeGuardado && nomeGuardado.toLowerCase().indexOf('vlibras') != -1){
+          localStorage.removeItem(nomeGuardado)
+      }
+  }
+</script>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+
+<script>
+  // VISUAL: muda a cor e a posição do botão de Libras.
+  // O VLibras desenha o botão dentro de um "shadow root" (uma caixinha fechada)
+  // que o CSS do site não alcança. Então, a cada 1/4 de segundo, procuramos essa
+  // caixinha; quando ela aparece, colocamos o nosso estilo lá dentro e paramos.
+  var tentativasLibras = 0
+
+  var procurarLibras = setInterval(function(){
+      tentativasLibras++
+
+      var todos = document.querySelectorAll('*')
+
+      for(var i = 0; i < todos.length; i++){
+          var caixa = todos[i].shadowRoot
+
+          if(caixa && caixa.getElementById('vlibras-access')){
+              var estilo = document.createElement('style')
+
+                            estilo.textContent =
+                  // posição: embaixo à direita, do lado ESQUERDO do botão de voltar ao topo (↑), sem ficar em cima dele.
+                  // cor: o filtro vai na caixinha TODA (botão + fundo), para não sobrar azul nos cantos
+                  '#vlibras-access{ top: auto !important; bottom: 36px !important; right: 162px !important; left: auto !important; transform: none !important;' +
+                  ' filter: hue-rotate(140deg) saturate(0.85) brightness(0.95); border-radius: 14px; overflow: hidden; background: transparent !important; }' +
+                  // o botão de dentro: mesmo arredondado da caixinha
+                  '#vlibras-button{ border-radius: 14px; }' +
+                  // celular: acima da barra de baixo
+                  '@media (max-width: 760px){ #vlibras-access{ bottom: 96px !important; right: 12px !important; } }'
+              caixa.appendChild(estilo)
+              clearInterval(procurarLibras)
+              return
+          }
+      }
+
+      // se em 10 segundos não achou (internet lenta, VLibras fora do ar), desiste
+      if(tentativasLibras > 40){
+          clearInterval(procurarLibras)
+      }
+  }, 250)
+</script>
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
 
   <!-- historia.js: o áudio e o marca-texto deste livro -->
   <script src="../js/historia.js"></script>

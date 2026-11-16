@@ -49,7 +49,11 @@ function mostrarFala(numero){
     var destaque = null
 
     for(var i = 0; i < links.length; i++){
-        links[i].classList.toggle('tut-destaque', fala.alvo != '' && links[i].getAttribute('href') == fala.alvo)
+        if(fala.alvo != '' && links[i].getAttribute('href') == fala.alvo){
+            links[i].classList.add('tut-destaque')
+        }else{
+            links[i].classList.remove('tut-destaque')
+        }
 
         if(fala.alvo != '' && links[i].getAttribute('href') == fala.alvo){
             destaque = links[i]
@@ -61,13 +65,18 @@ function mostrarFala(numero){
     // na última fala o botão vira "Terminar" e o "Pular" some
     var ultima = (numero == falas.length - 1)
 
-    document.getElementById('tutProximo').textContent = ultima ? 'Terminar' : 'Próximo ›'
-    document.getElementById('tutPular').classList.toggle('oculto', ultima)
+    if(ultima){
+        document.getElementById('tutProximo').textContent = 'Terminar'
+        document.getElementById('tutPular').classList.add('oculto')
+    }else{
+        document.getElementById('tutProximo').textContent = 'Próximo ›'
+        document.getElementById('tutPular').classList.remove('oculto')
+    }
 }
 
 // VISUAL (celular): na barra de baixo só aparecem Início, Campanhas, Fichas e o "Mais".
 // Bestiário, Comunidade e Configurações ficam escondidos dentro do "Mais".
-// Então, se o item da fala está escondido, o tutorial abre o "Mais" (abrirMais do script.js)
+// Então, se o item da fala está escondido, o tutorial abre o "Mais" (abrirMais do visual.js)
 // e fecha de novo quando a fala seguinte não precisar dele.
 var tutAbriuMais = false
 
@@ -95,7 +104,11 @@ function mostrarItemNoCelular(link){
         caixaEmCima = link.getBoundingClientRect().top > window.innerHeight / 2
     }
 
-    document.getElementById('tutorial').classList.toggle('caixa-em-cima', caixaEmCima)
+    if(caixaEmCima){
+        document.getElementById('tutorial').classList.add('caixa-em-cima')
+    }else{
+        document.getElementById('tutorial').classList.remove('caixa-em-cima')
+    }
 }
 
 function proximaFala(){

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ficha | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -73,7 +75,7 @@
       <article class="folha">
 
         <div class="folha-topo">
-          <div class="folha-retrato"><img id="fichaRetrato" src="../img/logo.png" alt=""></div>
+          <div class="folha-retrato"><img id="fichaRetrato" alt=""></div>
 
           <div class="folha-nome">
             <span class="selo" id="fichaNivel"></span>
@@ -100,12 +102,12 @@
             <section class="folha-bloco">
               <h3>Atributos</h3>
               <div class="atributos">
-                <div class="atributo"><span>FOR</span><strong id="fichaForca"></strong></div>
-                <div class="atributo"><span>DES</span><strong id="fichaDestreza"></strong></div>
-                <div class="atributo"><span>CON</span><strong id="fichaConstituicao"></strong></div>
-                <div class="atributo"><span>INT</span><strong id="fichaInteligencia"></strong></div>
-                <div class="atributo"><span>SAB</span><strong id="fichaSabedoria"></strong></div>
-                <div class="atributo"><span>CAR</span><strong id="fichaCarisma"></strong></div>
+                <div class="atributo"><span>Força</span><strong id="fichaForca"></strong></div>
+                <div class="atributo"><span>Destreza</span><strong id="fichaDestreza"></strong></div>
+                <div class="atributo"><span>Constituição</span><strong id="fichaConstituicao"></strong></div>
+                <div class="atributo"><span>Inteligência</span><strong id="fichaInteligencia"></strong></div>
+                <div class="atributo"><span>Sabedoria</span><strong id="fichaSabedoria"></strong></div>
+                <div class="atributo"><span>Carisma</span><strong id="fichaCarisma"></strong></div>
               </div>
             </section>
 
@@ -148,26 +150,27 @@
         <div class="formulario">
           <div class="linha-campos">
             <div class="campo">
-              <label class="rotulo" for="nivel">Nível</label>
-              <input class="input" type="number" id="nivel" min="1">
+              <label class="rotulo" for="nivel">Nível (1 a 100)</label>
+              <input class="input" type="number" id="nivel" min="1" max="100">
             </div>
             <div class="campo">
-              <label class="rotulo" for="vidaMaxima">Vida máxima</label>
-              <input class="input" type="number" id="vidaMaxima" min="1">
+              <label class="rotulo" for="vidaMaxima">Vida máxima (1 a 1000)</label>
+              <input class="input" type="number" id="vidaMaxima" min="1" max="1000">
             </div>
             <div class="campo">
-              <label class="rotulo" for="vidaAtual">Vida atual</label>
-              <input class="input" type="number" id="vidaAtual" min="0">
+              <label class="rotulo" for="vidaAtual">Vida atual (até a vida máxima)</label>
+              <input class="input" type="number" id="vidaAtual" min="0" max="1000">
             </div>
           </div>
 
+          <p class="texto-suave">Atributos: de 1 a 30</p>
           <div class="linha-campos">
-            <div class="campo"><label class="rotulo" for="forca">FOR</label><input class="input" type="number" id="forca"></div>
-            <div class="campo"><label class="rotulo" for="destreza">DES</label><input class="input" type="number" id="destreza"></div>
-            <div class="campo"><label class="rotulo" for="constituicao">CON</label><input class="input" type="number" id="constituicao"></div>
-            <div class="campo"><label class="rotulo" for="inteligencia">INT</label><input class="input" type="number" id="inteligencia"></div>
-            <div class="campo"><label class="rotulo" for="sabedoria">SAB</label><input class="input" type="number" id="sabedoria"></div>
-            <div class="campo"><label class="rotulo" for="carisma">CAR</label><input class="input" type="number" id="carisma"></div>
+            <div class="campo"><label class="rotulo" for="forca">Força</label><input class="input" type="number" id="forca" min="1" max="30"></div>
+            <div class="campo"><label class="rotulo" for="destreza">Destreza</label><input class="input" type="number" id="destreza" min="1" max="30"></div>
+            <div class="campo"><label class="rotulo" for="constituicao">Constituição</label><input class="input" type="number" id="constituicao" min="1" max="30"></div>
+            <div class="campo"><label class="rotulo" for="inteligencia">Inteligência</label><input class="input" type="number" id="inteligencia" min="1" max="30"></div>
+            <div class="campo"><label class="rotulo" for="sabedoria">Sabedoria</label><input class="input" type="number" id="sabedoria" min="1" max="30"></div>
+            <div class="campo"><label class="rotulo" for="carisma">Carisma</label><input class="input" type="number" id="carisma" min="1" max="30"></div>
           </div>
 
           <div class="campo">
@@ -210,6 +213,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/ficha.js"></script>
 </body>
 </html>

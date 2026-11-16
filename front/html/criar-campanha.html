@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Criar campanha | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -68,7 +70,6 @@
       <div class="cabecalho-pagina">
         <div>
           <h1 class="titulo">Criar campanha</h1>
-          <p class="texto-suave">Quem cria a campanha é o Mestre. O código de convite é sorteado na hora.</p>
         </div>
       </div>
 
@@ -76,17 +77,17 @@
         <div class="formulario">
           <div class="campo">
             <label class="rotulo" for="nome">Nome da campanha</label>
-            <input class="input" type="text" id="nome" maxlength="60" placeholder="Ex.: As Minas de Pedraluz">
+            <input class="input" type="text" id="nome" maxlength="60" placeholder="Ex.: Labubus assassinos">
           </div>
 
           <div class="campo">
             <label class="rotulo" for="descricao">Resumo</label>
-            <textarea class="input" id="descricao" placeholder="Em poucas linhas: do que trata a aventura."></textarea>
+            <textarea class="input" id="descricao" placeholder="Ex.: Labubus poderosos assustam a população."></textarea>
           </div>
 
           <div class="campo">
             <label class="rotulo" for="historia">História completa (opcional)</label>
-            <textarea class="input" id="historia" rows="6" placeholder="O mundo, o que aconteceu antes, os segredos... Aparece na aba História da campanha."></textarea>
+            <textarea class="input" id="historia" rows="6" placeholder="Ex.: Há muitos anos, o labubu primordial foi criado, e causou caos na sociedade..."></textarea>
           </div>
 
           <div class="campo">
@@ -107,6 +108,20 @@
     </div>
   </main>
 
+  <!-- JANELA DO CÓDIGO: aparece depois de criar a campanha (função criarCampanha).
+       Fica aberta até a pessoa copiar o código ou ir para a campanha. -->
+  <div class="modal-fundo oculto" id="janelaCodigo">
+    <div class="modal-caixa caixa-codigo">
+      <h2>Campanha criada!</h2>
+      <p class="texto-suave">Este é o código de convite. Mande para os seus jogadores.</p>
+      <b class="codigo-grande" id="codigoCriado"></b>
+      <div class="botoes">
+        <button type="button" class="botao botao-principal" onclick="copiarCodigo()">Copiar código</button>
+        <button type="button" class="botao" onclick="irParaCampanha()">Ir para a campanha</button>
+      </div>
+    </div>
+  </div>
+
   <!-- DADO: o botão do cantinho. As funções abrirDado() e rolarDado() estão no script.js -->
   <button type="button" class="dado-botao" onclick="abrirDado()" title="Rolar dado"><img src="../img/icones/dado.svg" alt="Rolar dado"></button>
   <div class="dado-menu oculto" id="dadoMenu">
@@ -124,6 +139,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/criar-campanha.js"></script>
 </body>
 </html>

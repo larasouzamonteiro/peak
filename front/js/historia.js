@@ -8,23 +8,22 @@
 verificarLogin()     // função do script.js: escreve o nome de quem está logado no menu
 
 
-// ---------- 1. ÁUDIO (a narração) ----------
-// No HTML: <button id="botaoAudio" onclick="tocarAudio()"> e <audio id="audio" onended="audioTerminou()">
+// ---------- 1. ÁUDIO (a narração gravada pela equipe) ----------
+// Nós mesmas narramos cada livro e salvamos o áudio em front/sons/ (ex.: sons/livro-rpg.mp3).
+// No HTML: <audio id="audio" src="../sons/livro-rpg.mp3" onended="audioTerminou()">
+//          e o botão <button id="botaoAudio" onclick="tocarAudio()">
+// O mesmo botão toca e pausa. O visual do botão tocando (classe "tocando") está no historia.css.
 function tocarAudio(){
     var audio = document.getElementById('audio')
     var botao = document.getElementById('botaoAudio')
 
     if(audio.paused){
-        // play() tenta tocar. Se o arquivo não existir, cai no .catch() e o botão some.
-        audio.play().catch(function(){
-            audioTerminou()
-            esconderAudio()
-        })
-        botao.textContent = '❚❚ Pausar'
-        botao.classList.add('tocando')       // o visual do botão tocando está no css/historia.css
+        audio.play()
+        botao.title = 'Pausar'          // o nome que aparece ao passar o mouse
+        botao.classList.add('tocando')
     }else{
         audio.pause()
-        botao.textContent = '▶ Continuar'
+        botao.title = 'Continuar'
         botao.classList.remove('tocando')
     }
 }
@@ -33,31 +32,8 @@ function tocarAudio(){
 function audioTerminou(){
     var botao = document.getElementById('botaoAudio')
 
-    botao.textContent = '▶ Ouvir'
+    botao.title = 'Ouvir'
     botao.classList.remove('tocando')
-}
-
-
-// Sem o arquivo .mp3 da narração não tem o que ouvir: o botão "Ouvir" some (sem aviso).
-function esconderAudio(){
-    var botao = document.getElementById('botaoAudio')
-
-    if(botao != null){
-        botao.classList.add('oculto')
-    }
-}
-
-// Confere se a narração existe (só nas páginas dos livros, que têm o <audio>).
-// audio.error já preenchido = o arquivo deu erro antes deste script carregar;
-// senão, fica esperando o evento "error" (quando o navegador descobrir que o arquivo não existe).
-var audioLivro = document.getElementById('audio')
-
-if(audioLivro != null){
-    if(audioLivro.error != null){
-        esconderAudio()
-    }else{
-        audioLivro.addEventListener('error', esconderAudio)
-    }
 }
 
 
@@ -68,8 +44,13 @@ var marcaTextoLigado = false
 function ligarMarcaTexto(){
     marcaTextoLigado = !marcaTextoLigado
 
-    document.getElementById('marcaTexto').classList.toggle('oculto', !marcaTextoLigado)
-    document.getElementById('botaoMarcaTexto').classList.toggle('ativo', marcaTextoLigado)
+    if(marcaTextoLigado){
+        document.getElementById('marcaTexto').classList.remove('oculto')
+        document.getElementById('botaoMarcaTexto').classList.add('ativo')
+    }else{
+        document.getElementById('marcaTexto').classList.add('oculto')
+        document.getElementById('botaoMarcaTexto').classList.remove('ativo')
+    }
 }
 
 // Coloca a faixa na altura "y" da tela (30 = metade da altura dela).

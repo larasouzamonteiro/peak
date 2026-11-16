@@ -1,32 +1,33 @@
-// RacasBD.js
-// Tabela "racas".
-//   usuarioId vazio (NULL) -> raça oficial da Peak
-//   usuarioId preenchido   -> raça criada por um jogador
-//   publico = 1            -> aparece para todo mundo (em "Comunidade")
+
 
 const conexao = require('./conexao')
 
 class RacasBD{
 
     static connect(){
-        // versão servidor: usa o pool (veja database/conexao.js)
+    
         return conexao
     }
-
     // As raças que a pessoa pode ver: as oficiais, as públicas e as dela.
-    // LEFT JOIN: traz o nome de quem criou. Nas oficiais não tem ninguém, e o
-    // "left" deixa a raça aparecer mesmo assim (com autor vazio).
-    static getRacas(usuarioId, callback){
+    // E o tema: só aparece se não tiver tema, se for do evento de agora, ou para o admin.
+    static getRacas(usuarioId, tipo, callback){
         const connection = RacasBD.connect()
 
         var sql = `
-            select r.*, u.nomeUsuario as autor
+            select r.*, u.nomeUsuario as autor,
+            (select count(*) from eventos e
+            where e.tema = r.tema
+            and date_sub(utc_timestamp(), interval 3 hour) between e.inicio and date_add(e.inicio, interval 7 day)) as novo
             from racas r
             left join usuarios u on u.id = r.usuarioId
-            where r.usuarioId is null or r.publico = 1 or r.usuarioId = ?
+            where (r.usuarioId is null or r.publico = 1 or r.usuarioId = ?)
+            and (r.tema is null
+                 or r.tema in (select tema from eventos
+                               where date_sub(utc_timestamp(), interval 3 hour) between inicio and fim)
+                 or ? = 'admin')
             order by r.id`
 
-        connection.query(sql, [usuarioId], (error, results)=>{
+        connection.query(sql, [usuarioId, tipo], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             callback(results)
@@ -42,8 +43,15 @@ class RacasBD{
             return callback({'error': 'Digite o nome da raça'})
         }
 
-        if(!(Number(raca.vidaMaxima) >= 1)){
-            return callback({'error': 'A vida precisa ser pelo menos 1'})
+        if(!(Number(raca.vidaMaxima) >= 1 && Number(raca.vidaMaxima) <= 1000)){
+            return callback({'error': 'A vida precisa ser de 1 a 1000'})
+        }
+
+        // a caixinha "público": marcada vira 1, desmarcada vira 0
+        var publico = 0
+
+        if(raca.publico){
+            publico = 1
         }
 
         var nova = {
@@ -52,7 +60,7 @@ class RacasBD{
             descricao: raca.descricao,
             vidaMaxima: raca.vidaMaxima,
             imagem: raca.imagem,
-            publico: raca.publico ? 1 : 0
+            publico: publico
         }
 
         const connection = RacasBD.connect()
@@ -70,9 +78,16 @@ class RacasBD{
     static atualizar(raca, usuarioId, callback){
         const connection = RacasBD.connect()
 
+        // a caixinha "público": marcada vira 1, desmarcada vira 0
+        var publico = 0
+
+        if(raca.publico){
+            publico = 1
+        }
+
         var sql = 'update racas set descricao = ?, publico = ? where id = ? and usuarioId = ?'
 
-        connection.query(sql, [raca.descricao, raca.publico ? 1 : 0, raca.id, usuarioId], (error, results)=>{
+        connection.query(sql, [raca.descricao, publico, raca.id, usuarioId], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             if(results.affectedRows == 0){
@@ -120,8 +135,15 @@ class RacasBD{
             return callback({'error': 'Digite o nome da raça'})
         }
 
-        if(!(Number(raca.vidaMaxima) >= 1)){
-            return callback({'error': 'A vida precisa ser pelo menos 1'})
+        if(!(Number(raca.vidaMaxima) >= 1 && Number(raca.vidaMaxima) <= 1000)){
+            return callback({'error': 'A vida precisa ser de 1 a 1000'})
+        }
+
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(raca.tema){
+            tema = raca.tema
         }
 
         var nova = {
@@ -130,7 +152,8 @@ class RacasBD{
             descricao: raca.descricao,
             vidaMaxima: raca.vidaMaxima,
             imagem: raca.imagem,
-            publico: 1
+            publico: 1,
+            tema: tema
         }
 
         const connection = RacasBD.connect()
@@ -152,16 +175,23 @@ class RacasBD{
             return callback({'error': 'Digite o nome da raça'})
         }
 
-        if(!(Number(raca.vidaMaxima) >= 1)){
-            return callback({'error': 'A vida precisa ser pelo menos 1'})
+        if(!(Number(raca.vidaMaxima) >= 1 && Number(raca.vidaMaxima) <= 1000)){
+            return callback({'error': 'A vida precisa ser de 1 a 1000'})
         }
 
-        var sql = 'update racas set nome = ?, descricao = ?, vidaMaxima = ? where id = ? and usuarioId is null'
-        var valores = [raca.nome, raca.descricao, raca.vidaMaxima, raca.id]
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(raca.tema){
+            tema = raca.tema
+        }
+
+        var sql = 'update racas set nome = ?, descricao = ?, vidaMaxima = ?, tema = ? where id = ? and usuarioId is null'
+        var valores = [raca.nome, raca.descricao, raca.vidaMaxima, tema, raca.id]
 
         if(raca.imagem){
-            sql = 'update racas set nome = ?, descricao = ?, vidaMaxima = ?, imagem = ? where id = ? and usuarioId is null'
-            valores = [raca.nome, raca.descricao, raca.vidaMaxima, raca.imagem, raca.id]
+            sql = 'update racas set nome = ?, descricao = ?, vidaMaxima = ?, tema = ?, imagem = ? where id = ? and usuarioId is null'
+            valores = [raca.nome, raca.descricao, raca.vidaMaxima, tema, raca.imagem, raca.id]
         }
 
         const connection = RacasBD.connect()

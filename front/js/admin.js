@@ -17,6 +17,25 @@ var classes = []             // só as classes oficiais
 var racaEditando = null      // id da raça aberta na janela (null = está criando uma nova)
 var classeEditando = null    // id da classe aberta na janela (null = está criando uma nova)
 
+// A foto pequena da tabela. Sem imagem, entra a imagem padrão (fotoPadrao, do script.js)
+function htmlMiniatura(imagem, tipo){
+    if(imagem == null || imagem == ''){
+        imagem = fotoPadrao(tipo)
+    }
+
+    return '<img class="miniatura" src="' + seguro(imagem) + '" alt="">'
+}
+
+// A caixinha "Somente em eventos": marcada = 'natal' (só aparece no evento),
+// desmarcada = '' (aparece sempre)
+function temaMarcado(idCaixinha){
+    if(document.getElementById(idCaixinha).checked){
+        return 'natal'
+    }
+
+    return ''
+}
+
 if(verificarLogin()){
     if(pegarUsuarioLogado().tipo != 'admin'){
         window.location.href = 'inicio.html'
@@ -25,22 +44,31 @@ if(verificarLogin()){
         carregarRacas()
         carregarClasses()
         carregarAvisos()
+        carregarEventos()
     }
 }
 
 // ABAS: mostra só uma <section id="aba..."> e esconde as outras
 function mostrarAba(nome){
-    var abas = ['Monstros', 'Campanhas', 'Racas', 'Classes', 'Avisos']
+    var abas = ['Monstros', 'Campanhas', 'Racas', 'Classes', 'Avisos', 'Eventos']
 
     for(var i = 0; i < abas.length; i++){
-        document.getElementById('aba' + abas[i]).classList.toggle('oculto', abas[i] != nome)
-        document.getElementById('botaoAba' + abas[i]).classList.toggle('ativo', abas[i] == nome)
+        if(abas[i] != nome){
+            document.getElementById('aba' + abas[i]).classList.add('oculto')
+        }else{
+            document.getElementById('aba' + abas[i]).classList.remove('oculto')
+        }
+        if(abas[i] == nome){
+            document.getElementById('botaoAba' + abas[i]).classList.add('ativo')
+        }else{
+            document.getElementById('botaoAba' + abas[i]).classList.remove('ativo')
+        }
     }
 }
 
 // Primeiro as campanhas (os monstros precisam delas para mostrar "de onde é"), depois os monstros
 function carregarCampanhas(){
-    buscar('/campanhas/oficiais', function(lista){
+    buscar('/campanhas/oficiais?todos=1', function(lista){
         campanhas = lista
         desenharCampanhas()
         desenharOpcoesDeCampanha()
@@ -49,7 +77,7 @@ function carregarCampanhas(){
 }
 
 function carregarMonstros(){
-    buscar('/monstros', function(lista){
+    buscar('/monstros?todos=1', function(lista){
         monstros = []
 
         // da lista toda, ficam só os oficiais
@@ -77,9 +105,9 @@ function desenharMonstros(){
 
         html += `
             <tr>
-                <td>${m.imagem ? '<img class="miniatura" src="' + seguro(m.imagem) + '" alt="">' : ''}</td>
+                <td>${htmlMiniatura(m.imagem, 'monstro')}</td>
                 <td><strong>${seguro(m.nome)}</strong></td>
-                <td>${m.campanhaOficial ? seguro(m.campanhaOficial) : 'Peak (geral)'}</td>
+                <td>${seguro(textoOuPadrao(m.campanhaOficial, 'Peak (geral)'))}</td>
                 <td>${m.vidaMaxima}</td>
                 <td>${m.defesa}</td>
                 <td>
@@ -120,6 +148,7 @@ function novoMonstro(){
     document.getElementById('monstroVida').value = 10
     document.getElementById('monstroDefesa').value = 10
     document.getElementById('monstroImagem').value = ''
+    document.getElementById('monstroEvento').checked = false
     document.getElementById('alertMonstro').textContent = ''
 
     abrirJanela('janelaMonstro')
@@ -135,10 +164,11 @@ function editarMonstro(id){
 
             document.getElementById('tituloMonstro').textContent = 'Editar ' + m.nome
             document.getElementById('monstroNome').value = m.nome
-            document.getElementById('monstroCampanha').value = m.campanhaOficialId || ''
+            document.getElementById('monstroCampanha').value = textoOuPadrao(m.campanhaOficialId, '')
             document.getElementById('monstroDescricao').value = m.descricao
             document.getElementById('monstroVida').value = m.vidaMaxima
             document.getElementById('monstroDefesa').value = m.defesa
+            document.getElementById('monstroEvento').checked = (m.tema == 'natal')
         }
     }
 
@@ -158,7 +188,8 @@ function salvarMonstro(){
             descricao: document.getElementById('monstroDescricao').value.trim(),
             vidaMaxima: document.getElementById('monstroVida').value,
             defesa: document.getElementById('monstroDefesa').value,
-            imagem: imagem
+            imagem: imagem,
+            tema: temaMarcado('monstroEvento')
         }
 
         var rota = '/admin/monstros/criar'
@@ -203,6 +234,11 @@ function excluirMonstro(id){
 // VISUAL: a capa entra duas vezes no card: uma borrada (o fundo atrás do texto)
 // e uma nítida e inteira em cima, que vai sumindo embaixo
 function capaDoCard(imagem){
+    // sem capa, entra a capa padrão (fotoPadrao, do script.js)
+    if(imagem == null || imagem == ''){
+        imagem = fotoPadrao('campanha')
+    }
+
     var src = seguro(imagem)
     return '<img class="capa-fundo" src="' + src + '" alt="">' +
            '<img class="capa" src="' + src + '" alt="">'
@@ -217,7 +253,7 @@ function desenharCampanhas(){
 
         html += `
             <div class="card-campanha">
-                ${c.imagemCapa ? capaDoCard(c.imagemCapa) : ''}
+                ${capaDoCard(c.imagemCapa)}
                 <div class="botoes-canto">
                     <button type="button" class="botao-icone na-foto editar" title="Editar" aria-label="Editar" onclick="editarCampanha(${c.id})"></button>
                     <button type="button" class="botao-icone na-foto excluir" title="Excluir" aria-label="Excluir" onclick="excluirCampanha(${c.id})"></button>
@@ -225,7 +261,7 @@ function desenharCampanhas(){
                 <div class="card-corpo">
                     <span class="selo">Campanha oficial</span>
                     <h3 class="card-titulo">${seguro(c.nome)}</h3>
-                    <p class="texto-suave">Criada por ${seguro(c.criadaPor || 'Equipe Peak')}</p>
+                    <p class="texto-suave">Criada por ${seguro(textoOuPadrao(c.criadaPor, 'Equipe Peak'))}</p>
                     <p class="card-texto">${seguro(c.descricao)}</p>
                 </div>
             </div>`
@@ -247,6 +283,7 @@ function novaCampanha(){
     document.getElementById('campanhaDescricao').value = ''
     document.getElementById('campanhaHistoria').value = ''
     document.getElementById('campanhaCapa').value = ''
+    document.getElementById('campanhaEvento').checked = false
     document.getElementById('alertCampanha').textContent = ''
 
     abrirJanela('janelaCampanha')
@@ -264,6 +301,7 @@ function editarCampanha(id){
             document.getElementById('campanhaCriadaPor').value = c.criadaPor
             document.getElementById('campanhaDescricao').value = c.descricao
             document.getElementById('campanhaHistoria').value = c.historia
+            document.getElementById('campanhaEvento').checked = (c.tema == 'natal')
         }
     }
 
@@ -282,7 +320,8 @@ function salvarCampanha(){
             criadaPor: document.getElementById('campanhaCriadaPor').value.trim(),
             descricao: document.getElementById('campanhaDescricao').value.trim(),
             historia: document.getElementById('campanhaHistoria').value.trim(),
-            imagemCapa: imagem
+            imagemCapa: imagem,
+            tema: temaMarcado('campanhaEvento')
         }
 
         var rota = '/admin/campanhas/criar'
@@ -326,7 +365,7 @@ function excluirCampanha(id){
 
 // Da lista de raças, ficam só as oficiais (usuarioId vazio)
 function carregarRacas(){
-    buscar('/racas', function(lista){
+    buscar('/racas?todos=1', function(lista){
         racas = []
 
         for(var i = 0; i < lista.length; i++){
@@ -348,7 +387,7 @@ function desenharRacas(){
 
         html += `
             <tr>
-                <td>${r.imagem ? '<img class="miniatura" src="' + seguro(r.imagem) + '" alt="">' : ''}</td>
+                <td>${htmlMiniatura(r.imagem, 'raca')}</td>
                 <td><strong>${seguro(r.nome)}</strong></td>
                 <td>${r.vidaMaxima}</td>
                 <td>
@@ -376,6 +415,7 @@ function novaRaca(){
     document.getElementById('racaDescricao').value = ''
     document.getElementById('racaVida').value = 8
     document.getElementById('racaImagem').value = ''
+    document.getElementById('racaEvento').checked = false
     document.getElementById('alertRaca').textContent = ''
 
     abrirJanela('janelaRaca')
@@ -393,6 +433,7 @@ function editarRaca(id){
             document.getElementById('racaNome').value = r.nome
             document.getElementById('racaDescricao').value = r.descricao
             document.getElementById('racaVida').value = r.vidaMaxima
+            document.getElementById('racaEvento').checked = (r.tema == 'natal')
         }
     }
 
@@ -410,7 +451,8 @@ function salvarRaca(){
             nome: document.getElementById('racaNome').value.trim(),
             descricao: document.getElementById('racaDescricao').value.trim(),
             vidaMaxima: document.getElementById('racaVida').value,
-            imagem: imagem
+            imagem: imagem, 
+            tema: temaMarcado('racaEvento')
         }
 
         var rota = '/admin/racas/criar'
@@ -454,7 +496,7 @@ function excluirRaca(id){
 
 // Da lista de classes, ficam só as oficiais (usuarioId vazio)
 function carregarClasses(){
-    buscar('/classes', function(lista){
+    buscar('/classes?todos=1', function(lista){
         classes = []
 
         for(var i = 0; i < lista.length; i++){
@@ -476,7 +518,7 @@ function desenharClasses(){
 
         html += `
             <tr>
-                <td>${c.imagem ? '<img class="miniatura" src="' + seguro(c.imagem) + '" alt="">' : ''}</td>
+                <td>${htmlMiniatura(c.imagem, 'classe')}</td>
                 <td><strong>${seguro(c.nome)}</strong></td>
                 <td>
                     <div class="botoes">
@@ -502,6 +544,7 @@ function novaClasse(){
     document.getElementById('classeNome').value = ''
     document.getElementById('classeDescricao').value = ''
     document.getElementById('classeImagem').value = ''
+    document.getElementById('classeEvento').checked = false
     document.getElementById('alertClasse').textContent = ''
 
     abrirJanela('janelaClasse')
@@ -518,6 +561,7 @@ function editarClasse(id){
             document.getElementById('tituloClasse').textContent = 'Editar ' + c.nome
             document.getElementById('classeNome').value = c.nome
             document.getElementById('classeDescricao').value = c.descricao
+            document.getElementById('classeEvento').checked = (c.tema == 'natal')
         }
     }
 
@@ -534,7 +578,8 @@ function salvarClasse(){
         var classe = {
             nome: document.getElementById('classeNome').value.trim(),
             descricao: document.getElementById('classeDescricao').value.trim(),
-            imagem: imagem
+            imagem: imagem,
+            tema: temaMarcado('classeEvento')
         }
 
         var rota = '/admin/classes/criar'
@@ -589,7 +634,7 @@ function carregarAvisos(){
                 <tr>
                     <td>${data}</td>
                     <td><strong>${seguro(a.titulo)}</strong></td>
-                    <td>${seguro(a.texto || '')}</td>
+                    <td>${seguro(a.texto)}</td>
                     <td>
                         <div class="botoes">
                             <button type="button" class="botao-icone excluir" title="Apagar" aria-label="Apagar" onclick="excluirAviso(${a.id})"></button>
@@ -638,6 +683,97 @@ function excluirAviso(id){
             }
 
             carregarAvisos()
+        })
+    }, 'Apagar')
+}
+
+
+
+
+function carregarEventos(){
+    buscar('/admin/eventos', function(eventos){
+        var html = ''
+
+        for(var i = 0; i < eventos.length; i++){
+            var e = eventos[i]
+
+            html += `
+                <tr>
+                    <td><strong>${seguro(e.titulo)}</strong></td>
+                    <td>${nomeDoTema(e.tema)}</td>
+                    <td>${e.inicioTexto}</td>
+                    <td>${e.fimTexto}</td>
+                    <td>${e.vistos}</td>
+                    <td>
+                        <div class="botoes">
+                            <button type="button" class="botao botao-pequeno" onclick="mostrarEventoDeNovo(${e.id})">Mostrar de novo</button>
+                            <button type="button" class="botao-icone excluir" title="Apagar" aria-label="Apagar" onclick="excluirEvento(${e.id})"></button>
+                        </div>
+                    </td>
+                </tr>`
+        }
+
+        if(html == ''){
+            html = '<tr><td colspan="6" class="texto-suave">Nenhum evento ainda.</td></tr>'
+        }
+
+        document.getElementById('tabelaEventos').innerHTML = html
+    })
+}
+
+function criarEvento(){
+    var evento = {
+        titulo: document.getElementById('eventoTitulo').value.trim(),
+        tema: document.getElementById('eventoTema').value,
+        inicio: document.getElementById('eventoInicio').value,
+        fim: document.getElementById('eventoFim').value,
+        novidade: document.getElementById('eventoNovidade').value.trim()
+    }
+
+    document.getElementById('alertEvento').textContent = ''
+
+    enviar('/admin/eventos/criar', evento, function(dados){
+
+        if(dados.hasOwnProperty('error')){
+            document.getElementById('alertEvento').textContent = dados.error
+            return
+        }
+
+        // limpa os campos e desenha a lista de novo
+        document.getElementById('eventoTitulo').value = ''
+        document.getElementById('eventoInicio').value = ''
+        document.getElementById('eventoFim').value = ''
+        document.getElementById('eventoNovidade').value = ''
+
+        avisar('Pronto!', dados.message)
+        carregarEventos()
+    })
+}
+function mostrarEventoDeNovo(id){
+    confirmar('O presente vai aparecer de novo para todo mundo. Continuar?', function(){
+        enviar('/admin/eventos/mostrar-de-novo', {id: id}, function(dados){
+
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
+
+            carregarEventos()
+        })
+    }, 'Mostrar de novo')
+}
+
+// Botão de lixeira: apaga o evento (pergunta antes)
+function excluirEvento(id){
+    confirmar('Apagar este evento?', function(){
+        enviar('/admin/eventos/excluir', {id: id}, function(dados){
+
+            if(dados.hasOwnProperty('error')){
+                avisar('Não deu certo', dados.error, 'erro')
+                return
+            }
+
+            carregarEventos()
         })
     }, 'Apagar')
 }

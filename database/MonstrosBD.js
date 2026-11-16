@@ -17,18 +17,27 @@ class MonstrosBD{
     // Os monstros que a pessoa pode ver: os oficiais, os públicos e os dela.
     // Os LEFT JOINs trazem o nome de quem criou e o nome da campanha oficial
     // (quando o monstro não tem um dos dois, a coluna vem vazia).
-    static getMonstros(usuarioId, callback){
+    // Os LEFT JOINs trazem o nome de quem criou e o nome da campanha oficial.
+    // E o tema: só aparece se não tiver tema, se for do evento de agora, ou para o admin.
+    static getMonstros(usuarioId, tipo, callback){
         const connection = MonstrosBD.connect()
 
         var sql = `
-            select m.*, u.nomeUsuario as autor, c.nome as campanhaOficial
+                        select m.*, u.nomeUsuario as autor, c.nome as campanhaOficial,
+                   (select count(*) from eventos e
+                    where e.tema = m.tema
+                    and date_sub(utc_timestamp(), interval 3 hour) between e.inicio and date_add(e.inicio, interval 7 day)) as novo
             from monstros m
             left join usuarios u on u.id = m.usuarioId
             left join campanhas c on c.id = m.campanhaOficialId
-            where m.usuarioId is null or m.publico = 1 or m.usuarioId = ?
+            where (m.usuarioId is null or m.publico = 1 or m.usuarioId = ?)
+            and (m.tema is null
+                 or m.tema in (select tema from eventos
+                               where date_sub(utc_timestamp(), interval 3 hour) between inicio and fim)
+                 or ? = 'admin')
             order by m.id`
 
-        connection.query(sql, [usuarioId], (error, results)=>{
+        connection.query(sql, [usuarioId, tipo], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             callback(results)
@@ -36,7 +45,6 @@ class MonstrosBD{
 
         connection.end()
     }
-
     // monstro: { nome, imagem, descricao, vidaMaxima, defesa, publico, usuarioId }
     static addMonstro(monstro, callback){
 
@@ -44,8 +52,19 @@ class MonstrosBD{
             return callback({'error': 'Digite o nome do monstro'})
         }
 
-        if(!(Number(monstro.vidaMaxima) >= 1) || !(Number(monstro.defesa) >= 0)){
-            return callback({'error': 'Confira a vida e a defesa do monstro'})
+        if(!(Number(monstro.vidaMaxima) >= 1 && Number(monstro.vidaMaxima) <= 1000)){
+            return callback({'error': 'A vida do monstro precisa ser de 1 a 1000'})
+        }
+
+        if(!(Number(monstro.defesa) >= 0 && Number(monstro.defesa) <= 1000)){
+            return callback({'error': 'A defesa do monstro precisa ser de 0 a 1000'})
+        }
+
+        // a caixinha "público": marcada vira 1, desmarcada vira 0
+        var publico = 0
+
+        if(monstro.publico){
+            publico = 1
         }
 
         var novo = {
@@ -55,7 +74,7 @@ class MonstrosBD{
             descricao: monstro.descricao,
             vidaMaxima: monstro.vidaMaxima,
             defesa: monstro.defesa,
-            publico: monstro.publico ? 1 : 0
+            publico: publico
         }
 
         const connection = MonstrosBD.connect()
@@ -73,9 +92,16 @@ class MonstrosBD{
     static atualizar(monstro, usuarioId, callback){
         const connection = MonstrosBD.connect()
 
+        // a caixinha "público": marcada vira 1, desmarcada vira 0
+        var publico = 0
+
+        if(monstro.publico){
+            publico = 1
+        }
+
         var sql = 'update monstros set descricao = ?, publico = ? where id = ? and usuarioId = ?'
 
-        connection.query(sql, [monstro.descricao, monstro.publico ? 1 : 0, monstro.id, usuarioId], (error, results)=>{
+        connection.query(sql, [monstro.descricao, publico, monstro.id, usuarioId], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             if(results.affectedRows == 0){
@@ -114,19 +140,38 @@ class MonstrosBD{
             return callback({'error': 'Digite o nome do monstro'})
         }
 
-        if(!(Number(monstro.vidaMaxima) >= 1) || !(Number(monstro.defesa) >= 0)){
-            return callback({'error': 'Confira a vida e a defesa do monstro'})
+        if(!(Number(monstro.vidaMaxima) >= 1 && Number(monstro.vidaMaxima) <= 1000)){
+            return callback({'error': 'A vida do monstro precisa ser de 1 a 1000'})
+        }
+
+        if(!(Number(monstro.defesa) >= 0 && Number(monstro.defesa) <= 1000)){
+            return callback({'error': 'A defesa do monstro precisa ser de 0 a 1000'})
+        }
+
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(monstro.tema){
+            tema = monstro.tema
+        }
+
+        // sem campanha escolhida, fica vazio (null) = monstro da Peak para qualquer campanha
+        var campanhaOficialId = null
+
+        if(monstro.campanhaOficialId){
+            campanhaOficialId = monstro.campanhaOficialId
         }
 
         var novo = {
             usuarioId: null,
-            campanhaOficialId: monstro.campanhaOficialId || null,
+            campanhaOficialId: campanhaOficialId,
             nome: monstro.nome,
             imagem: monstro.imagem,
             descricao: monstro.descricao,
             vidaMaxima: monstro.vidaMaxima,
             defesa: monstro.defesa,
-            publico: 1
+            publico: 1,
+            tema: tema
         }
 
         const connection = MonstrosBD.connect()
@@ -148,16 +193,34 @@ class MonstrosBD{
             return callback({'error': 'Digite o nome do monstro'})
         }
 
-        if(!(Number(monstro.vidaMaxima) >= 1) || !(Number(monstro.defesa) >= 0)){
-            return callback({'error': 'Confira a vida e a defesa do monstro'})
+        if(!(Number(monstro.vidaMaxima) >= 1 && Number(monstro.vidaMaxima) <= 1000)){
+            return callback({'error': 'A vida do monstro precisa ser de 1 a 1000'})
         }
 
-        var sql = 'update monstros set nome = ?, descricao = ?, vidaMaxima = ?, defesa = ?, campanhaOficialId = ? where id = ? and usuarioId is null'
-        var valores = [monstro.nome, monstro.descricao, monstro.vidaMaxima, monstro.defesa, monstro.campanhaOficialId || null, monstro.id]
+        if(!(Number(monstro.defesa) >= 0 && Number(monstro.defesa) <= 1000)){
+            return callback({'error': 'A defesa do monstro precisa ser de 0 a 1000'})
+        }
+
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(monstro.tema){
+            tema = monstro.tema
+        }
+
+        // sem campanha escolhida, fica vazio (null) = monstro da Peak para qualquer campanha
+        var campanhaOficialId = null
+
+        if(monstro.campanhaOficialId){
+            campanhaOficialId = monstro.campanhaOficialId
+        }
+
+        var sql = 'update monstros set nome = ?, descricao = ?, vidaMaxima = ?, defesa = ?, campanhaOficialId = ?, tema = ? where id = ? and usuarioId is null'
+        var valores = [monstro.nome, monstro.descricao, monstro.vidaMaxima, monstro.defesa, campanhaOficialId, tema, monstro.id]
 
         if(monstro.imagem){
-            sql = 'update monstros set nome = ?, descricao = ?, vidaMaxima = ?, defesa = ?, campanhaOficialId = ?, imagem = ? where id = ? and usuarioId is null'
-            valores = [monstro.nome, monstro.descricao, monstro.vidaMaxima, monstro.defesa, monstro.campanhaOficialId || null, monstro.imagem, monstro.id]
+            sql = 'update monstros set nome = ?, descricao = ?, vidaMaxima = ?, defesa = ?, campanhaOficialId = ?, tema = ?, imagem = ? where id = ? and usuarioId is null'
+            valores = [monstro.nome, monstro.descricao, monstro.vidaMaxima, monstro.defesa, campanhaOficialId, tema, monstro.imagem, monstro.id]
         }
 
         const connection = MonstrosBD.connect()

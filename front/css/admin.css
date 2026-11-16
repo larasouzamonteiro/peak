@@ -159,3 +159,43 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ---------- VISUAL (nov/2026): CARDS DE CAMPANHA DO MESMO TAMANHO ----------
+   Antes cada card tinha a altura do seu texto (um mais alto, outro mais baixo).
+   Agora todos têm 340px: a capa fica em cima e o texto embaixo.
+   O resumo mostra no máximo 3 linhas; o que passar termina em "..." (line-clamp). */
+#listaCampanhas{
+    align-items: stretch;
+}
+
+.card-campanha{
+    display: flex;
+    flex-direction: column;
+    height: 340px;
+}
+
+.card-campanha .capa{
+    flex: none;
+    height: 170px;
+}
+
+.card-campanha .card-corpo{
+    flex: 1;
+    overflow: hidden;
+}
+
+.card-campanha .card-titulo{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;     /* nome grande demais termina em "..." */
+}
+
+.card-campanha .card-texto{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    margin-bottom: 0;
+}

@@ -17,17 +17,6 @@
 
 const conexao = require('./conexao')
 
-// qual tabela e qual coluna guardam a foto de cada tipo
-const LUGAR_DA_FOTO = {
-    'monstro':  {tabela: 'monstros',  coluna: 'imagem'},
-    'campanha': {tabela: 'campanhas', coluna: 'imagemCapa'},
-    'ficha':    {tabela: 'fichas',    coluna: 'retrato'},
-    'perfil':   {tabela: 'usuarios',  coluna: 'fotoPerfil'},     // a foto da pessoa (menu, comunidade, perfil)
-    'capa':     {tabela: 'usuarios',  coluna: 'capaPerfil'},     // a capa do perfil
-    'sobre':    {tabela: 'usuarios',  coluna: 'imagemSobre'},    // a imagem do "sobre mim" do perfil
-    'recado':   {tabela: 'recados',   coluna: 'foto'}            // a foto de um recado do mural
-}
-
 class ImagensBD{
 
     // lista -> o que veio do banco (ex.: os monstros)
@@ -60,14 +49,39 @@ class ImagensBD{
 
     // busca a foto de UM monstro, campanha ou ficha
     static getImagem(tipo, id, callback){
-        var lugar = LUGAR_DA_FOTO[tipo]
+        // qual tabela e qual coluna guardam a foto de cada tipo
+        var tabela = ''
+        var coluna = ''
 
-        // tipo que não existe: não procura nada
-        if(lugar == undefined){
+        if(tipo == 'monstro'){
+            tabela = 'monstros'
+            coluna = 'imagem'
+        }else if(tipo == 'campanha'){
+            tabela = 'campanhas'
+            coluna = 'imagemCapa'
+        }else if(tipo == 'ficha'){
+            tabela = 'fichas'
+            coluna = 'retrato'
+        }else if(tipo == 'perfil'){
+            tabela = 'usuarios'
+            coluna = 'fotoPerfil'       // a foto da pessoa (menu, comunidade, perfil)
+        }else if(tipo == 'capa'){
+            tabela = 'usuarios'
+            coluna = 'capaPerfil'       // a capa do perfil
+        }else if(tipo == 'sobre'){
+            tabela = 'usuarios'
+            coluna = 'imagemSobre'      // a imagem do "sobre mim" do perfil
+        }else if(tipo == 'recado'){
+            tabela = 'recados'
+            coluna = 'foto'             // a foto de um recado do mural
+        }
+
+        // tipo que não existe: não procura nada (assim ninguém consegue ler outra tabela)
+        if(tabela == ''){
             return callback(null)
         }
 
-        var sql = 'select ' + lugar.coluna + ' as foto from ' + lugar.tabela + ' where id = ?'
+        var sql = 'select ' + coluna + ' as foto from ' + tabela + ' where id = ?'
 
         conexao.query(sql, [id], (error, results)=>{
             if(error){ console.log(error.message); return callback(null) }

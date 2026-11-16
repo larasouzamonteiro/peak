@@ -244,14 +244,16 @@
 
 .perfil-caixa h2{
     margin: 0 0 12px;
-    color: var(--tinta-3);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: var(--tinta);
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
 /* o contato com o botão "copiar" do lado */
+.perfil-contato span{
+    min-width: 0;                 /* o contato comprido quebra a linha, sem empurrar o botão */
+}
+
 .perfil-contato{
     display: flex;
     align-items: center;
@@ -265,6 +267,9 @@
 }
 
 .perfil-contato button{
+    flex-shrink: 0;               /* o botão não aperta */
+    overflow-wrap: normal;        /* e a palavra "copiar" nunca quebra no meio */
+    white-space: nowrap;
     margin-left: auto;
     border: 0;
     background: none;
@@ -360,11 +365,9 @@
 
 .perfil-sobre h2{
     margin: 0 0 8px;
-    color: var(--tinta-3);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: var(--tinta);
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
 .perfil-sobre .perfil-bio{
@@ -459,11 +462,9 @@
 
 .config-card h3{
     margin: 0 0 12px;
-    color: var(--tinta-3);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: var(--tinta);
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
 .config-card h3 small{

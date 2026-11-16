@@ -5,9 +5,13 @@
 //   - os meus personagens
 //   - as novidades (o que entrou por último no site)
 //   - o convite da Comunidade (só HTML, sem JavaScript)
+//
+// ORGANIZAÇÃO: primeiro as partes que buscam dados no servidor; a parte só VISUAL
+// (o banner que passa sozinho) fica no fim. O presente do evento está no evento.js.
 
-// VISUAL: as fotos do banner (as <img class="banner-foto"> do inicio.html) e qual está aparecendo
-var fotosBanner = document.querySelectorAll('.banner-foto')
+// O BANNER: os <img>/<video> com a classe "banner-foto" do inicio.html
+var fotosBanner = []        // os banners que estão passando agora (os normais ou os de Natal)
+var bannerDeNatal = null    // true = passando os de Natal; false = os normais
 var fotoAtual = 0
 
 if(verificarLogin()){
@@ -17,6 +21,8 @@ if(verificarLogin()){
     carregarFichas()
     carregarNovidades()
     comecarBanner()
+    carregarEvento()
+    setInterval(carregarEvento, 30000) //cada 30 segundos confere de novo
 
     // primeira vez por aqui (ou pediu para ver de novo em inicio.html?tutorial=sim): a Zero aparece
     if(pegarUsuarioLogado().tutorialVisto == 0 || parametro('tutorial') == 'sim'){
@@ -35,55 +41,9 @@ function carregarMinhaFoto(){
     buscar('/usuario?id=' + eu.id, function(pessoa){
         var lugar = document.getElementById('minhaFoto')
 
-        if(pessoa.fotoPerfil){
-            lugar.innerHTML = '<img src="' + seguro(pessoa.fotoPerfil) + '" alt="">'
-        }else{
-            lugar.innerHTML = '<span>' + seguro(eu.nomeUsuario.charAt(0).toUpperCase()) + '</span>'
-        }
+        // sem foto: a foto padrão (fotoDePerfil, do script.js)
+        lugar.innerHTML = '<img src="' + seguro(fotoDePerfil(pessoa.fotoPerfil)) + '" alt="">'
     })
-}
-
-
-// =====================================================
-// VISUAL: BANNER COM AS FOTOS DA EQUIPE (só front, não usa o servidor)
-// =====================================================
-// As fotos estão na variável "fotosBanner" (lá em cima).
-// Mostrar uma foto = colocar a classe "on" nela e tirar das outras
-// (o CSS faz a foto aparecer devagar). A cada 5 segundos passa para a próxima.
-function comecarBanner(){
-    var pontos = ''
-
-    // um tracinho para cada foto; clicar num tracinho mostra aquela foto
-    for(var i = 0; i < fotosBanner.length; i++){
-        pontos += '<i onclick="mostrarFoto(' + i + ')"></i>'
-    }
-
-    document.getElementById('bannerPontos').innerHTML = pontos
-
-    mostrarFoto(0)
-
-    // setInterval: repete a função a cada 5000 milissegundos (5 segundos)
-    setInterval(function(){
-        var proxima = fotoAtual + 1
-
-        if(proxima >= fotosBanner.length){
-            proxima = 0
-        }
-
-        mostrarFoto(proxima)
-    }, 5000)
-}
-
-// numero: qual foto mostrar (0 é a primeira)
-function mostrarFoto(numero){
-    var pontos = document.querySelectorAll('#bannerPontos i')
-
-    fotoAtual = numero
-
-    for(var i = 0; i < fotosBanner.length; i++){
-        fotosBanner[i].classList.toggle('on', i == numero)
-        pontos[i].classList.toggle('on', i == numero)
-    }
 }
 
 
@@ -105,7 +65,7 @@ function carregarOficiais(){
 
             html += `
                 <a class="foto-card" href="campanhas.html">
-                    ${htmlFoto(o.imagemCapa, o.nome)}
+                    ${htmlFoto(o.imagemCapa, 'campanha')}
                     <div class="nome">
                         <span class="selo">Oficial</span>
                         <b>${seguro(o.nome)}</b>
@@ -142,7 +102,7 @@ function carregarAvisos(){
             html += `
                 <div class="aviso-item">
                     <b>${seguro(avisos[i].titulo)}</b>
-                    <p>${seguro(avisos[i].texto || '')}</p>
+                    <p>${seguro(avisos[i].texto)}</p>
                     <small>${dataCurta(avisos[i].criadoEm)}</small>
                 </div>`
         }
@@ -236,17 +196,17 @@ function carregarNovidades(){
 
                 if(racas.length > 0){
                     var r = racas[racas.length - 1]
-                    html += htmlNovidade(r.imagem, r.nome, 'Nova raça', 'já está na Oficina', 'racas.html')
+                    html += htmlNovidade(r.imagem, r.nome, 'Nova raça', 'já está na Oficina', 'racas.html',r)
                 }
 
                 if(monstros.length > 0){
                     var m = monstros[monstros.length - 1]
-                    html += htmlNovidade(m.imagem, m.nome, 'Bestiário', 'vida ' + m.vidaMaxima + ' · defesa ' + m.defesa, 'monstros.html')
+                    html += htmlNovidade(m.imagem, m.nome, 'Bestiário', 'vida ' + m.vidaMaxima + ' · defesa ' + m.defesa, 'monstros.html',m)
                 }
 
                 if(classes.length > 0){
                     var cl = classes[classes.length - 1]
-                    html += htmlNovidade(cl.imagem, cl.nome, 'Classe', 'para a sua ficha', 'classes.html')
+                    html += htmlNovidade(cl.imagem, cl.nome, 'Classe', 'para a sua ficha', 'classes.html',cl)
                 }
 
                 document.getElementById('novidades').innerHTML = html
@@ -255,15 +215,129 @@ function carregarNovidades(){
     })
 }
 
-// Um card de novidade: foto, selo, nome e um texto pequeno
-function htmlNovidade(imagem, nome, tipo, texto, link){
+
+function htmlNovidade(imagem, nome, tipo, texto, link, item){
+    // VISUAL: a novidade de evento (ex.: Natal) ganha a classe "card-evento", a neve e o "Tempo limitado"
+    var classeCard = 'foto-card novidade'
+    var extras = ''
+    var prazo = ''
+
+    if(item.tema){
+        classeCard += ' card-evento'
+        prazo = '<span class="prazo-evento">Tempo limitado</span>'
+
+        // o NOVO só nos 7 primeiros dias do evento
+        if(item.novo > 0){
+            extras += '<span class="selo-novo">NOVO</span>'
+        }
+    }
+
+    // qual foto padrão usar, se não tiver imagem (o link diz se é raça, classe ou monstro)
+    var qual = 'monstro'
+
+    if(link == 'racas.html'){
+        qual = 'raca'
+    }else if(link == 'classes.html'){
+        qual = 'classe'
+    }
+
     return `
-        <a class="foto-card novidade" href="${link}">
-            ${htmlFoto(imagem, nome)}
+        <a class="${classeCard}" href="${link}">
+            ${extras}
+            ${htmlFoto(imagem, qual)}
             <div class="nome">
                 <span class="selo">${tipo}</span>
                 <b>${seguro(nome)}</b>
                 <small>${seguro(texto)}</small>
             </div>
+            ${prazo}
         </a>`
+}
+
+
+// =====================================================
+// VISUAL: O BANNER (só front, não usa o servidor)
+// =====================================================
+// Mostrar um banner = colocar a classe "on" nele e tirar dos outros
+// (o CSS faz ele aparecer devagar). A cada 5 segundos passa para o próximo.
+function comecarBanner(){
+    escolherBanners(false)
+
+    // setInterval: repete a função a cada 5000 milissegundos (5 segundos)
+    setInterval(function(){
+        var proxima = fotoAtual + 1
+
+        if(proxima >= fotosBanner.length){
+            proxima = 0
+        }
+
+        mostrarFoto(proxima)
+    }, 5000)
+}
+
+// natal: true = passam só os banners com a classe "natal"; false = só os outros
+function escolherBanners(natal){
+    // já está passando esses: não precisa mudar
+    if(natal == bannerDeNatal){
+        return
+    }
+
+    // no Natal, mas sem nenhum banner de Natal no HTML: continuam os normais
+    if(natal && document.querySelectorAll('#bannerFotos .natal').length == 0){
+        natal = false
+    }
+
+    bannerDeNatal = natal
+
+    // VISUAL: no Natal o banner ganha a mesma decoração das cartas do evento
+    // (borda de bengala doce e brilho dourado: está no style.css, "EVENTO DE NATAL").
+    // A neve de dentro das cartas não entra aqui: o site inteiro já tem neve caindo.
+    if(natal){
+        document.querySelector('.destaque-grande').classList.add('card-evento')
+    }else{
+        document.querySelector('.destaque-grande').classList.remove('card-evento')
+    }
+
+    // apaga todos; depois só os escolhidos vão acender
+    var todos = document.querySelectorAll('.banner-foto')
+
+    for(var i = 0; i < todos.length; i++){
+        todos[i].classList.remove('on')
+    }
+
+    if(natal){
+        fotosBanner = document.querySelectorAll('.banner-foto.natal')
+    }else{
+        fotosBanner = document.querySelectorAll('.banner-foto:not(.natal)')
+    }
+
+    // um tracinho para cada banner; clicar num tracinho mostra aquele banner
+    var pontos = ''
+
+    for(var i = 0; i < fotosBanner.length; i++){
+        pontos += '<i onclick="mostrarFoto(' + i + ')"></i>'
+    }
+
+    document.getElementById('bannerPontos').innerHTML = pontos
+    mostrarFoto(0)
+}
+
+// numero: qual foto mostrar (0 é a primeira)
+function mostrarFoto(numero){
+    var pontos = document.querySelectorAll('#bannerPontos i')
+
+    fotoAtual = numero
+
+    for(var i = 0; i < fotosBanner.length; i++){
+        if(i == numero){
+            fotosBanner[i].classList.add('on')
+        }else{
+            fotosBanner[i].classList.remove('on')
+        }
+        if(i == numero){
+            pontos[i].classList.add('on')
+        }else{
+            pontos[i].classList.remove('on')
+        }
+    }
 }

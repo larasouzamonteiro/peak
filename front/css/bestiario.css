@@ -10,13 +10,19 @@
 
 /* ---------- 1. FAIXAS ---------- */
 /* os botões são criados pela função desenharFaixas() do js/monstros.js */
+/* uma fileira só: com poucas faixas elas dividem a largura; quando a Peak cria mais
+   campanhas oficiais, a fileira continua para o lado (rolagem) em vez de descer */
 .faixas{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    display: flex;
     gap: 10px;
+    overflow-x: auto;
+    padding: 4px 18px 24px;        /* espaço para a sombra das faixas não ser cortada */
+    margin: -4px -18px -20px;
+    scrollbar-width: thin;
 }
 
 .faixa{
+    flex: 1 0 150px;               /* cresce para preencher, mas nunca fica menor que 150px */
     position: relative;
     height: 84px;
     overflow: hidden;
@@ -24,7 +30,7 @@
     border: 2px solid transparent;
     border-radius: 18px;
     background: var(--escuro);
-    box-shadow: var(--sombra-foto);
+    box-shadow: 0 2px 4px rgba(50, 35, 25, 0.10), 0 8px 14px rgba(50, 35, 25, 0.18);   /* sombra mais curta que a das fotos, para caber na fileira */
     color: #fff;
     font: inherit;
     font-size: 0.95rem;

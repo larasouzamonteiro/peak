@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oficina de personagem | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -75,14 +77,18 @@
       </div>
 
       <!-- INDICADOR DAS ETAPAS: mostrarEtapa() coloca a classe "ativa" na etapa atual
-           e "feita" nas que já passaram -->
+           e "feita" nas que já passaram.
+           Clicar numa etapa que já passou volta para ela (irParaEtapa) -->
       <div class="etapas" id="indicadorEtapas">
-        <span class="etapa-marca ativa">1. Identidade</span>
-        <span class="etapa-marca">2. Raça</span>
-        <span class="etapa-marca">3. Classe</span>
-        <span class="etapa-marca">4. Combate e itens</span>
-        <span class="etapa-marca">5. Atributos e detalhes</span>
+        <button type="button" class="etapa-marca ativa" onclick="irParaEtapa(1)">1. Identidade</button>
+        <button type="button" class="etapa-marca" onclick="irParaEtapa(2)">2. Raça</button>
+        <button type="button" class="etapa-marca" onclick="irParaEtapa(3)">3. Classe</button>
+        <button type="button" class="etapa-marca" onclick="irParaEtapa(4)">4. Combate e itens</button>
+        <button type="button" class="etapa-marca" onclick="irParaEtapa(5)">5. Atributos e detalhes</button>
       </div>
+
+      <!-- mensagem de erro (etapaValida e salvarFicha escrevem aqui): fica em cima para a pessoa ver na hora -->
+      <p class="alerta" id="alert"></p>
 
       <div class="oficina-grade">
         <div class="formulario">
@@ -90,47 +96,45 @@
           <!-- ========== ETAPA 1: Identidade ========== -->
           <div class="card" id="etapa1">
             <h2 class="card-titulo">Identidade</h2>
-            <p class="card-texto">Comece escolhendo o nome e o retrato do seu personagem.</p>
 
             <div class="formulario">
               <div class="campo">
                 <label class="rotulo" for="nome">Nome do personagem</label>
-                <input class="input" type="text" id="nome" maxlength="50" placeholder="Ex.: Thalion" oninput="desenharResumo()">
+                <input class="input" type="text" id="nome" maxlength="50" placeholder="Ex.: Amanda" oninput="desenharResumo()">
               </div>
 
               <div class="campo">
                 <span class="rotulo">Retrato</span>
                 <!-- Para acrescentar um retrato: coloque a imagem em img/retratos/ e copie uma linha abaixo -->
-                <div class="escolhas-retrato">
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r01.jpg" checked onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r01.jpg" alt="">Aprendiz</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r02.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r02.jpg" alt="">Cavaleiro</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r03.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r03.jpg" alt="">Clériga</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r04.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r04.jpg" alt="">Guerreira</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r05.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r05.jpg" alt="">Sacerdotisa</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r06.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r06.jpg" alt="">Espadachim</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r07.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r07.jpg" alt="">Paladino</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r08.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r08.jpg" alt="">Maga</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r09.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r09.jpg" alt="">Aventureira</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r10.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r10.jpg" alt="">Arqueiro</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r11.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r11.jpg" alt="">Soldada</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r12.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r12.jpg" alt="">Nobre</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r13.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r13.jpg" alt="">Aldeã</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r14.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r14.jpg" alt="">Cavaleira</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r15.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r15.jpg" alt="">Valquíria</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r16.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r16.jpg" alt="">Escudeiro</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r17.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r17.jpg" alt="">Duelista</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r18.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r18.jpg" alt="">Caçador</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r19.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r19.jpg" alt="">Camponesa</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r20.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r20.jpg" alt="">Mercenário</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r21.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r21.jpg" alt="">Bandoleiro</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r22.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r22.jpg" alt="">General</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r23.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r23.jpg" alt="">Lanceira</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r24.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r24.jpg" alt="">Comandante</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r25.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r25.jpg" alt="">Andarilho</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r26.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r26.jpg" alt="">Soldado</label>
-                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r27.jpg" onchange="desenharResumo()"><img class="retrato" src="../img/retratos/r27.jpg" alt="">Guarda</label>
+                  <div class="escolhas-retrato" id="escolhasRetrato">
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r01.jpg" checked onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r01.jpg" alt="">Aprendiz</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r02.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r02.jpg" alt="">Cavaleiro</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r03.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r03.jpg" alt="">Clériga</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r04.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r04.jpg" alt="">Guerreira</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r05.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r05.jpg" alt="">Sacerdotisa</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r06.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r06.jpg" alt="">Espadachim</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r07.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r07.jpg" alt="">Paladino</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r08.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r08.jpg" alt="">Maga</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r09.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r09.jpg" alt="">Aventureira</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r10.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r10.jpg" alt="">Arqueiro</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r11.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r11.jpg" alt="">Soldada</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r12.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r12.jpg" alt="">Nobre</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r13.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r13.jpg" alt="">Aldeã</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r14.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r14.jpg" alt="">Cavaleira</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r15.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r15.jpg" alt="">Valquíria</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r16.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r16.jpg" alt="">Escudeiro</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r17.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r17.jpg" alt="">Duelista</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r18.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r18.jpg" alt="">Caçador</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r19.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r19.jpg" alt="">Camponesa</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r20.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r20.jpg" alt="">Mercenário</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r21.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r21.jpg" alt="">Bandoleiro</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r22.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r22.jpg" alt="">General</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r23.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r23.jpg" alt="">Lanceira</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r24.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r24.jpg" alt="">Comandante</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r25.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r25.jpg" alt="">Andarilho</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r26.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r26.jpg" alt="">Soldado</label>
+                  <label class="retrato-opcao"><input type="radio" name="retrato" value="../img/retratos/r27.jpg" onchange="escolherRetratoPronto()"><img class="retrato" src="../img/retratos/r27.jpg" alt="">Guarda</label>
                 </div>
-                <p class="ajuda">Escolha uma imagem pronta ou envie a sua.</p>
               </div>
 
               <div class="campo">
@@ -176,16 +180,15 @@
           <!-- ========== ETAPA 4: Combate e itens ========== -->
           <div class="card oculto" id="etapa4">
             <h2 class="card-titulo">Combate</h2>
-            <p class="card-texto">Quanta vida o seu personagem tem. A vida máxima começa com o valor da raça escolhida.</p>
 
             <div class="linha-campos">
               <div class="campo">
-                <label class="rotulo" for="vidaMaxima">Vida máxima</label>
-                <input class="input" type="number" id="vidaMaxima" value="10" min="1" oninput="desenharResumo()">
+                <label class="rotulo" for="vidaMaxima">Vida máxima (1 a 1000)</label>
+                <input class="input" type="number" id="vidaMaxima" value="10" min="1" oninput="desenharResumo()" max="1000">
               </div>
               <div class="campo">
-                <label class="rotulo" for="vidaAtual">Vida atual</label>
-                <input class="input" type="number" id="vidaAtual" value="10" min="0">
+                <label class="rotulo" for="vidaAtual">Vida atual (até a vida máxima)</label>
+                <input class="input" type="number" id="vidaAtual" value="10" min="0" max="1000">
               </div>
             </div>
 
@@ -195,7 +198,6 @@
                 <!-- "1 de 3": escrito pela função desenharItens() -->
                 <span class="selo" id="contadorItens">0 de 3</span>
               </div>
-              <p class="card-texto">Escolha até 3 itens para o seu personagem carregar. Clique de novo para tirar.</p>
 
               <!-- os itens entram aqui: função desenharItens() -->
               <div class="itens-grade" id="gradeItens"></div>
@@ -205,7 +207,6 @@
           <!-- ========== ETAPA 5: Atributos e detalhes ========== -->
           <div class="card oculto" id="etapa5">
             <h2 class="card-titulo">Atributos</h2>
-            <p class="card-texto">Escolha como os valores serão definidos.</p>
 
             <div class="formulario">
               <div class="opcoes">
@@ -213,27 +214,25 @@
                 <label><input type="radio" name="geracao" value="aleatorio" onclick="gerarAtributos('aleatorio')"> Aleatório</label>
                 <label><input type="radio" name="geracao" value="personalizado" onchange="gerarAtributos('personalizado')"> Personalizado</label>
               </div>
-              <p class="ajuda">Equilibrado deixa todos em 12. Aleatório sorteia (clique de novo para sortear outra vez). Personalizado deixa você digitar.</p>
 
               <div class="linha-campos">
-                <div class="campo"><label class="rotulo" for="forca">FOR</label><input class="input" type="number" id="forca" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="destreza">DES</label><input class="input" type="number" id="destreza" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="constituicao">CON</label><input class="input" type="number" id="constituicao" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="inteligencia">INT</label><input class="input" type="number" id="inteligencia" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="sabedoria">SAB</label><input class="input" type="number" id="sabedoria" value="12" readonly></div>
-                <div class="campo"><label class="rotulo" for="carisma">CAR</label><input class="input" type="number" id="carisma" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="forca">Força</label><input class="input" type="number" id="forca" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="destreza">Destreza</label><input class="input" type="number" id="destreza" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="constituicao">Constituição</label><input class="input" type="number" id="constituicao" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="inteligencia">Inteligência</label><input class="input" type="number" id="inteligencia" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="sabedoria">Sabedoria</label><input class="input" type="number" id="sabedoria" value="12" readonly></div>
+                <div class="campo"><label class="rotulo" for="carisma">Carisma</label><input class="input" type="number" id="carisma" value="12" readonly></div>
               </div>
             </div>
 
             <div class="junto">
               <h2 class="card-titulo">Detalhes</h2>
-              <p class="card-texto">Quem é o seu personagem e de onde ele veio.</p>
 
               <div class="formulario">
                 <div class="linha-campos">
                   <div class="campo">
-                    <label class="rotulo" for="nivel">Nível</label>
-                    <input class="input" type="number" id="nivel" value="1" min="1">
+                    <label class="rotulo" for="nivel">Nível (1 a 100)</label>
+                    <input class="input" type="number" id="nivel" value="1" min="1" max="100">
                   </div>
                   <div class="campo">
                     <label class="rotulo" for="alinhamento">Alinhamento</label>
@@ -247,7 +246,7 @@
 
                 <div class="campo">
                   <label class="rotulo" for="personalidade">Personalidade</label>
-                  <textarea class="input" id="personalidade" placeholder="Ex.: curioso, teimoso e sempre com fome."></textarea>
+                  <textarea class="input" id="personalidade" placeholder="Ex.: Curioso, teimoso e desconfiado."></textarea>
                 </div>
 
                 <div class="campo">
@@ -257,9 +256,6 @@
               </div>
             </div>
           </div>
-
-          <!-- mensagem de erro (etapaValida e salvarFicha escrevem aqui) -->
-          <p class="alerta" id="alert"></p>
 
           <!-- BOTÕES: mostrarEtapa() esconde o Voltar na 1ª etapa e troca o Próximo pelo Salvar na última -->
           <div class="botoes">
@@ -275,7 +271,7 @@
           <div class="resumo-arte"><img id="resumoRetrato" src="../img/retratos/r01.jpg" alt=""></div>
           <div class="resumo-texto">
             <h3 id="resumoNome">Seu personagem</h3>
-            <p id="resumoLinha">Escolha a raça e a classe nas próximas etapas.</p>
+            <p id="resumoLinha"></p>
             <p id="resumoItens"></p>
           </div>
         </aside>
@@ -301,6 +297,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/criar-ficha.js"></script>
 </body>
 </html>

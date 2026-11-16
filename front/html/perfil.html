@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Perfil | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -139,7 +141,6 @@
           <section class="perfil-caixa">
             <h2>Amigos</h2>
             <div class="companheiros" id="perfilCompanheiros"></div>
-            <p class="perfil-ajuda">quem joga nas mesmas campanhas</p>
           </section>
         </aside>
 
@@ -198,7 +199,7 @@
                 </label>
               </div>
 
-              <label class="rotulo espaco-topo-pequeno" for="contato">Contato (aparece no seu perfil)</label>
+              <label class="rotulo espaco-topo-pequeno" for="contato">Contato</label>
               <div class="config-salvar">
                 <input class="input" type="text" id="contato" maxlength="120" placeholder="Ex.: Discord: fulano">
                 <button type="button" class="botao botao-principal" onclick="salvarPerfil()">Salvar</button>
@@ -206,7 +207,7 @@
             </div>
 
             <div class="config-card">
-              <h3>Gostos <small>cada clique já salva</small></h3>
+              <h3>Gostos</h3>
               <!-- as caixinhas são criadas pela função carregarOpcoesInteresses() -->
               <div class="chips" id="opcoesInteresses"></div>
 
@@ -223,7 +224,6 @@
             <div class="config-card config-linha">
               <div>
                 <b>Modo escuro</b>
-                <small>o site fica escuro só para você</small>
               </div>
               <button type="button" class="tema-botao" id="temaBotao" onclick="trocarTema()" aria-label="Trocar o modo claro e escuro"><span></span></button>
             </div>
@@ -231,7 +231,6 @@
             <div class="config-card config-linha">
               <div>
                 <b>Tutorial</b>
-                <small>a Zero mostra de novo onde fica cada coisa</small>
               </div>
               <a class="botao" href="inicio.html?tutorial=sim">Ver de novo</a>
             </div>
@@ -259,6 +258,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/perfil.js"></script>
 </body>
 </html>

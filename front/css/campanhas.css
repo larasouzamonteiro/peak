@@ -11,6 +11,35 @@
 
 
 /* ---------- 1. LISTA DE CAMPANHAS ---------- */
+/* a janela do código de convite (criar-campanha.html) */
+.caixa-codigo{
+    width: min(560px, 100%);
+    padding: 34px 34px 30px;
+    border: none;
+    border-top: 6px solid var(--rosa);   /* a linha rosa em cima */
+    border-radius: 4px;
+}
+
+.caixa-codigo h2{
+    margin-bottom: 6px;
+    font-size: 2.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.caixa-codigo .texto-suave{
+    margin: 0;
+}
+
+.codigo-grande{
+    display: block;
+    margin: 26px 0 28px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--tinta);   /* a linha embaixo do código */
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+}
+
 /* faixa escura "Tem um código?" */
 .faixa-codigo{
     display: flex;

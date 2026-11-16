@@ -96,12 +96,24 @@ function quantosEmComum(listaA, listaB){
 // Cria em <div id="filtroInteresses"> um botão "Todos" e um para cada interesse
 function desenharFiltros(){
     buscar('/interesses', function(lista){
-        var html = '<button type="button" class="chip chip-botao ' + (filtroInteresse == '' ? 'ativo' : '') + '" onclick="filtrarInteresse(\'\')">Todos</button>'
+        // o filtro escolhido ganha a classe "ativo"
+        var ativo = ''
+
+        if(filtroInteresse == ''){
+            ativo = 'ativo'
+        }
+
+        var html = '<button type="button" class="chip chip-botao ' + ativo + '" onclick="filtrarInteresse(\'\')">Todos</button>'
 
         for(var i = 0; i < lista.length; i++){
             var nome = lista[i].nome
+            ativo = ''
 
-            html += '<button type="button" class="chip chip-botao ' + (filtroInteresse == nome ? 'ativo' : '') + '" onclick="filtrarInteresse(\'' + seguro(nome) + '\')">' + seguro(nome) + '</button>'
+            if(filtroInteresse == nome){
+                ativo = 'ativo'
+            }
+
+            html += '<button type="button" class="chip chip-botao ' + ativo + '" onclick="filtrarInteresse(\'' + seguro(nome) + '\')">' + seguro(nome) + '</button>'
         }
 
         document.getElementById('filtroInteresses').innerHTML = html
@@ -119,8 +131,16 @@ function filtrarCombina(valor){
     soCombina = valor
     quantosMostrar = 12   // filtro novo: volta a mostrar só as primeiras 12 pessoas
 
-    document.getElementById('filtroTodoMundo').classList.toggle('ativo', valor == false)
-    document.getElementById('filtroSoCombina').classList.toggle('ativo', valor == true)
+    if(valor == false){
+        document.getElementById('filtroTodoMundo').classList.add('ativo')
+    }else{
+        document.getElementById('filtroTodoMundo').classList.remove('ativo')
+    }
+    if(valor == true){
+        document.getElementById('filtroSoCombina').classList.add('ativo')
+    }else{
+        document.getElementById('filtroSoCombina').classList.remove('ativo')
+    }
 
     desenharPessoas()
 }
@@ -146,8 +166,17 @@ function desenharMinhaParceria(){
         htmlProcuro += '<span class="chip">' + seguro(procuro[i]) + '</span>'
     }
 
-    document.getElementById('meuSou').innerHTML = htmlSou || '<span class="texto-suave">Nada marcado ainda.</span>'
-    document.getElementById('meuProcuro').innerHTML = htmlProcuro || '<span class="texto-suave">Nada marcado ainda.</span>'
+    // nada marcado: mostra um aviso no lugar
+    if(htmlSou == ''){
+        htmlSou = '<span class="texto-suave">Nada marcado ainda.</span>'
+    }
+
+    if(htmlProcuro == ''){
+        htmlProcuro = '<span class="texto-suave">Nada marcado ainda.</span>'
+    }
+
+    document.getElementById('meuSou').innerHTML = htmlSou
+    document.getElementById('meuProcuro').innerHTML = htmlProcuro
 }
 
 
@@ -173,14 +202,26 @@ function htmlPessoa(pessoa, emComum, combina){
     }
 
     if(procura.length > 0){
-        linha += (linha == '' ? '' : ' · ') + 'procura ' + procura.join(', ')
+        // se já escreveu o "é ...", põe um pontinho antes
+        if(linha != ''){
+            linha += ' · '
+        }
+
+        linha += 'procura ' + procura.join(', ')
+    }
+
+    // selo "Combina" só para quem combina
+    var seloCombina = ''
+
+    if(combina){
+        seloCombina = '<span class="selo-combina">Combina</span>'
     }
 
     return `
         <a class="pessoa-card" href="perfil.html?id=${pessoa.id}">
-            ${htmlFoto(pessoa.fotoPerfil, pessoa.nomeUsuario)}
+            <img class="foto" src="${seguro(fotoDePerfil(pessoa.fotoPerfil))}" alt="">
             <span class="em-comum">${emComum} em comum</span>
-            ${combina ? '<span class="selo-combina">Combina</span>' : ''}
+            ${seloCombina}
             <div class="info">
                 <h3>${seguro(pessoa.nomeUsuario)}</h3>
                 <small>${seguro(linha)}</small>

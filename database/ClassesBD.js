@@ -12,19 +12,26 @@ class ClassesBD{
         // versão servidor: usa o pool (veja database/conexao.js)
         return conexao
     }
-
     // As classes que a pessoa pode ver: as oficiais, as públicas e as dela.
-    static getClasses(usuarioId, callback){
+    // E o tema: só aparece se não tiver tema, se for do evento de agora, ou para o admin.
+    static getClasses(usuarioId, tipo, callback){
         const connection = ClassesBD.connect()
 
         var sql = `
-            select c.*, u.nomeUsuario as autor
+                      select c.*, u.nomeUsuario as autor,
+                   (select count(*) from eventos e
+                    where e.tema = c.tema
+                    and date_sub(utc_timestamp(), interval 3 hour) between e.inicio and date_add(e.inicio, interval 7 day)) as novo
             from classes c
             left join usuarios u on u.id = c.usuarioId
-            where c.usuarioId is null or c.publico = 1 or c.usuarioId = ?
+            where (c.usuarioId is null or c.publico = 1 or c.usuarioId = ?)
+            and (c.tema is null
+                 or c.tema in (select tema from eventos
+                               where date_sub(utc_timestamp(), interval 3 hour) between inicio and fim)
+                 or ? = 'admin')
             order by c.id`
 
-        connection.query(sql, [usuarioId], (error, results)=>{
+        connection.query(sql, [usuarioId, tipo], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             callback(results)
@@ -33,11 +40,18 @@ class ClassesBD{
         connection.end()
     }
 
-    // classe: { nome, descricao, imagem, publico, usuarioId }
+    // Criar uma classe (de um jogador). classe: { usuarioId, nome, descricao, imagem, publico }
     static addClasse(classe, callback){
 
         if(!classe.nome){
             return callback({'error': 'Digite o nome da classe'})
+        }
+
+        // a caixinha "público": marcada vira 1, desmarcada vira 0
+        var publico = 0
+
+        if(classe.publico){
+            publico = 1
         }
 
         var nova = {
@@ -45,7 +59,7 @@ class ClassesBD{
             nome: classe.nome,
             descricao: classe.descricao,
             imagem: classe.imagem,
-            publico: classe.publico ? 1 : 0
+            publico: publico
         }
 
         const connection = ClassesBD.connect()
@@ -53,19 +67,25 @@ class ClassesBD{
         connection.query('insert into classes set ?', nova, (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
-            callback({'message': 'Classe criada com sucesso!'})
+            callback({'message': 'Classe criada!'})
         })
 
         connection.end()
     }
 
-    // Editar: só a descrição e se é pública. classe: { id, descricao, publico }
     static atualizar(classe, usuarioId, callback){
         const connection = ClassesBD.connect()
 
+        // a caixinha "público": marcada vira 1, desmarcada vira 0
+        var publico = 0
+
+        if(classe.publico){
+            publico = 1
+        }
+
         var sql = 'update classes set descricao = ?, publico = ? where id = ? and usuarioId = ?'
 
-        connection.query(sql, [classe.descricao, classe.publico ? 1 : 0, classe.id, usuarioId], (error, results)=>{
+        connection.query(sql, [classe.descricao, publico, classe.id, usuarioId], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             if(results.affectedRows == 0){
@@ -113,12 +133,20 @@ class ClassesBD{
             return callback({'error': 'Digite o nome da classe'})
         }
 
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(classe.tema){
+            tema = classe.tema
+        }
+
         var nova = {
             usuarioId: null,
             nome: classe.nome,
             descricao: classe.descricao,
             imagem: classe.imagem,
-            publico: 1
+            publico: 1,
+            tema: tema
         }
 
         const connection = ClassesBD.connect()
@@ -140,12 +168,19 @@ class ClassesBD{
             return callback({'error': 'Digite o nome da classe'})
         }
 
-        var sql = 'update classes set nome = ?, descricao = ? where id = ? and usuarioId is null'
-        var valores = [classe.nome, classe.descricao, classe.id]
+        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
+        var tema = null
+
+        if(classe.tema){
+            tema = classe.tema
+        }
+
+        var sql = 'update classes set nome = ?, descricao = ?, tema = ? where id = ? and usuarioId is null'
+        var valores = [classe.nome, classe.descricao, tema, classe.id]
 
         if(classe.imagem){
-            sql = 'update classes set nome = ?, descricao = ?, imagem = ? where id = ? and usuarioId is null'
-            valores = [classe.nome, classe.descricao, classe.imagem, classe.id]
+            sql = 'update classes set nome = ?, descricao = ?, tema = ?, imagem = ? where id = ? and usuarioId is null'
+            valores = [classe.nome, classe.descricao, tema, classe.imagem, classe.id]
         }
 
         const connection = ClassesBD.connect()

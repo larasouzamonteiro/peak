@@ -14,12 +14,12 @@
 
 /* ---------- 1. CORES E BASE ---------- */
 :root{
-    --coral-claro: #ffb59a;
-    --coral: #f57f6c;
-    --coral-escuro: #cf4f55;
+    --coral-claro: #ff849a;
+    --coral: #c24d62;
+    --coral-escuro: #b3334a;
     --fundo: #140c0c;
     --texto: #f1d6cd;
-    --texto-suave: #c99e91;
+    --texto-suave: #ffc8d2;
 }
 
 *{
@@ -103,7 +103,7 @@ img{
 
 /* o pontinho do "peak." */
 .logo span{
-    color: var(--coral-claro);
+    color:  #c24d62;
 }
 
 /* "MESA DE RPG" pequeno, em cima do peak. */
@@ -111,7 +111,7 @@ img{
     display: block;
     margin-bottom: 14px;
     padding-left: 6px;
-    color: #e9b8a8;
+    color:#c48792;
     font-family: "Lora", serif;
     font-size: 13px;
     font-weight: 400;
@@ -124,7 +124,7 @@ img{
     position: absolute;
     right: 4vw;
     bottom: 5vh;
-    color: #e9b8a8;
+    color: #c48792;
     font-family: "Lora", serif;
     font-size: 12px;
     letter-spacing: 0.3em;
@@ -199,7 +199,7 @@ body {
     left: -34px;
     width: 10px;
     height: 10px;
-    background: var(--coral);
+    background: #c24d62;
     transform: translateY(-50%) rotate(45deg);
 }
 
@@ -229,7 +229,7 @@ body {
 .descricao b{
     display: block;
     margin-bottom: 6px;
-    color: var(--coral-claro);
+    color: var(--coral-claro);  ;
     font-family: "Lora", serif;
     font-size: 12px;
     letter-spacing: 0.25em;

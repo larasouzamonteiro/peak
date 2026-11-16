@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Classes | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -81,7 +83,10 @@
         <h2>Classes da Peak</h2>
       </div>
       <!-- os cards entram aqui: js/classes.js, função desenharClasses() -->
-      <div class="galeria" id="listaOficiais"></div>
+      <div class="galeria" id="listaOficiais">
+        <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+        <div class="carregando"><span></span>Carregando…</div>
+      </div>
 
       <!-- ===== RAÇAS DA COMUNIDADE (criadas por outras pessoas e marcadas como públicas) ===== -->
       <div class="secao-titulo">
@@ -134,7 +139,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2 id="tituloEdicao">Editar classe</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaEdicao')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaEdicao')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -167,6 +172,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/classes.js"></script>
 </body>
 </html>

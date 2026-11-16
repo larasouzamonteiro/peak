@@ -29,8 +29,13 @@ function carregarCampanha(){
 
         document.getElementById('campanhaNome').textContent = campanha.nome
         document.getElementById('campanhaDescricao').textContent = campanha.descricao
-        document.getElementById('campanhaHistoria').textContent = campanha.historia || 'O Mestre ainda não escreveu a história desta campanha.'
-        document.getElementById('campanhaCriadaPor').textContent = campanha.criadaPor ? 'História de ' + campanha.criadaPor : ''
+        document.getElementById('campanhaHistoria').textContent = textoOuPadrao(campanha.historia, 'O Mestre ainda não escreveu a história desta campanha.')
+        // "História de ..." só aparece se a campanha tiver o nome de quem criou
+        if(campanha.criadaPor){
+            document.getElementById('campanhaCriadaPor').textContent = 'História de ' + campanha.criadaPor
+        }else{
+            document.getElementById('campanhaCriadaPor').textContent = ''
+        }
 
         if(campanha.imagemCapa){
             document.getElementById('campanhaCapa').src = campanha.imagemCapa
@@ -77,8 +82,16 @@ function mostrarAba(nome){
     var abas = ['Mesa', 'Historia', 'Sessoes', 'Mestre']
 
     for(var i = 0; i < abas.length; i++){
-        document.getElementById('aba' + abas[i]).classList.toggle('oculto', abas[i] != nome)
-        document.getElementById('botaoAba' + abas[i]).classList.toggle('ativo', abas[i] == nome)
+        if(abas[i] != nome){
+            document.getElementById('aba' + abas[i]).classList.add('oculto')
+        }else{
+            document.getElementById('aba' + abas[i]).classList.remove('oculto')
+        }
+        if(abas[i] == nome){
+            document.getElementById('botaoAba' + abas[i]).classList.add('ativo')
+        }else{
+            document.getElementById('botaoAba' + abas[i]).classList.remove('ativo')
+        }
     }
 }
 
@@ -98,7 +111,7 @@ function carregarJogadores(){
         }
 
         if(html == ''){
-            html = '<p class="texto-suave">Ninguém entrou ainda. Passe o código de convite para os seus amigos.</p>'
+            html = '<p class="texto-suave">Ninguém entrou ainda.</p>'
         }
 
         document.getElementById('listaGrupo').innerHTML = html
@@ -131,6 +144,13 @@ function carregarSessoes(){
                 botao = '<button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirSessao(' + s.id + ')"></button>'
             }
 
+            // o resultado só aparece se o mestre escreveu
+            var resultado = ''
+
+            if(s.resultado){
+                resultado = '<p class="texto-suave"><b>Resultado:</b> ' + seguro(s.resultado) + '</p>'
+            }
+
             html += `
                 <div class="card sessao">
                     <div class="sessao-topo">
@@ -138,7 +158,7 @@ function carregarSessoes(){
                         <span class="selo selo-escuro">${formatarData(s.data)}</span>
                     </div>
                     <p>${seguro(s.descricao)}</p>
-                    ${s.resultado ? '<p class="texto-suave"><b>Resultado:</b> ' + seguro(s.resultado) + '</p>' : ''}
+                    ${resultado}
                     ${botao}
                 </div>`
         }
@@ -172,6 +192,7 @@ function salvarSessao(){
         document.getElementById('sessaoDescricao').value = ''
         document.getElementById('sessaoResultado').value = ''
         document.getElementById('alertSessao').textContent = ''
+        avisar('Sessão criada!', '', 'certo')
         carregarSessoes()
     })
 }
@@ -185,6 +206,7 @@ function excluirSessao(id){
                 return
             }
 
+            avisar('Sessão excluída', '', 'certo')
             carregarSessoes()
         })
     }, 'Excluir')
@@ -206,7 +228,7 @@ function carregarMonstros(){
             // VISUAL: cada monstro é um quadrinho com foto, e o "×" no canto remove
             html += `
                 <div class="monstro-item">
-                    ${htmlFoto(m.imagem, m.nome)}
+                    ${htmlFoto(m.imagem, 'monstro')}
                     <div>
                         <strong>${seguro(m.nome)}</strong>
                         <small>Vida ${m.vidaMaxima} · Defesa ${m.defesa}</small>
@@ -258,6 +280,7 @@ function adicionarMonstro(){
             return
         }
 
+        avisar('Monstro adicionado à campanha!', '', 'certo')
         carregarMonstros()
     })
 }
@@ -271,6 +294,7 @@ function removerMonstro(linhaId){
             return
         }
 
+        avisar('Monstro tirado da campanha', '', 'certo')
         carregarMonstros()
     })
 }

@@ -95,7 +95,7 @@
     font-size: 1rem;
     font-weight: 800;
     line-height: 1.1;
-    text-transform: uppercase;
+    text-transform: none;       /* o nome aparece do jeito que a pessoa escreveu */
     overflow-wrap: anywhere;
 }
 
@@ -305,7 +305,7 @@
 /* ----- a fileira de pessoas (tipo stories) ----- */
 .mural-pessoas{
     display: flex;
-    gap: 12px;
+    gap: 18px;
     overflow-x: auto;
     padding: 14px 16px;
 }
@@ -317,7 +317,7 @@
 /* uma pessoa: <a class="pessoa-bola combina" href="perfil.html?id=3"><span><img></span>mirela<small>combina</small></a> */
 .pessoa-bola{
     flex: none;
-    width: 72px;
+    width: 74px;
     color: var(--tinta);
     font-size: 0.7rem;
     font-weight: 600;
@@ -334,6 +334,15 @@
     background: rgba(26, 26, 28, 0.08);
 }
 
+/* o nome: numa linha só; nome comprido termina em "..." (não encosta no do lado) */
+.pessoa-bola b{
+    display: block;
+    overflow: hidden;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 /* quem combina com você ganha o anel colorido */
 .pessoa-bola.combina span{
     background: conic-gradient(#ec6a7c, #c0304a, #1a1a1c, #ec6a7c);
@@ -346,6 +355,15 @@
     border: 2px solid #fff;
     border-radius: 50%;
     object-fit: cover;
+}
+/* sem foto: a primeira letra do nome numa bolinha (função htmlFoto do script.js) */
+.pessoa-bola .sem-foto{
+    width: 100%;
+    height: 100%;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.3rem;
 }
 
 .pessoa-bola small{
@@ -420,7 +438,8 @@
 /* ----- os recados (2 colunas, estilo Pinterest) ----- */
 .mural-grade{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* minmax(0, 1fr): a coluna não cresce por causa de uma palavra enorme sem espaço */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 16px;
     align-items: start;
 }
@@ -486,6 +505,7 @@
 
 .recado-corpo p{
     margin: 0;
+    overflow-wrap: anywhere;      /* "pppppppp..." sem espaço quebra a linha em vez de sair da tela */
     color: var(--tinta);
     font-size: 0.92rem;
     line-height: 1.5;
@@ -598,6 +618,46 @@
 
     .mural-postar .avatar{
         display: none;
+    }
+
+    /* Procuro / Ofereço e as tags só aparecem quando a pessoa começa a escrever
+       (o mural.js coloca a classe "escrevendo" quando ela toca na caixa do recado).
+       Quando aparecem, ficam numa fileira só que desliza para o lado. */
+    /* minmax(0, 1fr): a coluna não fica mais larga que a tela por causa da fileira que desliza */
+    .mural{
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mural-escolhas{
+        display: none;
+        min-width: 0;
+        padding-left: 0;
+    }
+
+    .mural-postar.escrevendo .mural-escolhas{
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .mural-escolhas .chips{
+        flex-wrap: nowrap;
+    }
+
+    .mural-escolhas .chip,
+    .mural-filtros .chip{
+        flex: none;                 /* não encolhe: o texto fica inteiro */
+    }
+
+    /* os filtros (Tudo, Procuro, Ofereço, Só quem combina): uma fileira só que desliza */
+    .mural-filtros{
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin: 14px -18px;
+        padding: 0 18px 4px;
+        scrollbar-width: none;
     }
 }
 

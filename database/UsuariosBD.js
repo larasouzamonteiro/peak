@@ -21,7 +21,11 @@ function gerarCodigo(){
 // replace(/\D/g, '') tira tudo que não é número (parênteses, espaço, traço).
 // Devolve null se não for um celular válido (o DDD + número têm que dar 10 ou 11 números).
 function limparTelefone(texto){
-    var numeros = String(texto || '').replace(/\D/g, '')
+    if(texto == null){
+        return null
+    }
+
+    var numeros = String(texto).replace(/\D/g, '')
 
     if(numeros.length == 10 || numeros.length == 11){
         return '55' + numeros
@@ -98,21 +102,44 @@ class UsuariosBD{
 
         const connection = UsuariosBD.connect()
 
-        // o nome de usuário e o e-mail não podem repetir
-        var sql = 'select id from usuarios where nomeUsuario = ? or email = ?'
+        // o nome de usuário, o e-mail e o celular não podem repetir
+        // (o celular só é comparado quando a pessoa digitou um: "telefone = null" nunca é verdade no SQL)
+        var sql = 'select id, telefone from usuarios where nomeUsuario = ? or email = ? or telefone = ?'
 
-        connection.query(sql, [nomeUsuario, email], (error, results)=>{
+        connection.query(sql, [nomeUsuario, email, telefone], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
             if(results.length > 0){
                 connection.end()
+
+                // CELULAR REPETIDO (nov/2026): antes dava para criar duas contas com o mesmo número
+                for(var i = 0; i < results.length; i++){
+                    if(telefone != null && results[i].telefone == telefone){
+                        return callback({'error': 'Esse celular já está cadastrado em outra conta!'})
+                    }
+                }
+
                 return callback({'error': 'Esse nome de usuário ou e-mail já está cadastrado!'})
             }
 
             var novo = {nomeUsuario: nomeUsuario, email: email, senha: senhaHash, codigoEmail: codigo, telefone: telefone}
 
             connection.query('insert into usuarios set ?', novo, (error, results)=>{
-                if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
+                if(error){
+                    console.log(error.message)
+
+                    // ER_DUP_ENTRY = o banco recusou porque já existe esse valor numa coluna UNIQUE
+                    // (ex.: o ALTER TABLE ... ADD UNIQUE (telefone)). A mensagem do MySQL diz qual coluna foi.
+                    if(error.code == 'ER_DUP_ENTRY'){
+                        if(error.message.indexOf('telefone') != -1){
+                            return callback({'error': 'Esse celular já está cadastrado em outra conta!'})
+                        }
+
+                        return callback({'error': 'Esse nome de usuário ou e-mail já está cadastrado!'})
+                    }
+
+                    return callback({'error': 'Erro no servidor. Tente de novo.'})
+                }
 
                 connection.end()
                 // só responde depois que o e-mail saiu (na Vercel, senão ele não sai)
@@ -209,7 +236,7 @@ class UsuariosBD{
 
             // a resposta é a mesma achando ou não a conta: assim ninguém descobre
             // quais e-mails têm conta na Peak
-            var resposta = {'message': 'Se esse e-mail tiver uma conta na Peak, o código já foi enviado.'}
+            var resposta = {'message': 'Se esse e-mail tiver uma conta na Peak, o código chega em instantes.'}
 
             if(results.length == 0){
                 connection.end()
@@ -469,7 +496,7 @@ class UsuariosBD{
         connection.query('update usuarios set imagemSobre = ? where id = ?', [imagem, usuarioId], (error, results)=>{
             if(error){
                 console.log(error.message)
-                return callback()
+                return callback({'error': 'Falta criar a coluna imagemSobre no banco (veja o LEIA-ME).'})
             }
 
             callback({'message': 'Imagem trocada!'})

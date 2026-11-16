@@ -50,7 +50,7 @@
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1;
-    text-transform: uppercase;
+    text-transform: none;       /* o nome aparece do jeito que a pessoa escreveu */
     overflow-wrap: anywhere;
 }
 
@@ -98,6 +98,12 @@
 
 .folha-bloco .atributos{
     margin: 0;
+    grid-template-columns: repeat(3, 1fr);     /* na ficha aberta os nomes são inteiros: 3 por linha */
+    gap: 12px 8px;
+}
+
+.folha-bloco .atributo span{
+    font-size: 0.74rem;
 }
 
 .folha-vida strong{
@@ -206,13 +212,14 @@
 .galeria-info strong{
     font-size: 1.1rem;
     font-weight: 800;
-    text-transform: uppercase;
+    text-transform: none;       /* o nome aparece do jeito que a pessoa escreveu */
 }
 
 .galeria-info small{
-    color: #f0a79c;
+    color: var(--rosa-claro);      /* rosa claro da Peak: aparece bem no fundo escuro */
     font-size: 0.78rem;
     font-weight: 700;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);   /* se a foto for clara, ainda dá para ler */
 }
 
 .galeria-info p{
@@ -229,6 +236,13 @@
     padding-top: 10px;
 }
 
+/* "Pública" / "Só eu vejo": selo de vidro escuro com letra branca (igual aos selos das fotos) */
+.galeria-info .botoes .selo{
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
 
 /* ---------- 3. TELAS MENORES ---------- */
 @media (max-width: 760px){
@@ -238,5 +252,37 @@
 
     .folha-corpo{
         grid-template-columns: 1fr;
+    }
+
+    /* raças e classes: 2 por linha e mais baixinhas */
+    .galeria{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .galeria-card{
+        min-height: 230px;
+    }
+
+    .galeria-info{
+        padding: 40px 10px 10px;
+    }
+
+    .galeria-info strong{
+        font-size: 0.95rem;
+    }
+
+    .galeria-info small{
+        font-size: 0.7rem;
+    }
+
+    /* a descrição mostra só 2 linhas (o resto vira "...") */
+    .galeria-info p{
+        display: -webkit-box;
+        overflow: hidden;
+        font-size: 0.75rem;
+        line-height: 1.35;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 }

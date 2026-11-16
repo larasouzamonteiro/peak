@@ -155,8 +155,9 @@ html{
 
 .legendas b{
     display: block;
-    font-family: var(--serif);
-    font-size: 1.08rem;
+    font-family: "Poppins", sans-serif;     /* VISUAL (nov/2026): a mesma letra do site, em vez da letra de livro */
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .legendas span{
@@ -166,13 +167,6 @@ html{
 
 
 /* ---------- 2. LIVRO ABERTO ---------- */
-.aberto-topo{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-}
-
 /* as duas páginas: a da esquerda (arte e sumário) é mais estreita que a do texto */
 .livro-aberto{
     position: relative;
@@ -521,30 +515,65 @@ a.palavra:hover{
 
 
 /* ---------- 4. BARRA DE LEITURA, MARCA-TEXTO E VOLTAR AO TOPO ---------- */
-.barra-leitura{
+/* ABAS DE LEITURA: penduradas no alto da tela, como marcadores de livro.
+   Ficam um pouco escondidas e descem quando o mouse passa por cima. */
+.abas-leitura{
+    position: fixed;
+    top: 0;
+    right: 110px;
+    z-index: 40;
     display: flex;
     gap: 8px;
-    padding: 6px;
-    border: 1px solid var(--vidro-borda);
-    border-radius: 999px;
-    background: var(--vidro);
-    box-shadow: var(--sombra-pequena), var(--brilho);
-    backdrop-filter: blur(14px);
 }
 
-/* botão do marca-texto ligado (o script coloca a classe "ativo") */
-.barra-leitura .botao.ativo{
-    background: var(--tinta);
-    color: #fff;
+.aba-leitura{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 50px;
+    height: 70px;
+    padding: 0 0 12px;
+    border: 0;
+    border-radius: 0 0 16px 16px;
+    background: var(--rosa-claro);
+    box-shadow: 0 6px 14px rgba(110, 26, 47, 0.25);
+    cursor: pointer;
+    transform: translateY(-14px);
+    transition: transform 200ms ease, background 200ms ease;
 }
 
-/* botão do áudio enquanto a narração toca (classe "tocando") */
-.barra-leitura .botao.tocando{
-    background: var(--rosa-escuro);
+.aba-leitura:hover{
+    transform: translateY(0);
 }
 
-#avisoAudio{
-    margin-bottom: 12px;
+.aba-leitura img{
+    width: 24px;
+    height: 24px;
+}
+
+/* o áudio: o desenho de pausar só aparece enquanto toca (classe "tocando") */
+.aba-leitura .icone-pausar{
+    display: none;
+}
+
+.aba-leitura.tocando .icone-ouvir{
+    display: none;
+}
+
+.aba-leitura.tocando .icone-pausar{
+    display: block;
+}
+
+/* ligada (marca-texto ativo ou áudio tocando): a aba fica rosa forte, mais comprida, e o desenho branco */
+.aba-leitura.ativo,
+.aba-leitura.tocando{
+    background: var(--rosa);
+    transform: translateY(0);
+}
+
+.aba-leitura.ativo img,
+.aba-leitura.tocando img{
+    filter: brightness(0) invert(1);     /* deixa o desenho branco */
 }
 
 /* a faixa amarela: presa na tela (fixed). O script só muda a altura dela (top). */
@@ -624,9 +653,27 @@ a.palavra:hover{
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .aberto-topo{
-        flex-wrap: wrap;
-        gap: 10px;
+    /* celular: em cima fica a barra do menu, então as abas saem do lado direito */
+    .abas-leitura{
+        top: 38%;
+        right: 0;
+        flex-direction: column;
+    }
+
+    .aba-leitura{
+        align-items: center;
+        justify-content: flex-start;
+        width: 62px;
+        height: 48px;
+        padding: 0 0 0 12px;
+        border-radius: 16px 0 0 16px;
+        transform: translateX(12px);
+    }
+
+    .aba-leitura:hover,
+    .aba-leitura.ativo,
+    .aba-leitura.tocando{
+        transform: translateX(0);
     }
 
     .dicionario,
@@ -731,4 +778,227 @@ a.palavra:hover{
     .artistas{
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+
+/* =====================================================
+   VISUAL (nov/2026): O LIVRO ABERTO LIMPO
+   As duas páginas claras, com uma sombra no meio (a dobra do livro)
+   e as folhas empilhadas embaixo (as linhas do box-shadow).
+   A arte da capa ocupa a parte de cima da página da esquerda e vai sumindo no papel.
+   O sumário é uma lista simples, sem os números.
+   (fica no fim do arquivo: estas regras trocam as de cima)
+   ===================================================== */
+.livro-aberto{
+    grid-template-columns: minmax(300px, 0.85fr) 1.5fr;
+    border-radius: 6px;
+    background: #fdfbf7;
+    box-shadow: 0 1px 0 #e9e1d6, 0 3px 0 #f6f1ea, 0 5px 0 #e9e1d6, 0 7px 0 #f6f1ea, 0 24px 50px rgba(60, 35, 25, 0.22);
+}
+
+/* a página da esquerda: papel claro */
+.pagina-esq{
+    justify-content: flex-start;
+    background: #fdfbf7;
+    color: #2f2522;
+}
+
+/* a sombra da dobra no lado direito: uma camada POR CIMA da arte,
+   para a dobra passar também por cima da foto (sem um corte reto) */
+.pagina-esq::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    box-shadow: inset -18px 0 22px -18px rgba(70, 45, 30, 0.32);
+    pointer-events: none;
+}
+
+/* a arte: do topo até um pouco mais da metade da página */
+.pagina-arte{
+    position: relative;
+    inset: auto;
+    flex: none;
+    height: 58%;
+    background-position: center 20%;
+}
+
+/* embaixo a arte some no papel (o degradê termina na cor da página) */
+.pagina-arte::after{
+    background: linear-gradient(180deg, transparent 55%, #fdfbf7);
+}
+
+.pagina-sumario{
+    margin-top: -24px;
+    padding: 0 30px 28px;
+}
+
+.pagina-sumario small{
+    color: #b0453c;
+}
+
+.pagina-sumario h2{
+    margin: 2px 0 12px;
+    color: #2f2522;
+    font-size: 1.9rem;
+}
+
+/* os capítulos: só o nome, com uma linha fina embaixo (como o índice de um livro) */
+.sumario-item{
+    padding: 9px 0;
+    border: 0;
+    border-bottom: 1px solid #efe7dc;
+    border-radius: 0;
+    color: #4a3b36;
+    font-family: var(--serif);
+    font-size: 0.98rem;
+}
+
+.sumario-item:hover{
+    background: none;
+    color: #b0453c;
+}
+
+/* sem a bolinha com o número */
+.sumario-item span{
+    display: none;
+}
+
+/* a página da direita: o mesmo papel, com a sombra da dobra no lado esquerdo */
+.pagina-dir{
+    padding: 40px 56px 30px;
+    background: #fdfbf7;
+    box-shadow: inset 18px 0 22px -18px rgba(70, 45, 30, 0.28);
+    color: #2f2522;
+}
+
+.pagina-dir h3{
+    font-size: 1.75rem;
+}
+
+.pagina-dir p{
+    font-size: 1.02rem;
+    line-height: 1.8;
+}
+
+.pagina-rodape{
+    border-top: 1px solid #efe7dc;
+    text-align: right;
+}
+
+/* tela média e celular: uma página embaixo da outra, sem a sombra da dobra */
+@media (max-width: 1100px){
+    .livro-aberto{
+        grid-template-columns: 1fr;
+    }
+
+    .pagina-esq::after{
+        display: none;
+    }
+
+    .pagina-dir{
+        box-shadow: none;
+    }
+
+    .pagina-esq{
+        min-height: 0;
+    }
+
+    .pagina-arte{
+        height: 280px;
+    }
+
+    .pagina-dir{
+        padding: 24px 24px 28px;
+    }
+}
+
+
+/* ---------- VISUAL (nov/2026): A LETRA DOS LIVROS (California Sun) ----------
+   Uma letra gótica, de livro antigo. O arquivo está em css/fontes/ (o app.js entrega o .woff2).
+   Ela entra só no nome do livro, no título de cada capítulo e na letra grande do começo;
+   o texto continua na letra de livro de sempre (Lora), que é mais fácil de ler.
+   (fonte grátis para uso pessoal: para uso comercial precisa comprar a licença) */
+@font-face{
+    font-family: "California Sun";
+    src: url(fontes/california-sun.woff2) format("woff2");
+    font-display: swap;          /* enquanto carrega, mostra a letra normal (o texto não some) */
+}
+
+.pagina-sumario h2{
+    font-family: "California Sun", var(--serif);
+    font-weight: 400;
+    font-size: 2.4rem;
+}
+
+.pagina-dir h3{
+    font-family: "California Sun", var(--serif);
+    font-weight: 400;
+    font-size: 2.3rem;
+}
+
+/* a letra grande do começo: ocupa umas duas linhas, em vermelho */
+.capitular{
+    float: left;
+    margin: 6px 12px 0 0;
+    color: #b0453c;
+    font-family: "California Sun", var(--serif);
+    font-weight: 400;
+    font-size: 4.4rem;
+    line-height: 0.8;
+}
+
+/* ---------- VISUAL (nov/2026): O TÍTULO NA CAPA DOS LIVROS (estante) ----------
+   A letra é a California Sun. O vidro escuro em volta do título ficou bem mais leve
+   (quase transparente, sem a borda e sem o brilho): a arte da capa aparece mais.
+   Uma sombra no texto deixa ele legível em cima de qualquer arte. */
+.livro-titulo{
+    border: 0;
+    background: rgba(20, 10, 14, 0.28);
+    box-shadow: none;
+    backdrop-filter: blur(3px);
+    font-family: "California Sun", var(--serif);
+    font-size: 1.7rem;
+    font-weight: 400;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- VISUAL (nov/2026): LIVRO IV - CRIADORES E ARTISTAS ----------
+   Os créditos ficam separados em grupos (Campanhas, A logo, Artes e banners). */
+.creditos-grupo{
+    margin: 24px 0 0;
+    color: #b0453c;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+/* quem não tem imagem: um quadrado com a primeira letra do nome */
+.artista-letra{
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    background: #f1e7da;
+    color: #8a5a2b;
+    font-family: "California Sun", var(--serif);
+    font-size: 4rem;
+    box-shadow: 0 8px 18px rgba(60, 35, 25, 0.18);
+}
+
+/* a logo aparece inteira (sem cortar), num fundo claro */
+.artista img.artista-logo{
+    padding: 18%;
+    object-fit: contain;
+    background: #f6efe6;
+}
+
+/* o título "Dicionário" (no fim de cada livro) com a mesma letra dos capítulos */
+.dicionario-pagina h2{
+    font-family: "California Sun", var(--serif);
+    font-weight: 400;
+    font-size: 2.6rem;
 }

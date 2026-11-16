@@ -72,7 +72,7 @@
     --vidro-forte: rgba(255, 251, 247, 0.92);   /* janelas e textos longos: quase sem transparência, para ler bem */
     --vidro-borda: rgba(255, 255, 255, 0.66);
     --desfoque: blur(18px) saturate(1.4);       /* o quanto o vidro embaça o que está atrás dele */
-    --brilho: inset 0 1.5px 0 rgba(255, 255, 255, 0.85);    /* a linha de luz na borda de cima */
+    --brilho: 0 0 transparent;    /* VISUAL (nov/2026): era a linha de luz branca na borda de cima; tiramos */
     --raio: 22px;                               /* cantos arredondados */
 
     /* ----- as sombras (sempre leves, sempre de cima para baixo) ----- */
@@ -339,11 +339,11 @@ p{
     place-items: center;
     width: 62px;
     height: 62px;
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    border: 0;
     border-radius: 50%;
     background: var(--degrade);
     color: #fff;
-    box-shadow: 0 12px 28px rgba(110, 26, 47, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.5);
+    box-shadow: 0 12px 28px rgba(110, 26, 47, 0.38);
     cursor: pointer;
 }
 
@@ -592,10 +592,10 @@ p{
 }
 
 .botao-principal{
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: transparent;
     background: var(--degrade);
     color: #fff;
-    box-shadow: 0 8px 20px rgba(110, 26, 47, 0.32), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 20px rgba(110, 26, 47, 0.32);
 }
 
 
@@ -684,6 +684,7 @@ p{
 /* bloco de vidro: meio transparente, embaça o fundo, tem a linha de luz em cima e uma sombra leve */
 .card{
     padding: 22px;
+    margin-bottom: 20px;
     border: 1px solid var(--vidro-borda);
     border-radius: var(--raio);
     background: var(--vidro);
@@ -881,6 +882,36 @@ p{
     color: var(--tinta);
     font: inherit;
     font-size: 0.92rem;
+}
+
+/* o campo de enviar imagem (<input type="file">): o botão "Escolher arquivo" do navegador
+   ganha a cara dos botões do site. "::file-selector-button" é o nome desse botão no CSS. */
+.input[type="file"]{
+    padding: 6px 14px 6px 6px;
+    color: var(--tinta-3);
+    cursor: pointer;
+}
+
+.input[type="file"]::file-selector-button{
+    margin-right: 12px;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--tinta);
+    color: #fff;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.input[type="file"]:hover::file-selector-button{
+    background: var(--rosa);
+}
+
+/* no modo escuro o botão fica rosa (igual aos outros botões principais) */
+html.escuro body .input[type="file"]::file-selector-button{
+    background: var(--rosa);
 }
 
 .input::placeholder{
@@ -1122,7 +1153,7 @@ button.foto-card{
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    text-transform: uppercase;
+    text-transform: none;       /* o nome aparece do jeito que a pessoa escreveu */
 }
 
 .foto-card .nome small{
@@ -1207,7 +1238,7 @@ button.foto-card{
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    text-transform: uppercase;
+    text-transform: none;       /* o nome aparece do jeito que a pessoa escreveu */
     overflow-wrap: anywhere;
 }
 
@@ -1300,11 +1331,151 @@ button.foto-card{
     margin: 0;
     font-size: 1.3rem;
     font-weight: 800;
-    text-transform: uppercase;
+    text-transform: none;       /* o nome aparece do jeito que a pessoa escreveu */
 }
 
 .modal-larga{
     width: min(980px, 100%);
+}
+
+/* botão de fechar as janelas: só o símbolo ✕ (o nome "Fechar" fica no title, para quem passa o mouse) */
+.botao-fechar{
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(90, 60, 50, 0.12);
+    color: var(--tinta);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.botao-fechar:hover{
+    background: rgba(90, 60, 50, 0.22);
+}
+
+/* JANELA COM ARTE (monstro e campanha oficial): sem a caixa branca.
+   A imagem ocupa a janela toda e o texto fica escrito por cima, com sombra para ler bem. */
+.modal-arte{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 480px;
+    padding: 28px;
+    border: none;
+    background: #121014;
+    color: #fff;
+}
+
+/* a imagem vira o fundo da janela e some aos poucos no escuro, lá embaixo */
+.modal-arte > img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+    object-fit: cover;
+    /* VISUAL: some em curva suave (vários pontos), sem uma linha marcada */
+    -webkit-mask-image: linear-gradient(to bottom, #000 35%, rgba(0, 0, 0, 0.85) 50%, rgba(0, 0, 0, 0.55) 65%, rgba(0, 0, 0, 0.25) 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 35%, rgba(0, 0, 0, 0.85) 50%, rgba(0, 0, 0, 0.55) 65%, rgba(0, 0, 0, 0.25) 80%, transparent 100%);
+}
+
+/* tudo que não é a imagem fica na frente dela */
+.modal-arte > *:not(img){
+    position: relative;
+    z-index: 1;
+}
+
+.modal-arte .modal-cabecalho{
+    position: static;
+    margin-bottom: 10px;
+}
+
+.modal-arte .modal-cabecalho h2{
+    position: relative;
+    z-index: 1;
+    font-size: 1.9rem;
+}
+
+.modal-arte h2,
+.modal-arte p,
+.modal-arte .rotulo{
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+}
+
+.modal-arte .texto-suave{
+    color: rgba(255, 255, 255, 0.78);
+}
+
+/* o ✕ fica no canto de cima, por cima da imagem */
+.modal-arte .botao-fechar{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+}
+
+.modal-arte .botao-fechar:hover{
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-arte .chip,
+.modal-arte .selo{
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    box-shadow: none;
+}
+
+/* campanha: a imagem fica só em cima (a história é longa) e o texto começa por cima dela */
+.modal-arte.modal-larga{
+    justify-content: flex-start;
+    min-height: 0;
+    padding-top: 300px;
+}
+
+.modal-arte.modal-larga > img{
+    height: 460px;
+    /* some mais cedo: assim um nome que já venha escrito na capa não briga com o título */
+    -webkit-mask-image: linear-gradient(to bottom, #000 20%, rgba(0, 0, 0, 0.8) 38%, rgba(0, 0, 0, 0.45) 56%, rgba(0, 0, 0, 0.15) 74%, transparent 90%);
+    mask-image: linear-gradient(to bottom, #000 20%, rgba(0, 0, 0, 0.8) 38%, rgba(0, 0, 0, 0.45) 56%, rgba(0, 0, 0, 0.15) 74%, transparent 90%);
+}
+
+.modal-arte .historia{
+    margin-top: 14px;
+}
+
+/* o botão principal fica claro, para aparecer no fundo escuro */
+.modal-arte .botao-principal{
+    background: #fff;
+    color: #121014;
+}
+
+/* no celular a imagem da campanha fica mais baixa, para o texto aparecer logo */
+@media (max-width: 700px){
+    .modal-arte{
+        min-height: 420px;
+        padding: 22px;
+    }
+
+    .modal-arte.modal-larga{
+        padding-top: 190px;
+    }
+
+    .modal-arte.modal-larga > img{
+        height: 300px;
+    }
 }
 
 
@@ -1360,7 +1531,7 @@ button.foto-card{
    VISUAL: CELULAR
    O menu lateral vira uma barra flutuante embaixo com 5 lugares:
      Início | Campanhas | (o dado, no meio) | Fichas | Mais
-   "Mais" abre o menu inteiro por cima (função abrirMais do script.js,
+   "Mais" abre o menu inteiro por cima (função abrirMais do visual.js,
    que só coloca/tira a classe "mais-aberto").
    O topo vira uma barra fina com a logo.
    ===================================================== */
@@ -1369,9 +1540,22 @@ button.foto-card{
 }
 
 @media (max-width: 760px){
+    /* VISUAL (nov/2026): no celular tudo fica um pouco MAIOR e com mais espaço.
+       Quase todos os tamanhos de letra usam "rem" (que é o tamanho do <html>),
+       então aumentando o <html> de 16px para 17px, as letras crescem juntas. */
+    html{
+        font-size: 17px;
+    }
+
     body{
         padding-left: 0;
-        padding-bottom: 96px;       /* espaço para a barra de baixo não cobrir o fim da página */
+        padding-bottom: 104px;      /* espaço para a barra de baixo não cobrir o fim da página */
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .chip{
+        padding: 8px 15px;          /* os botões redondinhos ficam mais fáceis de tocar */
     }
 
     /* ----- barra de baixo ----- */
@@ -1427,14 +1611,19 @@ button.foto-card{
         display: none;
     }
 
-    /* a pílula clarinha atrás do ícone da página atual */
-    .lateral-grupo .lateral-link.ativo img{
+    /* todos os ícones da barra ficam numa caixinha do MESMO tamanho (42 x 28),
+       assim o nome embaixo fica na mesma altura em todos os botões */
+    .lateral-grupo .lateral-link img{
         width: 42px;
+        height: 28px;
         padding: 4px 11px;
         border-radius: 999px;
-        background: #f6dde2;
         box-sizing: border-box;
-        height: 28px;
+    }
+
+    /* só a página atual ganha a pílula clarinha atrás do ícone */
+    .lateral-grupo .lateral-link.ativo img{
+        background: #f6dde2;
     }
 
     /* só 3 links + o Mais aparecem na barra */
@@ -1492,11 +1681,17 @@ button.foto-card{
         text-align: left;
     }
 
+    .lateral.mais-aberto .lateral-grupo .lateral-link img,
     .lateral.mais-aberto .lateral-grupo .lateral-link.ativo img{
         width: 20px;
         height: 20px;
         padding: 0;
         background: none;
+    }
+
+    /* com o menu aberto o "Mais" some: o menu aberto já é o "mais" */
+    .lateral.mais-aberto .lateral-grupo .botao-mais{
+        display: none;
     }
 
     /* com o menu aberto o dado some (":has" = "o body que TEM um .mais-aberto dentro") */
@@ -1515,18 +1710,21 @@ button.foto-card{
         backdrop-filter: blur(10px);
     }
 
-    /* a logo e o nome entram pelo CSS (::before), sem mexer no HTML de cada página */
+    /* o nome entra pelo CSS (::before), sem mexer no HTML de cada página.
+       Igual ao da página de entrada (index): "peak." em minúsculas, grosso e com o pontinho rosa.
+       O pontinho é um círculo desenhado no fundo (radial-gradient), logo depois do texto. */
     .topo::before{
-        content: "Peak";
+        content: "peak";
         display: flex;
         align-items: center;
-        gap: 8px;
-        height: 30px;
-        padding-left: 36px;
-        background: url(../img/logo.png) left center / 28px no-repeat;
+        height: 34px;
+        padding-right: 10px;
+        background: radial-gradient(circle, var(--rosa) 0 3.5px, transparent 4px) right 0 bottom 6px / 9px 9px no-repeat;
         color: var(--titulo);
-        font-size: 1.1rem;
+        font-size: 27px;
         font-weight: 800;
+        letter-spacing: -0.05em;
+        line-height: 1;
     }
 
     .topo-oi{
@@ -1534,7 +1732,7 @@ button.foto-card{
     }
 
     .container{
-        padding: 0 16px;
+        padding: 0 18px;
     }
 
     .titulo{
@@ -1549,6 +1747,38 @@ button.foto-card{
     .grade-campanhas .foto-card,
     .grade-campanhas .card-novo{
         min-height: 200px;
+    }
+
+    /* fichas: 2 por linha, mais baixinhas */
+    .grade-cartas{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .grade-cartas .carta,
+    .grade-cartas .card-novo{
+        height: 250px;
+    }
+
+    .grade-cartas .carta .info{
+        padding: 30px 10px 10px;
+    }
+
+    .grade-cartas .carta h3{
+        font-size: 0.95rem;
+    }
+
+    .grade-cartas .carta .atributo strong{
+        font-size: 0.8rem;
+    }
+
+    .grade-cartas .carta .atributo span{
+        font-size: 0.5rem;
+    }
+
+    /* no celular não tem mouse: os botões Editar e Excluir ficam sempre à mostra */
+    .carta .acoes{
+        opacity: 1;
     }
 }
 
@@ -1575,7 +1805,7 @@ button.foto-card{
 /* =====================================================
    VISUAL: MODO ESCURO
    Liga quando o <html> ganha a classe "escuro"
-   (o <script> do <head> de cada página e a função aplicarTema do script.js;
+   (o <script> do <head> de cada página e a função aplicarTema do visual.js;
    o botão fica em Perfil > Configurações).
    Quase tudo muda só trocando as variáveis; o resto são as partes
    que tinham branco escrito direto.
@@ -1606,7 +1836,7 @@ html.escuro body{
     --vidro-leve: rgba(34, 26, 27, 0.55);
     --vidro-forte: rgba(30, 22, 24, 0.96);
     --vidro-borda: rgba(255, 255, 255, 0.08);
-    --brilho: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --brilho: 0 0 transparent;
 }
 
 html.escuro body::before{
@@ -1781,8 +2011,9 @@ html.escuro body .modal-fundo{
         background: rgba(26, 18, 20, 0.92);
     }
 
+    /* no escuro a logo fica branca, igual no login */
     html.escuro body .topo::before{
-        filter: none;
+        filter: brightness(10);
     }
 }
 
@@ -1799,93 +2030,50 @@ html.escuro body .modal-fundo{
    Feitos pelas funções avisar() e confirmar() do js/script.js,
    no lugar do alert() e do confirm() do navegador. */
 
-/* aviso pequeno no canto de cima (some sozinho) */
+/* aviso pequeno embaixo, no meio (some sozinho). Simples: só o título e o texto. */
 .aviso-canto{
     position: fixed;
-    top: 22px;
-    right: 22px;
+    left: 50%;
+    bottom: 26px;
     z-index: 300;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    width: min(360px, calc(100vw - 44px));
-    padding: 14px 18px 16px 14px;
-    overflow: hidden;
-    border-radius: 18px;
-    background: rgba(26, 22, 24, 0.92);
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #1d1b1e;
     color: #fff;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(12px);
-    animation: aviso-entra 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transform: translateX(-50%);
+    animation: aviso-entra 0.25s ease;
 }
 
-/* a bolinha com o símbolo (✓, ! ou i) */
-.aviso-icone{
-    display: grid;
-    place-items: center;
-    width: 38px;
-    height: 38px;
-    flex: none;
-    border-radius: 50%;
-    font-size: 1.1rem;
-    font-weight: 800;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 0 0 1.5px currentColor;
-}
-
-/* cada tipo tem a sua cor (a bolinha e a barrinha usam a mesma) */
-.aviso-canto.certo{ --cor-aviso: #5fd38f; }
-.aviso-canto.erro{ --cor-aviso: #ff6b78; }
-.aviso-canto.info{ --cor-aviso: #f4b3c0; }
-
-.aviso-canto .aviso-icone{
-    color: var(--cor-aviso);
+/* erro: vermelho */
+.aviso-canto.erro{
+    background: #b3263a;
 }
 
 .aviso-canto b{
-    display: block;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
 }
 
 .aviso-canto small{
-    display: block;
-    margin-top: 2px;
-    font-size: 0.8rem;
-    line-height: 1.35;
-    opacity: 0.72;
+    margin-left: 8px;
+    font-size: 0.85rem;
+    opacity: 0.8;
 }
 
 .aviso-canto small:empty{
     display: none;
 }
 
-/* a barrinha embaixo vai diminuindo até o aviso sumir
-   (a duração vem do JS, no style da própria barrinha) */
-.aviso-barra{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 3px;
-    background: var(--cor-aviso);
-    transform-origin: left;
-    animation: aviso-barra linear forwards;
-}
-
-@keyframes aviso-barra{
-    from{ transform: scaleX(1); }
-    to{ transform: scaleX(0); }
-}
-
 .aviso-canto.saindo{
     opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.4s, transform 0.4s;
+    transition: opacity 0.3s;
 }
 
 @keyframes aviso-entra{
-    from{ opacity: 0; transform: translateY(-10px); }
-    to{ opacity: 1; transform: translateY(0); }
+    from{ opacity: 0; transform: translate(-50%, 8px); }
+    to{ opacity: 1; transform: translate(-50%, 0); }
 }
 
 /* caixa no meio da tela (confirmar antes de excluir, sair...) */
@@ -1903,50 +2091,18 @@ html.escuro body .modal-fundo{
 .confirmar-caixa{
     width: min(380px, 100%);
     padding: 28px 26px 22px;
-    border-radius: 24px;
+    border-radius: 16px;
     background: #fbf8f7;
     color: var(--tinta);
-    text-align: center;
+    text-align: left;
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
-}
-
-/* o círculo rosa em cima, com o desenho (lixeira, porta ou "?") */
-.confirmar-icone{
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 14px;
-    border-radius: 50%;
-    background: rgba(209, 64, 90, 0.12);
-}
-
-.confirmar-icone::before{
-    content: "";
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: var(--rosa);
-    -webkit-mask: var(--desenho) center / 28px no-repeat;
-    mask: var(--desenho) center / 28px no-repeat;
-}
-
-.confirmar-icone.lixeira{
-    --desenho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v6M14 11v6'/%3E%3C/svg%3E");
-}
-
-.confirmar-icone.sair{
-    --desenho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/%3E%3Cpath d='M16 17l5-5-5-5'/%3E%3Cpath d='M21 12H9'/%3E%3C/svg%3E");
-}
-
-.confirmar-icone.pergunta{
-    --desenho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
 }
 
 .confirmar-caixa h3{
     margin: 0 0 6px;
     color: var(--tinta);
-    font-size: 1.2rem;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 1.1rem;
+    font-weight: 700;
 }
 
 .confirmar-caixa p{
@@ -2049,7 +2205,7 @@ html.escuro body .confirmar-nao{
 
 
 /* =====================================================
-   VISUAL: ABERTURA (criada pela função criarAbertura do script.js)
+   VISUAL: ABERTURA (criada pela função criarAbertura do visual.js)
    Tela escura, "peak." no meio, uma linha rosa fininha e o número subindo.
    Na saída: o texto some, a tela apaga devagar e o site "chega" mais perto.
    ===================================================== */
@@ -2186,4 +2342,389 @@ body.chegando > .topo{
     .abertura-baixo{ left: 24px; right: 24px; bottom: 132px; }
     .abertura-baixo small{ font-size: 0.62rem; }
     .abertura-baixo b{ font-size: 3.4rem; }
+}
+
+
+
+/* =====================================================/* =====================================================
+   EVENTO DE NATAL: as cartas de raça, classe e monstro do evento
+   (o JS só coloca as classes card-evento, neve-carta, selo-novo e prazo-evento)
+   ===================================================== */
+
+/* brilho dourado pulsando em volta da carta */
+.card-evento{
+    position: relative;
+    box-shadow: 0 0 22px rgba(232, 184, 74, 0.55), 0 14px 30px rgba(120, 20, 30, 0.3) !important;
+    animation: brilhoNatal 2.4s ease-in-out infinite;
+}
+
+/* borda de bengala doce POR DENTRO da carta (assim ela fica do mesmo tamanho das outras).
+   A "mask" deixa aparecer só os 4px da beirada: o meio fica vazado. */
+.card-evento::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    padding: 4px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: repeating-linear-gradient(45deg, #c62a3a 0 9px, #fff 9px 18px);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+/* a neve caindo dentro da carta: bolinhas brancas que descem sem parar */
+.card-evento .neve-carta{
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    overflow: hidden;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1.8px, transparent 2.6px) 0 0 / 46px 52px,
+        radial-gradient(circle, rgba(255, 255, 255, 0.7) 0 1.3px, transparent 2px) 20px 14px / 34px 38px;
+    animation: nevarCarta 7s linear infinite;
+}
+
+/* os textos ficam POR CIMA da neve */
+.card-evento .galeria-info,
+.card-evento .nome,
+.card-evento .etiquetas{
+    position: relative;
+    z-index: 4;
+}
+
+/* a parte de baixo verde-pinheiro */
+.card-evento .galeria-info{
+    background: linear-gradient(180deg, rgba(36, 73, 56, 0) 0%, rgba(36, 73, 56, 0.85) 38%, rgba(36, 73, 56, 0.97) 100%) !important;
+}
+
+.card-evento .galeria-info strong,
+.card-evento .nome b{
+    color: #fff6dc;
+}
+
+.card-evento .galeria-info small{
+    color: #f3d27a !important;
+}
+
+/* o selo NOVO dourado com estrelinha (parado) */
+.selo-novo{
+    position: absolute;
+    top: 14px;
+    right: 12px;
+    z-index: 7;
+    padding: 5px 12px 5px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ffe39a, #e8b84a 55%, #c9952e);
+    color: #5a1a12;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    box-shadow: 0 0 14px rgba(255, 214, 120, 0.8), 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.selo-novo::before{
+    content: "★ ";
+}
+
+/* a faixa "Tempo limitado": só o vermelhinho */
+.prazo-evento{
+    display: inline-flex;
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: #c62a3a;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* no Bestiário a carta é só foto: a faixa fica presa embaixo, à esquerda */
+.foto-card.card-evento .prazo-evento{
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    z-index: 5;
+    margin: 0;
+}
+
+.foto-card.card-evento .nome{
+    position: absolute;
+    padding-bottom: 50px;
+    background: linear-gradient(180deg, rgba(36, 73, 56, 0), rgba(36, 73, 56, 0.95)) !important;
+}
+
+.foto-card.card-evento .etiquetas{
+    position: absolute;
+}
+
+/* as animações */
+@keyframes brilhoNatal{
+    50%{ box-shadow: 0 0 36px rgba(255, 214, 120, 0.85), 0 14px 30px rgba(120, 20, 30, 0.3); }
+}
+
+@keyframes nevarCarta{
+    to{ background-position: 0 520px, 20px 394px; }
+}
+
+
+/* =====================================================
+   VISUAL: O SITE NO NATAL (o visual.js coloca a classe "natal-site" no body
+   enquanto o evento de Natal está ativo; quando acaba, tudo volta ao normal)
+   ===================================================== */
+/* o fundo creme (no lugar da arte desfocada) */
+body.natal-site::before{
+    inset: 0;
+    filter: none;
+    background: radial-gradient(1100px 700px at 58% 28%, #fbf6ef 0%, #f1e4d6 45%, #e2cdb8 100%);
+}
+
+body.natal-site::after{
+    background: none;
+}
+
+/* Natal + modo escuro: um verde bem escuro (sem o "brightness" do modo escuro, que deixava cinza) */
+html.escuro body.natal-site::before{
+    filter: none;
+    background: radial-gradient(1100px 700px at 58% 28%, #2b4234 0%, #1c2e23 45%, #111c15 100%);
+}
+
+/* o pisca-pisca: desce pela borda do menu, de cima até embaixo.
+   A imagem é um pisca-pisca em pé; "auto 100%" = ela fica da altura da tela. */
+.natal-luzes{
+    position: fixed;
+    top: 0;
+    left: 212px;                    /* o meio dele fica na beirada do menu (o menu tem 260px) */
+    z-index: 41;                    /* por cima do menu (o menu é 40) */
+    width: 96px;
+    height: 100vh;
+    background: url(../img/eventos/natal-pisca-vertical.png) 50% 0 / auto 100% no-repeat;
+    filter: drop-shadow(0 0 5px rgba(255, 220, 140, 0.7));     /* o brilho das lâmpadas */
+    pointer-events: none;           /* não atrapalha os cliques */
+}
+
+/* A NEVE: só CSS. A div "natal-neve" (criada pelo ligarNatal do visual.js) cobre a tela inteira.
+   Ela e as duas camadas dela (::before e ::after) têm bolinhas brancas repetidas (radial-gradient)
+   de tamanhos diferentes, e cada camada desce numa velocidade (@keyframes nevar).
+   Fica por cima do site, menos o dado e as janelas (que são 45 e 90).
+   O contorno leve (drop-shadow) faz o floco branco aparecer no fundo creme. */
+.natal-neve,
+.natal-neve::before,
+.natal-neve::after{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;           /* dá para clicar "através" da neve */
+}
+
+.natal-neve{
+    z-index: 42;
+    /* cada radial-gradient é uma bolinha num lugar diferente do "quadradinho" de 320 x 320,
+       e o quadradinho se repete pela tela toda: assim os flocos não ficam em fileiras */
+    background-image:
+        radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.7px),
+        radial-gradient(circle at 47% 6%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.7px),
+        radial-gradient(circle at 83% 31%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.7px),
+        radial-gradient(circle at 29% 63%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.7px),
+        radial-gradient(circle at 66% 77%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.7px),
+        radial-gradient(circle at 91% 88%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2.7px);
+    background-size: 320px 320px;
+    filter: drop-shadow(0 0 1.5px rgba(110, 70, 55, 0.55));
+    animation: nevar1 18s linear infinite;
+}
+
+/* flocos maiores, mais devagar */
+.natal-neve::before{
+    content: '';
+    background-image:
+        radial-gradient(circle at 22% 42%, rgba(255, 255, 255, 0.9) 0 3px, transparent 3.7px),
+        radial-gradient(circle at 74% 15%, rgba(255, 255, 255, 0.9) 0 3px, transparent 3.7px),
+        radial-gradient(circle at 56% 90%, rgba(255, 255, 255, 0.9) 0 3px, transparent 3.7px);
+    background-size: 420px 420px;
+    animation: nevar2 26s linear infinite;
+}
+
+/* flocos pequenos, mais rápidos */
+.natal-neve::after{
+    content: '';
+    background-image:
+        radial-gradient(circle at 8% 70%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 2.0px),
+        radial-gradient(circle at 38% 27%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 2.0px),
+        radial-gradient(circle at 61% 52%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 2.0px),
+        radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 2.0px),
+        radial-gradient(circle at 18% 95%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 2.0px);
+    background-size: 260px 260px;
+    animation: nevar3 12s linear infinite;
+}
+
+/* cada camada desce (e vai um pouco para o lado) o tamanho exato do seu quadradinho:
+   assim, quando a animação recomeça, as bolinhas estão no mesmo lugar e a volta não aparece. */
+@keyframes nevar1{
+    from{ background-position: 0 0; }
+    to{ background-position: 320px 640px; }
+}
+
+@keyframes nevar2{
+    from{ background-position: 0 0; }
+    to{ background-position: -420px 840px; }
+}
+
+@keyframes nevar3{
+    from{ background-position: 0 0; }
+    to{ background-position: 260px 520px; }
+}
+
+/* quem pediu "menos movimento" no computador não vê a neve */
+@media (prefers-reduced-motion: reduce){
+    .natal-neve{
+        display: none;
+    }
+}
+
+/* o menu: a foto da vitrine ocupa o menu inteiro.
+   Duas camadas: em cima, um vinho escuro que vai ficando transparente (para o texto aparecer);
+   embaixo, a foto (a menina fica na parte de baixo, longe dos links). */
+html body.natal-site .lateral{
+    border-color: transparent;
+    background-color: #3a141c;
+    background-image: linear-gradient(180deg, rgba(36, 11, 17, 0.94) 0%, rgba(36, 11, 17, 0.9) 40%, rgba(36, 11, 17, 0.55) 58%, rgba(36, 11, 17, 0.12) 76%, rgba(36, 11, 17, 0) 100%), url(../img/eventos/natal-menu-vitrine.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%, cover;
+    background-position: 0 0, 50% 100%;
+}
+
+/* no modo escuro o menu tem outra foto (::before e ::after): no Natal ela some */
+html body.natal-site .lateral::before,
+html body.natal-site .lateral::after{
+    display: none;
+}
+
+body.natal-site .lateral-grupo .lateral-link{
+    color: #f3efe2;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);     /* sombrinha: o texto não some em cima da foto */
+}
+
+body.natal-site .lateral-grupo .lateral-link img{
+    filter: brightness(0) invert(0.95);     /* os ícones ficam claros */
+}
+
+body.natal-site .lateral-grupo .lateral-link.ativo{
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+body.natal-site .lateral-link.ativo::before{
+    background: #e8b84a;                    /* o tracinho dourado */
+}
+
+/* Configurações e Sair: vidro claro em cima da foto */
+body.natal-site .lateral-rodape .lateral-link{
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    backdrop-filter: blur(8px);
+}
+
+body.natal-site .lateral-rodape .lateral-link img{
+    filter: brightness(0) invert(1);
+}
+
+/* O botão do som da música de Natal: uma bolinha preta em cima do dado.
+   Aparece em todas as páginas (quem cria é o ligarNatal, do visual.js). */
+.musica-natal{
+    position: fixed;
+    right: 38px;
+    bottom: 104px;
+    z-index: 45;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: #000 url('../img/som-ligado.png') center / 70% no-repeat;
+    box-shadow: var(--sombra-pequena);
+    cursor: pointer;
+}
+
+/* pausada: troca a imagem para o alto-falante com o X */
+.musica-natal.pausada{
+    background-image: url('../img/som-desligado.png');
+}
+
+/* celular: o dado fica no meio da barra, então o botão do som vai para a esquerda */
+@media (max-width: 760px){
+    .musica-natal{
+        right: auto;
+        left: 19px;
+        bottom: 96px;
+    }
+}
+
+/* a bonequinha do lado do título da página.
+   O script.js sorteia uma das 7 e coloca a classe "boneca-1" até "boneca-7" no body. */
+body.natal-site .titulo::after{
+    content: "";
+    display: inline-block;
+    width: 1.05em;
+    height: 1.15em;
+    margin-left: 16px;
+    vertical-align: -0.2em;
+    background: center bottom / contain no-repeat;
+}
+
+body.boneca-1 .titulo::after{ background-image: url(../img/eventos/natal-boneca-azul.png); }
+body.boneca-2 .titulo::after{ background-image: url(../img/eventos/natal-boneca-ruiva.png); }
+body.boneca-3 .titulo::after{ background-image: url(../img/eventos/natal-boneca-miku.png); }
+body.boneca-4 .titulo::after{ background-image: url(../img/eventos/natal-boneca-preta.png); }
+body.boneca-5 .titulo::after{ background-image: url(../img/eventos/natal-boneca-elfa.png); }
+body.boneca-6 .titulo::after{ background-image: url(../img/eventos/natal-boneca-loira.png); }
+body.boneca-7 .titulo::after{ background-image: url(../img/eventos/natal-boneca-castanha.png); }
+
+/* celular: o menu vira a barra de baixo, sem a foto e sem o pisca-pisca */
+@media (max-width: 760px){
+    html body.natal-site .lateral{
+        background-color: var(--menu);
+        background-image: none;
+    }
+
+    body.natal-site .lateral-grupo .lateral-link,
+    body.natal-site .lateral-grupo .lateral-link.ativo{
+        background: none;
+        color: var(--tinta);
+        text-shadow: none;
+    }
+
+    body.natal-site .lateral-grupo .lateral-link img{
+        filter: none;
+    }
+
+    /* Configurações e Sair: no celular o menu é claro, então a letra volta a ser escura */
+    body.natal-site .lateral-rodape .lateral-link{
+        border-color: var(--linha);
+        background: none;
+        color: var(--tinta);
+        backdrop-filter: none;
+    }
+
+    body.natal-site .lateral-rodape .lateral-link img{
+        filter: none;
+    }
+
+    /* no modo escuro o menu é escuro: a letra e os ícones voltam a ser brancos */
+    html.escuro body.natal-site .lateral-grupo .lateral-link,
+    html.escuro body.natal-site .lateral-rodape .lateral-link{
+        color: #fff;
+    }
+
+    html.escuro body.natal-site .lateral-link img{
+        filter: brightness(0) invert(1);
+    }
+
+    .natal-luzes{
+        display: none;
+    }
 }

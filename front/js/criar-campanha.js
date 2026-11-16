@@ -3,6 +3,8 @@
 
 verificarLogin()
 
+var campanhaCriada = null      // o id da campanha que acabou de ser criada
+
 function criarCampanha(){
 
     // primeiro lê a imagem de capa (se a pessoa escolheu uma); quando terminar, manda tudo
@@ -22,10 +24,22 @@ function criarCampanha(){
                 return
             }
 
-            // a mensagem já traz o código de convite
-            avisar(dados.message, 'Levando você para a campanha…', 'certo', function(){
-                window.location.href = 'campanha.html?id=' + dados.id
-            })
+            // mostra o código numa janela que só fecha quando a pessoa clicar
+            campanhaCriada = dados.id
+            document.getElementById('codigoCriado').textContent = dados.codigo
+            abrirJanela('janelaCodigo')
         })
     })
+}
+
+// "Copiar código": coloca o código na área de transferência (o Ctrl+C do navegador)
+function copiarCodigo(){
+    var codigo = document.getElementById('codigoCriado').textContent
+
+    navigator.clipboard.writeText(codigo)
+    avisar('Código copiado!', codigo, 'certo')
+}
+
+function irParaCampanha(){
+    window.location.href = 'campanha.html?id=' + campanhaCriada
 }

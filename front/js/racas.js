@@ -19,13 +19,38 @@ function carregarRacas(){
 // Um card de raça.
 // botoes: HTML dos botões Editar e Excluir (só nas minhas; nas outras vem '')
 function htmlCardRaca(raca, botoes){
+    // VISUAL: a raça de evento (ex.: Natal) ganha a classe "card-evento", a neve e o "Tempo limitado"
+    var classe = 'galeria-card'
+    var extras = ''
+    var prazo = ''
+
+    if(raca.tema){
+        classe += ' card-evento'
+        extras = '<span class="neve-carta"></span>'
+        prazo = '<span class="prazo-evento">Tempo limitado</span>'
+
+        // o NOVO só nos 7 primeiros dias do evento
+        if(raca.novo > 0){
+            extras += '<span class="selo-novo">NOVO</span>'
+        }
+    }
+
+    // "por fulano" só aparece se alguém da comunidade criou
+    var autor = ''
+
+    if(raca.autor){
+        autor = ' · por ' + seguro(raca.autor)
+    }
+
     return `
-        <div class="galeria-card">
-            <div class="galeria-img">${htmlFoto(raca.imagem, raca.nome)}</div>
+        <div class="${classe}">
+            ${extras}
+            <div class="galeria-img">${htmlFoto(raca.imagem, 'raca')}</div>
             <div class="galeria-info">
                 <strong>${seguro(raca.nome)}</strong>
-                <small>Vida ${raca.vidaMaxima}${raca.autor ? ' · por ' + seguro(raca.autor) : ''}</small>
+                <small>Vida ${raca.vidaMaxima}${autor}</small>
                 <p>${seguro(raca.descricao)}</p>
+                ${prazo}
                 ${botoes}
             </div>
         </div>`
@@ -48,9 +73,15 @@ function desenharRacas(){
             oficiais += htmlCardRaca(r, '')
 
         }else if(r.usuarioId == eu.id){
+            var visivel = 'Só eu vejo'
+
+            if(r.publico == 1){
+                visivel = 'Pública'
+            }
+
             var botoes = `
                 <div class="botoes">
-                    <span class="selo">${r.publico == 1 ? 'Pública' : 'Só eu vejo'}</span>
+                    <span class="selo">${visivel}</span>
                     <button type="button" class="botao-icone editar" title="Editar" aria-label="Editar" onclick="abrirEdicao(${r.id})"></button>
                     <button type="button" class="botao-icone excluir" title="Excluir" aria-label="Excluir" onclick="excluirRaca(${r.id})"></button>
                 </div>`

@@ -31,8 +31,18 @@ class AvisosBD{
     // aviso: { titulo, texto }
     static addAviso(aviso, callback){
 
-        var titulo = String(aviso.titulo || '').trim()
-        var texto = String(aviso.texto || '').trim()
+        var titulo = ''
+
+        if(aviso.titulo){
+            titulo = String(aviso.titulo).trim()     // trim tira os espaços do começo e do fim
+        }
+
+        var texto = ''
+
+        if(aviso.texto){
+            texto = String(aviso.texto).trim()     // trim tira os espaços do começo e do fim
+        }
+
 
         if(titulo == ''){
             return callback({'error': 'Digite o título do aviso'})

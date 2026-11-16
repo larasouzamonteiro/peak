@@ -1,57 +1,17 @@
 /* =====================================================
-   MAPA.CSS - só a página mapa.html (a mesa do Mestre)
+   MAPA.CSS - só a página mapa.html
    Este arquivo inteiro é VISUAL.
-
-   A tela inteira é a mesa: o mapa grande no meio e os cartões em volta.
-   Dois temas, trocados pela classe do <body> (função mudarTemaMapa do js/mapa.js):
-     mapa-escuro -> cartões escuros, destaque BORDÔ
-     mapa-claro  -> cartões claros, destaque PÊSSEGO-ROSADO
-   As cores estão nas variáveis da parte 1: é só lá que os temas mudam.
-
-     1. Cores dos dois temas
-     2. Base e fundo (mapa borrado + quadriculado)
-     3. Cartões de cima (voltar, miniaturas, tema, tela cheia)
-     4. O mapa e as bolinhas
-     5. Iniciativa
-     6. Música e sons
-     7. Dados
-     8. Telas menores
+   O mapa ocupa a tela inteira; em cima o nome da campanha,
+   embaixo duas caixas escuras: o mapa (esquerda) e a música (direita).
    ===================================================== */
 
-
-/* ---------- 1. CORES DOS DOIS TEMAS ---------- */
-body.mapa-escuro{
-    --pagina: #120d0e;
-    --cartao: rgba(24, 16, 17, 0.78);
-    --cartao-2: rgba(255, 255, 255, 0.07);
-    --texto: #f2e9e6;
-    --texto-2: #a99a97;
-    --linha: rgba(255, 255, 255, 0.07);
-    --quadrado: rgba(255, 255, 255, 0.05);
-    --destaque: linear-gradient(135deg, #a8323f, #6e1a26);   /* bordô */
-    --destaque-cor: #8e2633;
-    --destaque-texto: #d9707a;
-    --sombra: 0 10px 30px rgba(0, 0, 0, 0.25);
-    --borrado: blur(40px) brightness(0.38) saturate(1.3);     /* o mapa do fundo fica escuro */
+:root{
+    --cartao: rgba(18, 14, 16, 0.86);
+    --linha: rgba(255, 255, 255, 0.12);
+    --texto-2: rgba(255, 255, 255, 0.65);
+    --rosa: #d1405a;
 }
 
-body.mapa-claro{
-    --pagina: #f7ebe8;
-    --cartao: rgba(255, 250, 248, 0.92);
-    --cartao-2: #f3e4e0;
-    --texto: #3a1c1e;
-    --texto-2: #8f6a66;
-    --linha: rgba(90, 40, 30, 0.1);
-    --quadrado: rgba(90, 40, 30, 0.07);
-    --destaque: linear-gradient(135deg, #f4b3a8, #e27d86);   /* pêssego-rosado */
-    --destaque-cor: #e27d86;
-    --destaque-texto: #d9707a;
-    --sombra: 0 8px 24px rgba(110, 40, 40, 0.12);
-    --borrado: blur(40px) brightness(1.7) saturate(0.45);     /* o mapa do fundo fica clarinho */
-}
-
-
-/* ---------- 2. BASE E FUNDO ---------- */
 *{
     box-sizing: border-box;
 }
@@ -59,609 +19,247 @@ body.mapa-claro{
 html,
 body{
     height: 100%;
+    margin: 0;
+    overflow: hidden;
 }
 
 body{
-    position: relative;
-    margin: 0;
-    overflow: hidden;           /* a mesa não rola: tudo cabe na tela */
-    background: var(--pagina);
-    color: var(--texto);
-    font-family: "Poppins", Arial, sans-serif;
+    background: #121013;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
 }
 
-button{
-    font: inherit;
-    cursor: pointer;
-}
-
-a{
+button,
+label{
+    font-family: inherit;
     color: inherit;
-    text-decoration: none;
+    cursor: pointer;
 }
 
 .oculto{
     display: none !important;
 }
 
-/* o mapa atual, bem borrado, ocupando o fundo todo */
-.mapa-borrado{
-    position: fixed;
-    inset: -60px;               /* passa da tela, senão o borrado deixa a borda clara */
-    width: calc(100% + 120px);
-    height: calc(100% + 120px);
-    object-fit: cover;
-    filter: var(--borrado);
-}
-
-/* os quadradinhos: duas listras de 1px repetidas a cada 40px (uma deitada e uma em pé) */
-.mapa-quadriculado{
+/* o mapa: a imagem cobre a tela toda */
+.mapa{
     position: fixed;
     inset: 0;
-    background-image:
-        linear-gradient(var(--quadrado) 1px, transparent 1px),
-        linear-gradient(90deg, var(--quadrado) 1px, transparent 1px);
-    background-size: 40px 40px;
-}
-
-/* todos os cartões em volta do mapa */
-.mapa-card{
-    position: absolute;
-    z-index: 2;
-    border-radius: 18px;
-    background: var(--cartao);
-    color: var(--texto);
-    box-shadow: var(--sombra);
-    backdrop-filter: blur(10px);
-}
-
-
-/* ---------- 3. CARTÕES DE CIMA ---------- */
-.mapa-voltar{
-    top: 16px;
-    left: 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    max-width: 250px;
-    padding: 8px 14px 8px 8px;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.mapa-voltar img{
-    width: 30px;
-}
-
-.mapa-claro .mapa-voltar img{
-    filter: none;
-}
-
-.mapa-escuro .mapa-voltar img{
-    filter: brightness(0) invert(1);
-}
-
-/* as miniaturas, no meio em cima */
-.mapa-cenas{
-    top: 16px;
-    left: 50%;
-    display: flex;
-    gap: 6px;
-    padding: 6px;
-    transform: translateX(-50%);
-}
-
-.mapa-cenas button{
-    width: 72px;
-    height: 40px;
-    padding: 0;
-    overflow: hidden;
-    border: 2px solid transparent;
-    border-radius: 9px;
-    background: var(--cartao-2);
-    opacity: 0.55;
-}
-
-.mapa-cenas button img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.mapa-cenas button.on,
-.mapa-cenas button:hover{
-    border-color: var(--destaque-cor);
-    opacity: 1;
-}
-
-/* o "+" de enviar mapa */
-.mapa-enviar{
-    display: grid;
-    place-items: center;
-    width: 72px;
-    height: 40px;
-    border-radius: 9px;
-    background: var(--cartao-2);
-    color: var(--texto-2);
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.mapa-direita{
-    position: absolute;
-    top: 16px;
-    right: 18px;
-    z-index: 2;
-    display: flex;
-    gap: 10px;
-}
-
-.mapa-direita .mapa-card{
-    position: static;
-}
-
-.mapa-tema{
-    display: flex;
-    padding: 4px;
-}
-
-.mapa-tema button,
-.mapa-cheia{
-    padding: 9px 14px;
-    border: 0;
-    border-radius: 12px;
-    background: transparent;
-    color: var(--texto-2);
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.mapa-tema button.ativo{
-    background: var(--destaque);
-    color: #fff;
-}
-
-.mapa-cheia{
-    padding: 12px 16px;
-    border-radius: 18px;
-    background: var(--cartao);
-    color: var(--texto);
-    font-size: 13px;
-}
-
-
-/* ---------- 4. O MAPA E AS BOLINHAS ---------- */
-/* a área do meio: começa depois da coluna da esquerda (288px) e o mapa fica centralizado */
-.mapa-area{
-    position: absolute;
-    top: 80px;
-    right: 18px;
-    bottom: 16px;
-    left: 288px;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-}
-
-/* o mapa tem o tamanho da imagem: as bolinhas ficam em % dele */
-.mapa{
-    position: relative;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    cursor: none;               /* a setinha some: aparece a bolinha do mouse */
 }
 
 .mapa-imagem{
-    display: block;
-    max-width: calc(100vw - 306px);
-    max-height: calc(100vh - 96px);
-    object-fit: contain;        /* o mapa inteiro aparece, sem cortar */
-}
-
-.token{
-    position: absolute;
-    width: 34px;
-    height: 34px;
-    overflow: hidden;
-    border: 3px solid #fff;
-    border-radius: 50%;
-    background: #3a2318;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
-    cursor: grab;
-    transform: translate(-50%, -50%);      /* o centro da bolinha fica no ponto */
-    touch-action: none;                    /* no celular, arrastar a bolinha não rola a página */
-    user-select: none;
-    -webkit-user-drag: none;               /* a foto não é "arrastável" sozinha */
-}
-
-.token .foto{
-    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 20%;
-    pointer-events: none;
 }
 
-/* sem foto: a primeira letra do nome */
-.token .sem-foto{
-    display: grid;
-    place-items: center;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 800;
+/* o cartão escuro (usado em tudo que fica por cima do mapa) */
+.cartao{
+    border: 1px solid var(--linha);
+    border-radius: 16px;
+    background: var(--cartao);
+    backdrop-filter: blur(10px);
 }
 
-.token.monstro{
-    border-color: var(--destaque-cor);
-}
-
-.token.arrastando{
-    z-index: 5;
-    cursor: grabbing;
-    transform: translate(-50%, -50%) scale(1.15);
-}
-
-/* a bolinha do mouse */
-.mouse{
+/* ---------- em cima ---------- */
+.mapa-topo{
     position: fixed;
-    z-index: 9;
-    display: none;
-    width: 22px;
-    height: 22px;
-    border: 3px solid var(--destaque-cor);
-    border-radius: 50%;
-    background: rgba(245, 127, 108, 0.25);
-    transform: translate(-50%, -50%);
-    pointer-events: none;       /* não atrapalha o clique nas bolinhas */
-}
-
-.mouse.on{
-    display: block;
-}
-
-
-/* ---------- 5. INICIATIVA ---------- */
-.mapa-iniciativa{
-    top: 72px;
-    left: 18px;
-    width: 250px;
-    padding: 16px 16px 10px;
-}
-
-.mapa-iniciativa h3{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 0 10px;
-    font-size: 17px;
-}
-
-.mapa-iniciativa h3 small{
-    color: var(--destaque-texto);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-}
-
-/* a lista rola sozinha se tiver muita gente */
-.ini-lista{
-    max-height: calc(100vh - 470px);
-    min-height: 60px;
-    overflow-y: auto;
-}
-
-.ini-linha{
+    top: 16px;
+    left: 16px;
+    right: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px;
-    border-radius: 10px;
-    font-size: 14px;
 }
 
-/* a linha de quem é a vez */
-.ini-linha.vez{
-    background: var(--cartao-2);
-}
-
-.ini-linha .foto{
-    flex: none;
-    width: 30px;
-    height: 30px;
-    overflow: hidden;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center 20%;
-}
-
-.ini-linha .sem-foto{
+.botao-voltar,
+.botao-cheia{
     display: grid;
     place-items: center;
-    background: #3a2318;
+    width: 44px;
+    height: 44px;
     color: #fff;
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 22px;
+    text-decoration: none;
 }
 
-.ini-linha.monstro .foto{
-    border-color: var(--destaque-cor);
+.nome-campanha{
+    padding: 10px 18px;
+    font-size: 15px;
 }
 
-.ini-linha span{
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;        /* nome grande vira "Nome gra..." */
-}
-
-.ini-linha small{
+.botao-cheia{
     margin-left: auto;
+    font-size: 18px;
+}
+
+/* ---------- as duas caixas de baixo ---------- */
+.caixa{
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    padding: 10px;
+}
+
+.caixa-musica{
+    left: auto;
+    right: 16px;
+    width: 290px;
+}
+
+/* VISUAL: os mapas (ou as músicas) numa linha só, com o "+" no fim */
+.mapas-linha{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.enviar-mini{
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.mapas-linha .musicas{
+    flex: 1;
+}
+
+.enviar-mini:hover{
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.caixa-titulo{
+    display: block;
+    margin-bottom: 10px;
     color: var(--texto-2);
     font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
 }
 
-/* a caixinha do número */
-.ini-numero{
-    flex: none;
-    width: 38px;
-    height: 28px;
-    border: 0;
-    border-radius: 7px;
-    background: var(--cartao-2);
-    color: var(--texto);
-    font: 700 13px "Poppins", sans-serif;
-    text-align: center;
-
-}
-
-/* tira as setinhas de subir e descer do campo de número */
-.ini-numero::-webkit-inner-spin-button,
-.ini-numero::-webkit-outer-spin-button{
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.ini-linha.vez .ini-numero{
-    background: var(--destaque);
-    color: #fff;
-}
-
-.ini-vazio{
-    margin: 6px;
-    color: var(--texto-2);
-    font-size: 12.5px;
-}
-
-.ini-botoes{
+/* os 3 mapas prontos, lado a lado (só a fotinho) */
+.mapas{
     display: flex;
-    gap: 6px;
-    margin: 10px 0 4px;
+    gap: 8px;
 }
 
-.ini-botoes button{
-    flex: 1;
-    padding: 9px;
-    border: 0;
-    border-radius: 9px;
-    font-size: 12.5px;
+.mapa-opcao{
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: none;
+    overflow: hidden;
+    text-align: left;
+}
+
+.mapa-opcao img{
+    display: block;
+    width: 52px;
+    height: 38px;
+    object-fit: cover;
+}
+
+.mapa-opcao span{
+    display: block;
+    padding: 4px 6px;
+    font-size: 11px;
     font-weight: 600;
 }
 
-.ini-ordenar{
-    background: var(--cartao-2);
+.mapa-opcao.on{
+    border-color: var(--rosa);
+}
+
+/* "+ Enviar..." */
+.enviar{
+    display: block;
+    margin-top: 10px;
+    padding: 9px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.enviar:hover{
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.enviar small{
     color: var(--texto-2);
+    font-weight: 400;
 }
 
-.ini-proximo{
-    background: var(--destaque);
-    color: #fff;
-}
-
-
-/* ---------- 6. MÚSICA E SONS ---------- */
-.mapa-som{
-    bottom: 18px;
-    left: 18px;
-    width: 250px;
-    padding: 14px 16px;
-}
-
-.som-topo{
+/* a música */
+.musica-agora{
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 10px;
 }
 
-.som-topo b{
-    display: block;
-    max-width: 170px;
+.botao-play{
+    flex: none;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #121013;
+    font-size: 13px;
+}
+
+.musica-agora b{
+    font-size: 14px;
     overflow: hidden;
-    font-size: 13.5px;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.som-topo small{
-    color: var(--texto-2);
-    font-size: 11px;
-}
-
-.som-play{
-    flex: none;
-    width: 34px;
-    height: 34px;
-    border: 0;
-    border-radius: 50%;
-    background: var(--destaque);
-    color: #fff;
-    font-size: 12px;
-}
-
-.som-chips,
-.som-efeitos{
+.musicas{
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 6px;
 }
 
-.som-chips{
-    margin: 12px 0 10px;
-}
-
-.som-chips button,
-.som-chips label{
-    padding: 4px 10px;
-    border: 0;
-    border-radius: 999px;
-    background: var(--cartao-2);
-    color: var(--texto-2);
-    font-size: 11.5px;
-    cursor: pointer;
-}
-
-.som-chips button:hover{
-    background: var(--destaque);
-    color: #fff;
-}
-
-/* a barrinha do volume */
-.som-volume{
-    width: 100%;
-    accent-color: var(--destaque-cor);
-}
-
-.som-efeitos{
-    margin-top: 10px;
-}
-
-.som-efeitos button{
-    padding: 4px 9px;
+.musicas button{
+    max-width: 100%;
+    padding: 5px 11px;
     border: 1px solid var(--linha);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--texto-2);
-    font-size: 11px;
-}
-
-.som-efeitos button:hover{
-    border-color: var(--destaque-cor);
-    color: var(--texto);
-}
-
-
-/* ---------- 7. DADOS ---------- */
-.mapa-dados{
-    right: 18px;
-    bottom: 18px;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px;
-}
-
-.mapa-dados button{
-    min-width: 38px;
-    height: 34px;
-    border: 0;
-    border-radius: 10px;
-    background: transparent;
-    color: var(--texto-2);
+    border-radius: 999px;
+    background: none;
     font-size: 12px;
-    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.mapa-dados button:hover{
-    background: var(--cartao-2);
-    color: var(--texto);
-}
-
-.dado-numero{
-    display: grid;
-    place-items: center;
-    min-width: 38px;
-    height: 34px;
-    padding: 0 12px;
-    border-radius: 10px;
-    background: var(--destaque);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
+.musicas button.on{
+    border-color: var(--rosa);
+    background: var(--rosa);
 }
 
 
-/* ---------- 8. TELAS MENORES ---------- */
-/* celular e tablet em pé: a página passa a rolar e os cartões ficam um embaixo do outro */
-@media (max-width: 900px){
-    body{
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-    }
-
-    /* sem isso as partes "encolhem" para caber na altura da tela */
-    body > *{
-        flex-shrink: 0;
-    }
-
-    /* a ordem das partes no celular (order: quem vem primeiro) */
-    .mapa-voltar{ order: 1; }
-    .mapa-direita{ order: 2; }
-    .mapa-cenas{ order: 3; }
-    .mapa-area{ order: 4; }
-    .mapa-dados{ order: 5; }
-    .mapa-iniciativa{ order: 6; }
-    .mapa-som{ order: 7; }
-
-    .mapa-card,
-    .mapa-direita,
-    .mapa-area{
-        position: relative;
-        top: auto;
-        right: auto;
-        bottom: auto;
-        left: auto;
+/* celular: as caixas ficam uma em cima da outra, ocupando a largura */
+@media (max-width: 760px){
+    .caixa,
+    .caixa-musica{
+        left: 10px;
+        right: 10px;
         width: auto;
-        margin: 10px 12px;
-        transform: none;
     }
 
-    .mapa-direita{
-        display: flex;
-        margin: 10px 12px;
+    .caixa{
+        bottom: 150px;
     }
 
-    .mapa-cenas{
-        overflow-x: auto;
-    }
-
-    .mapa-cenas button,
-    .mapa-enviar{
-        flex: none;
-    }
-
-    .mapa-imagem{
-        max-width: 100%;
-        max-height: 60vh;
-    }
-
-    .ini-lista{
-        max-height: none;
-    }
-
-    .mapa-dados{
-        position: sticky;
+    .caixa-musica{
         bottom: 10px;
-        justify-content: space-between;
-    }
-
-    /* no celular não tem mouse */
-    .mapa{
-        cursor: default;
-    }
-
-    .mouse{
-        display: none !important;
     }
 }

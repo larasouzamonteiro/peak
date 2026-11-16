@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Entrar | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap">
 
@@ -34,18 +36,21 @@
   <div class="entrada-fundo"><video autoplay muted loop playsinline poster="../img/index/videos/leona.jpg"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video></div>
   <div class="entrada-fundo espelhado"><video autoplay muted loop playsinline poster="../img/index/videos/leona.jpg"><source src="../img/index/videos/LeonaHD.mp4" type="video/webm"><source src="../img/index/videos/LeonaHD.mp4" type="video/mp4"></video></div>
 
-  <a class="entrada-marca" href="index.html"><img src="../img/logo.png" alt=""> PEAK</a>
 
   <!-- VISUAL: o "peak." grande. Tem um para o login (na esquerda) e um para o cadastro (na direita) -->
   <div class="entrada-frase frase-login">
+    <a class="entrada-frase" href="index.html">
     <h2>peak<span>.</span></h2>
     <p>O mestre cria. O grupo entra. A história começa, tudo no navegador.</p>
   </div>
+  </a>
   <div class="entrada-frase frase-cadastro">
-    <h2>peak<span>.</span></h2>
-    <p>Monte sua ficha, chame seu grupo e role os dados.</p>
-  
+    <a href="index.html">
+      <h2>peak<span>.</span></h2>
+      <p>Monte sua ficha, chame seu grupo e role os dados.</p>
+    </a>
   </div>
+ 
 
   <!-- O CARD com os dois formulários (login e cadastro, um em cima do outro).
        Quando o <body> ganha a classe "cadastro", o card vai para o outro lado
@@ -85,7 +90,7 @@
 
       <button type="button" class="botao botao-principal botao-largo" onclick="login()">Entrar na mesa</button>
 
-      <p class="entrada-rodape">Bem-vinda de volta, aventureira.</p>
+      <p class="entrada-rodape">Bem-vindo de volta, jogador</p>
     </div>
 
     <!-- ===== CADASTRO ===== -->
@@ -190,6 +195,7 @@
   }, 250)
 </script>
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/login.js"></script>
 </body>
 </html>

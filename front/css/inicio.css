@@ -201,32 +201,15 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(0deg, rgba(40, 14, 20, 0.9), rgba(40, 14, 20, 0.1) 62%);
-}
-
-.destaque-chips{
-    position: absolute;
-    top: 20px;
-    left: 22px;
-    z-index: 2;
-    display: flex;
-    gap: 8px;
-}
-
-.destaque-chips span{
-    padding: 5px 14px;
-    border-radius: 999px;
-    background: rgba(40, 14, 20, 0.45);
-    font-size: 0.78rem;
-    backdrop-filter: blur(3px);
+    background: linear-gradient(0deg, rgba(20, 8, 12, 0.45), transparent 35%);     /* bem leve: o banner já tem o texto dele */
 }
 
 .destaque-texto{
     position: absolute;
-    left: 26px;
-    right: 26px;
-    bottom: 24px;
+    right: 24px;                /* no canto de baixo à DIREITA: não fica em cima do texto dos banners */
+    bottom: 18px;
     z-index: 2;
+    text-align: right;
 }
 
 .destaque-texto .selo,
@@ -263,17 +246,25 @@
 }
 
 .destaque-bt{
+    /* VISUAL (nov/2026): sem a caixa branca; só o texto com uma linha fina embaixo */
     display: inline-block;
-    padding: 11px 22px;
-    border: 0;
-    border-radius: 999px;
-    background: #fff;
-    color: var(--tinta);
+    padding: 0 0 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+    background: none;
+    color: #fff;
     font: inherit;
-    font-size: 0.82rem;
-    font-weight: 800;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    text-decoration: none;
     cursor: pointer;
+    transition: border-color var(--rapido), letter-spacing var(--rapido);
+}
+
+.destaque-bt:hover{
+    border-color: #fff;
+    letter-spacing: 0.11em;
 }
 
 /* ----- as fotos do banner: uma em cima da outra; só a que tem "on" aparece ----- */
@@ -445,7 +436,7 @@
 /* 3 cards: o primeiro (a novidade mais nova) bem maior */
 .novidades{
     display: grid;
-    grid-template-columns: 1.7fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
 }
 
@@ -510,13 +501,22 @@
 }
 
 .convite-bt{
+    /* VISUAL (nov/2026): igual ao "Conhecer a equipe" do banner: sem a caixa branca,
+       só o texto com uma linha fina embaixo */
     display: inline-block;
-    padding: 8px 16px;
-    border-radius: 999px;
-    background: #fff;
-    color: var(--titulo);
-    font-size: 0.76rem;
+    padding: 0 0 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+    color: #fff;
+    font-size: 0.78rem;
     font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: border-color var(--rapido), letter-spacing var(--rapido);
+}
+
+.convite-comunidade:hover .convite-bt{
+    border-color: #fff;
+    letter-spacing: 0.11em;
 }
 
 
@@ -594,6 +594,14 @@
         border-radius: 50%;
     }
 
+    /* a foto ocupa a bolinha inteira e fica redonda
+       (a regra ".bolinha img" de cima deixava ela com 17px, quadradinha no meio) */
+    .bolinha-foto img{
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
     .destaques{
         margin-top: 14px;
         gap: 10px;
@@ -604,7 +612,6 @@
         border-radius: 20px;
     }
 
-    .destaque-chips,
     .destaque-texto p{
         display: none;
     }
@@ -664,16 +671,17 @@
         overflow-x: auto;
     }
 
+    /* cartas mais largas para os atributos caberem */
     .fila-cartas .carta{
         flex: none;
-        width: 150px;
-        height: 210px;
+        width: 200px;
+        height: 260px;
     }
 
     .criar-ficha{
         flex: none;
-        width: 120px;
-        height: 210px;
+        width: 130px;
+        height: 260px;
     }
 
     .criar-mais{
@@ -687,21 +695,36 @@
         display: none;
     }
 
-    .fila-cartas .carta .atributos{
-        display: none;
+    .fila-cartas .carta .info{
+        padding: 30px 12px 12px;
     }
 
     .fila-cartas .carta h3{
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
+    .fila-cartas .carta .atributo strong{
+        font-size: 0.85rem;
+    }
+
+    /* sem isso a fila de novidades esticava a página para o lado */
+    .inicio-baixo > div{
+        min-width: 0;
+    }
+
+    /* novidades: também uma fila que rola para o lado */
     .novidades{
-        grid-template-columns: 1fr 1fr;
+        display: flex;
         gap: 10px;
+        margin-right: -16px;
+        padding-bottom: 6px;
+        overflow-x: auto;
     }
 
     .novidade{
-        height: 130px;
+        flex: none;
+        width: 230px;
+        height: 160px;
     }
 
     .novidade .nome{
@@ -737,11 +760,631 @@ html.escuro body .criar-foto{
 
 /* o texto do botão do banner fica escuro, porque o botão é branco */
 html.escuro body .destaque-bt{
-    color: #6e1a26;
+    color: #fff;
 }
 
 /* no escuro a estrela usa o rosa mais claro, para aparecer no fundo escuro */
 
 html.escuro body .convite-comunidade{
     box-shadow: none;
+}
+
+
+
+
+
+
+
+/* ---------- 7. EVENTOS DE TEMA ---------- */
+
+/* ---------- 7. EVENTO DE TEMA (Natal) ---------- */
+/* O js/inicio.js só coloca e tira classes:
+     no body:          tema-natal  e  decorado
+     na #eventoTela:   aberto, carta-1, carta-2, carta-3, tudo
+   Todo o resto (cores, imagens, animações) está aqui. */
+
+/* a cor de cada tema: tudo abaixo usa var(--cor-evento) */
+body.tema-natal{
+    --cor-evento: #e8b84a;          /* dourado */
+}
+
+
+
+
+/* ----- a tela escura por cima de tudo ----- */
+.evento-tela{
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 30px 16px;
+    overflow-y: auto;
+    background: rgba(14, 10, 12, 0.84);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    text-align: center;
+}
+
+
+
+.ev-titulo{
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    opacity: 0.75;
+}
+
+/* ----- PASSO 1: o presente ----- */
+.ev-presente{
+    width: 220px;
+    height: 220px;
+    border: 0;
+    background: center / contain no-repeat;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));   /* só uma sombra suave embaixo */
+    cursor: pointer;
+    animation: boiar 2s ease-in-out infinite;
+}
+
+/* a imagem muda conforme o tema */
+.tema-natal .ev-presente{
+    background-image: url(../img/eventos/presente-natal.png);
+}
+
+
+
+
+
+/* a cada toque o JS coloca "tremendo" por meio segundo */
+.ev-presente.tremendo{
+    animation: tremer 0.5s ease-in-out;
+}
+
+/* as 3 bolinhas: cada toque acende uma */
+.ev-pontos{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.ev-pontos i{
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transition: background 200ms;
+}
+
+.ev-pontos i.aceso{
+    background: var(--cor-evento);
+}
+
+.ev-dica{
+    margin: 10px 0 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+/* ----- os confetes: 12 pedacinhos que voam do meio ----- */
+.ev-confetes{
+    display: none;
+}
+
+.evento-tela.aberto .ev-confetes{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    display: block;
+    pointer-events: none;
+}
+
+.ev-confetes i{
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--cor-evento);
+    opacity: 0;
+    animation: confete 1.4s ease-out forwards;
+}
+
+/* cada pedacinho vai para um lado (--x e --y) e alguns são brancos */
+.ev-confetes i:nth-child(1){ --x: -260px; --y: -180px; }
+.ev-confetes i:nth-child(2){ --x: 240px; --y: -200px; background: #fff; }
+.ev-confetes i:nth-child(3){ --x: -320px; --y: 40px; }
+.ev-confetes i:nth-child(4){ --x: 300px; --y: 60px; background: #fff; }
+.ev-confetes i:nth-child(5){ --x: -120px; --y: -280px; background: #ff6b7a; }
+.ev-confetes i:nth-child(6){ --x: 140px; --y: -300px; }
+.ev-confetes i:nth-child(7){ --x: -200px; --y: 220px; background: #fff; }
+.ev-confetes i:nth-child(8){ --x: 220px; --y: 240px; background: #ff6b7a; }
+.ev-confetes i:nth-child(9){ --x: 0px; --y: -320px; }
+.ev-confetes i:nth-child(10){ --x: -380px; --y: -60px; background: #7fd0ff; }
+.ev-confetes i:nth-child(11){ --x: 380px; --y: -80px; background: #7fd0ff; }
+.ev-confetes i:nth-child(12){ --x: 40px; --y: 300px; background: #fff; }
+
+/* ----- PASSO 2: as cartas ----- */
+/* antes de abrir, cartas, contador e botões ficam escondidos */
+.ev-cartas,
+.ev-contador,
+.ev-botao{
+    display: none;
+}
+
+/* abriu: o presente some e as cartas aparecem */
+.evento-tela.aberto .ev-presente-area{
+    display: none;
+}
+
+.evento-tela.aberto .ev-cartas{
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    perspective: 1200px;            /* dá a sensação de 3D quando a carta vira */
+    animation: surgir 0.6s ease-out;
+}
+
+/* logo que abre: as 3 cartas viradas para baixo, em leque */
+.ev-carta:nth-child(1){
+    transform: rotate(-8deg) translateY(12px);
+}
+
+.ev-carta:nth-child(3){
+    transform: rotate(8deg) translateY(12px);
+}
+
+/* o contador "1 / 3" e o botão "Próxima" só aparecem carta por carta */
+.carta-1 .ev-contador,
+.carta-2 .ev-contador,
+.carta-3 .ev-contador,
+.carta-1 #evProxima,
+.carta-2 #evProxima,
+.carta-3 #evProxima{
+    display: inline-block;
+}
+
+/* carta por carta: só a carta da vez aparece, e ela vira */
+.carta-1 .ev-carta:not(:nth-child(1)),
+.carta-2 .ev-carta:not(:nth-child(2)),
+.carta-3 .ev-carta:not(:nth-child(3)){
+    display: none;
+}
+
+.carta-1 .ev-carta:nth-child(1),
+.carta-2 .ev-carta:nth-child(2),
+.carta-3 .ev-carta:nth-child(3){
+    animation: virar 0.8s ease-in-out forwards;
+}
+
+/* PASSO 3: as 3 lado a lado, já viradas, e o botão "Coletar tudo" */
+.tudo .ev-carta{
+    transform: rotateY(180deg);
+}
+
+.tudo .ev-coletar{
+    display: inline-block;
+}
+
+/* a carta: um verso ("peak.") e uma frente (o conteúdo), uma de costas para a outra */
+.ev-carta{
+    position: relative;
+    flex: none;
+    width: 250px;
+    height: 360px;
+    transform-style: preserve-3d;
+}
+
+.ev-verso,
+.ev-frente{
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border: 2px solid var(--cor-evento);
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), 0 0 18px var(--cor-evento);
+    backface-visibility: hidden;    /* esconde o lado de trás de cada face */
+}
+
+.ev-verso{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: repeating-linear-gradient(45deg, #1d1518 0 10px, #241a1e 10px 20px);
+}
+
+.ev-verso::before{
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+}
+
+.ev-verso b{
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.ev-verso b i{
+    color: var(--cor-evento);
+    font-style: normal;
+}
+
+.ev-verso small{
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+}
+
+/* a frente começa virada (de costas); quando a carta gira 180°, ela aparece */
+.ev-frente{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 4px;
+    padding: 16px;
+    background: #1d1416;
+    text-align: left;
+    transform: rotateY(180deg);
+}
+
+/* a foto ocupa a carta toda, com um degradê escuro embaixo para o texto */
+.ev-frente > .foto{
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ev-frente::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(29, 20, 22, 0) 40%, rgba(29, 20, 22, 0.85) 66%, rgba(29, 20, 22, 0.97) 84%);
+}
+
+.ev-tag{
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--cor-evento);
+    color: #1d1416;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.ev-frente b{
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.ev-frente .ev-tipo{
+    color: var(--cor-evento);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.ev-frente p{
+    margin: 2px 0 8px;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    opacity: 0.85;
+}
+
+.ev-link{
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: var(--cor-evento);
+    color: #1d1416;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* a carta do QR code: sem foto, tudo no meio */
+.ev-frente.ev-desafio{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ev-desafio .ev-tag{
+    position: static;
+}
+
+.ev-qr{
+    width: 130px;
+    height: 130px;
+    margin: 8px 0 4px;
+    padding: 6px;
+    border: 3px solid var(--cor-evento);
+    border-radius: 12px;
+    background: #fff;
+    object-fit: contain;
+    box-shadow: 0 0 18px rgba(232, 184, 74, 0.45);
+}
+/* os botões "Próxima ›" / "Ver tudo ›" e "Coletar tudo" */
+.ev-botao{
+    padding: 10px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* "Coletar tudo": transparente, igual ao "Próxima ›" */
+.ev-coletar{
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: #fff;
+}
+
+/* ----- a DECORAÇÃO de cada tema (igual ao vídeo) -----
+   Aparece junto com a tela do presente e continua no site depois de "Coletar tudo".
+   As figuras são imagens da pasta img/eventos; o CSS só posiciona. */
+.deco-evento{
+    display: none;
+}
+
+body.decorado .deco-evento{
+    position: fixed;
+    inset: 0;
+    z-index: 96;                    /* por cima da tela do presente */
+    display: block;
+    pointer-events: none;           /* fica por cima, mas não atrapalha os cliques */
+}
+
+body.decorado .deco-evento::before,
+body.decorado .deco-evento::after{
+    content: "";
+    position: absolute;
+}
+
+/* a neve atrás das cartas: devagar e clarinha.
+   O vídeo é de flocos brancos em fundo preto; o "screen" some com o preto. */
+.ev-neve{
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    pointer-events: none;           /* não atrapalha os cliques */
+}
+
+/* só a carta do QR code brilha; as outras ficam só com a borda dourada */
+.ev-carta:nth-child(1) .ev-frente,
+.ev-carta:nth-child(2) .ev-frente{
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* a carta do desafio: fundo escuro com um brilho dourado no meio */
+.ev-frente.ev-desafio{
+    gap: 6px;
+    padding: 18px;
+    background: radial-gradient(circle at 50% 30%, rgba(232, 184, 74, 0.28), transparent 62%), linear-gradient(180deg, #2b2014, #1d1416);
+}
+
+.ev-desafio b{
+    font-size: 1.25rem;
+}
+
+.ev-desafio p{
+    margin: 0;
+    font-size: 0.78rem;
+}
+
+/* "Aponte a câmera do celular" em dourado */
+.ev-camera{
+    color: var(--cor-evento);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+/* o texto das cartas: sombrinha para ler em cima da foto, e palavra grande quebra a linha */
+.ev-frente b,
+.ev-frente .ev-tipo,
+.ev-frente p{
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+    overflow-wrap: anywhere;
+}
+
+/* a caixinha de presente em cima do dado (aparece depois de "Coletar tudo") */
+.presente-canto{
+    position: fixed;
+    right: 32px;
+    bottom: 100px;                  /* em cima do dado (o dado fica em bottom: 28px) */
+    z-index: 45;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+        animation: chacoalhar 3s ease-in-out infinite;
+}
+
+.presente-canto img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* com o mouse em cima, ela para de balançar (fica fácil de clicar) */
+.presente-canto:hover{
+    animation-play-state: paused;
+}
+
+/* fica parada um pouquinho e dá uma chacoalhada rápida (a cada 3 segundos) */
+@keyframes chacoalhar{
+    0%, 70%, 100%{ transform: rotate(0); }
+    74%{ transform: rotate(-14deg); }
+    78%{ transform: rotate(12deg); }
+    82%{ transform: rotate(-10deg); }
+    86%{ transform: rotate(8deg); }
+    90%{ transform: rotate(-4deg); }
+}
+
+.presente {
+    animation: chacoalhar 1.5s ease-in-out infinite;
+}
+
+/* celular: o dado fica no meio da barra, então a caixinha vai para a esquerda,
+   longe do botão de Libras (que fica na direita) */
+@media (max-width: 760px){
+    .presente-canto{
+        right: auto;
+        left: 16px;
+        bottom: 100px;
+        width: 46px;
+        height: 46px;
+    }
+}
+
+/* no Início tem a caixinha de presente em cima do dado: o botão do som sobe mais um pouco
+   (o botão em si está no style.css, porque aparece em todas as páginas) */
+body.decorado .musica-natal{
+    bottom: 162px;
+}
+
+@media (max-width: 760px){
+    body.decorado .musica-natal{
+        bottom: 156px;
+    }
+}
+
+/* ----- as animações ----- */
+@keyframes boiar{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-10px); }
+}
+
+@keyframes tremer{
+    0%, 100%{ transform: rotate(0); }
+    20%{ transform: rotate(-12deg) scale(1.05); }
+    40%{ transform: rotate(10deg) scale(1.08); }
+    60%{ transform: rotate(-8deg) scale(1.05); }
+    80%{ transform: rotate(6deg); }
+}
+
+@keyframes confete{
+    0%{ opacity: 1; transform: translate(0, 0) rotate(0); }
+    100%{ opacity: 0; transform: translate(var(--x), var(--y)) rotate(540deg); }
+}
+
+@keyframes surgir{
+    from{ opacity: 0; transform: scale(0.4); }
+}
+
+@keyframes virar{
+    from{ transform: rotateY(0); }
+    to{ transform: rotateY(180deg); }
+}
+
+@keyframes piscar{
+    50%{ opacity: 0.45; }
+}
+
+/* ----- celular: cartas menores e, no fim, uma embaixo da outra ----- */
+@media (max-width: 760px){
+    .evento-tela{
+        justify-content: flex-start;
+        padding-top: 70px;
+    }
+
+    .ev-presente{
+        width: 170px;
+        height: 170px;
+    }
+
+    .ev-carta{
+        width: 220px;
+        height: 320px;
+    }
+
+    .tudo .ev-cartas{
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+/* ---------- VISUAL: OS DETALHES FINOS DO PRESENTE (nov/2026) ---------- */
+/* uma luz dourada suave atrás da caixa */
+.ev-presente-area{
+    position: relative;
+}
+
+.ev-presente-area::before{
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    z-index: -1;
+    width: 380px;
+    height: 380px;
+    margin: -190px 0 0 -190px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 184, 74, 0.22), transparent 65%);
+}
+
+/* "NOVO EVENTO" em dourado */
+.ev-titulo{
+    color: #f3d27a;
+    opacity: 0.9;
+}
+
+/* a linha fininha dourada por dentro de cada carta */
+.ev-frente::after{
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(243, 210, 122, 0.35);
+    border-radius: 13px;
+    pointer-events: none;
+}
+
+/* o verso: escuro, com moldura fina dourada */
+.ev-verso{
+    background: #1d1518;
+}
+
+.ev-verso::before{
+    inset: 10px;
+    border: 1px solid rgba(243, 210, 122, 0.35);
+}
+
+.ev-verso b i{
+    color: #e8b84a;
 }

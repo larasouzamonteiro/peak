@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Raças | Peak</title>
+  <!-- o iconezinho da aba do navegador (a florzinha) -->
+  <link rel="icon" type="image/png" href="../img/favicon.png">
 
   <!-- fontes do site (Poppins nos textos, Playfair Display nos títulos da oficina) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
@@ -80,7 +82,10 @@
         <h2>Raças da Peak</h2>
       </div>
       <!-- os cards entram aqui: js/racas.js, função desenharRacas() -->
-      <div class="galeria" id="listaOficiais"></div>
+      <div class="galeria" id="listaOficiais">
+        <!-- VISUAL: o círculo girando aparece até o JS desenhar a lista (o innerHTML apaga ele) -->
+        <div class="carregando"><span></span>Carregando…</div>
+      </div>
 
       <!-- ===== RAÇAS DA COMUNIDADE (criadas por outras pessoas e marcadas como públicas) ===== -->
       <div class="secao-titulo">
@@ -106,8 +111,8 @@
               <input class="input" type="text" id="nome" maxlength="40" placeholder="Ex.: Gnomo">
             </div>
             <div class="campo">
-              <label class="rotulo" for="vidaMaxima">Vida</label>
-              <input class="input" type="number" id="vidaMaxima" value="8" min="1">
+              <label class="rotulo" for="vidaMaxima">Vida (1 a 1000)</label>
+              <input class="input" type="number" id="vidaMaxima" value="8" min="1" max="1000">
             </div>
           </div>
 
@@ -139,7 +144,7 @@
     <div class="modal-caixa">
       <div class="modal-cabecalho">
         <h2 id="tituloEdicao">Editar raça</h2>
-        <button type="button" class="botao botao-pequeno" onclick="fecharJanela('janelaEdicao')">Fechar</button>
+        <button type="button" class="botao-fechar" onclick="fecharJanela('janelaEdicao')" title="Fechar" aria-label="Fechar">✕</button>
       </div>
 
       <div class="formulario">
@@ -172,6 +177,7 @@
   </div>
   <!-- script.js primeiro (funções usadas em todas as páginas), depois o desta página -->
   <script src="../js/script.js"></script>
+  <script src="../js/visual.js"></script>     <!-- só a aparência (modo escuro, abertura, Natal) -->
   <script src="../js/racas.js"></script>
 </body>
 </html>

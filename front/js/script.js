@@ -7,12 +7,25 @@
 //
 // Regra do projeto: o JavaScript NÃO escreve CSS. Para mudar a aparência ele só
 // coloca ou tira uma classe (ex.: 'oculto', 'ativo'), e a classe está nos arquivos .css.
+//
+// ORGANIZAÇÃO: aqui ficam só as coisas NECESSÁRIAS (pedidos ao servidor, login, avisos,
+// ajudantes, imagens e pedaços de HTML). Tudo que é só APARÊNCIA (modo escuro, abertura,
+// Natal, neve, segredinho) está no visual.js, que é carregado logo depois deste arquivo.
 
 // VERSÃO SERVIDOR: as páginas e o servidor estão no mesmo endereço,
 // então o endereço fica vazio ('/login' vai para o próprio site)
 var SERVIDOR = ''
 
+// O personagem de presente de cada tema de evento.
+// A imagem já vem com o site (não é o admin que cria). Usado na Oficina (criar-ficha.js).
+// tema: 'natal'. Devolve o nome e a imagem, ou null se o tema não tem presente.
+function retratoDePresente(tema){
+    if(tema == 'natal'){
+        return {nome: 'Noel', imagem: '../img/eventos/retrato-natal.jpg'}
+    }
 
+    return null
+}
 // =====================================================
 // 1. FALAR COM O SERVIDOR
 // =====================================================
@@ -23,13 +36,11 @@ function buscar(rota, depois){
     // em que parte o pedido está (explicado em falhaNoPedido, mais abaixo)
     var etapa = 'conexao'
 
-    // VISUAL: a abertura (parte 8) conta os pedidos para saber a porcentagem
-    pedidosFeitos = pedidosFeitos + 1
-
     fetch(SERVIDOR + rota, {
         method: 'GET',
+        cache: 'no-store',      // sempre pede a lista nova (sem isso, às vezes o que acabou de ser criado só aparecia ao recarregar)
         headers: {
-            'Authorization': localStorage.getItem('token') || ''
+            'Authorization': meuToken()
         }
     })
     .then(function(response){
@@ -37,8 +48,6 @@ function buscar(rota, depois){
         return response.json()
     })
     .then(function(dados){
-        pedidosProntos = pedidosProntos + 1
-
         // token velho ou errado: volta para o login
         if(dados.sair){
             sair()
@@ -49,7 +58,6 @@ function buscar(rota, depois){
         depois(dados)
     })
     .catch(function(erro){
-        pedidosProntos = pedidosProntos + 1
         falhaNoPedido(erro, etapa)
     })
 }
@@ -62,7 +70,7 @@ function enviar(rota, corpo, depois){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') || ''
+            'Authorization': meuToken()
         },
         body: JSON.stringify(corpo)
     })
@@ -90,16 +98,18 @@ function enviar(rota, corpo, depois){
 // página está saindo e não mostramos aviso nenhum nesse caso.
 var saindoDaPagina = false
 
-window.addEventListener('beforeunload', function(){
+window.onbeforeunload = function(){
     saindoDaPagina = true
-})
-window.addEventListener('pagehide', function(){
+}
+
+window.onpagehide = function(){
     saindoDaPagina = true
-})
+}
+
 // voltou para a página pela seta "voltar" do navegador: ela vale de novo
-window.addEventListener('pageshow', function(){
+window.onpageshow = function(){
     saindoDaPagina = false
-})
+}
 
 // O que fazer quando um pedido dá erro. A "etapa" diz onde parou:
 //   'conexao'  -> nem chegou resposta: aí sim o servidor está fora do ar (ou sem internet)
@@ -153,14 +163,8 @@ function avisar(titulo, texto, tipo, depois){
         antigo.remove()
     }
 
-    // o símbolo da bolinha de cada tipo
-    var simbolo = 'i'
-
-    if(tipo == 'certo'){
-        simbolo = '✓'
-    }else if(tipo == 'erro'){
-        simbolo = '!'
-    }else{
+    // o tipo ('certo', 'erro' ou 'info') vira uma classe: o CSS muda a cor
+    if(tipo != 'certo' && tipo != 'erro'){
         tipo = 'info'
     }
 
@@ -173,14 +177,14 @@ function avisar(titulo, texto, tipo, depois){
 
     var aviso = document.createElement('div')
     aviso.className = 'aviso-canto ' + tipo
-    aviso.innerHTML = `
-        <span class="aviso-icone">${simbolo}</span>
-        <div><b></b><small></small></div>
-        <i class="aviso-barra" style="animation-duration: ${tempo}ms"></i>`
+    aviso.innerHTML = '<b></b><small></small>'
 
     // textContent: o texto entra como texto, nunca como HTML
     aviso.querySelector('b').textContent = titulo
-    aviso.querySelector('small').textContent = texto || ''
+    if(texto == null){
+        texto = ''
+    }
+    aviso.querySelector('small').textContent = texto
 
     document.body.appendChild(aviso)
 
@@ -211,20 +215,10 @@ function confirmar(texto, depois, textoBotao){
         explicacao = texto.substring(fim + 1).trim()
     }
 
-    // o desenho do círculo: lixeira para excluir/apagar, porta para sair, "?" para o resto
-    var icone = 'pergunta'
-
-    if(textoBotao == 'Excluir' || textoBotao == 'Apagar'){
-        icone = 'lixeira'
-    }else if(textoBotao == 'Sair'){
-        icone = 'sair'
-    }
-
     var fundo = document.createElement('div')
     fundo.className = 'confirmar-fundo'
     fundo.innerHTML = `
         <div class="confirmar-caixa">
-            <div class="confirmar-icone ${icone}"></div>
             <h3></h3>
             <p></p>
             <div class="confirmar-botoes">
@@ -238,7 +232,11 @@ function confirmar(texto, depois, textoBotao){
 
     var botoes = fundo.querySelectorAll('button')
 
-    botoes[1].textContent = textoBotao || 'Confirmar'
+    // se não mandou o texto do botão, fica "Confirmar"
+    if(textoBotao == null || textoBotao == ''){
+        textoBotao = 'Confirmar'
+    }
+    botoes[1].textContent = textoBotao
 
     // Cancelar: só fecha
     botoes[0].onclick = function(){
@@ -275,7 +273,7 @@ function pegarUsuarioLogado(){
 // Mexe nestes pedaços do HTML (que são iguais em todas as páginas de dentro):
 //   <span id="saudacao">   -> "Bom dia", "Boa tarde" ou "Boa noite"
 //   <b id="nomeLogado">    -> o nome, no topo da página
-//   <div id="menuLetra">   -> a primeira letra do nome, na bolinha do menu
+//   <div id="menuLetra">   -> a foto de perfil, na bolinha do menu (ou a foto padrão)
 //   <strong id="menuNome"> -> o nome, embaixo do menu
 //   <a id="linkAdmin">     -> o link Administração (só aparece para admin)
 function verificarLogin(){
@@ -303,13 +301,11 @@ function verificarLogin(){
 
     document.getElementById('saudacao').textContent = saudacao
     document.getElementById('nomeLogado').textContent = usuario.nomeUsuario
-    document.getElementById('menuLetra').textContent = usuario.nomeUsuario.charAt(0).toUpperCase()
+    // a foto padrão aparece na hora; quando o servidor responde, entra a foto da pessoa (se tiver)
+    document.getElementById('menuLetra').innerHTML = '<img src="' + FOTO_PADRAO + '" alt="">'
 
-    // VISUAL: se a pessoa tem foto de perfil, a foto aparece no menu no lugar da letra
     buscar('/usuario?id=' + usuario.id, function(pessoa){
-        if(pessoa.fotoPerfil){
-            document.getElementById('menuLetra').innerHTML = '<img src="' + seguro(pessoa.fotoPerfil) + '" alt="">'
-        }
+        document.getElementById('menuLetra').innerHTML = '<img src="' + seguro(fotoDePerfil(pessoa.fotoPerfil)) + '" alt="">'
     })
     document.getElementById('menuNome').textContent = usuario.nomeUsuario
 
@@ -321,13 +317,13 @@ function verificarLogin(){
 }
 
 function sair(){
-    var token = localStorage.getItem('token')
+    var token = meuToken()
 
     localStorage.removeItem('usuarioLogado')
     localStorage.removeItem('token')
 
     // VERSÃO SERVIDOR: avisa o servidor para apagar o token (ele para de valer na hora)
-    fetch(SERVIDOR + '/logout', {method: 'POST', headers: {'Authorization': token || ''}})
+    fetch(SERVIDOR + '/logout', {method: 'POST', headers: {'Authorization': token}})
     .finally(() => {
         window.location.href = 'login.html'
     })
@@ -338,9 +334,46 @@ function sair(){
 // 3. AJUDANTES
 // =====================================================
 
+// pega o token salvo no login (se não tiver, manda vazio)
+function meuToken(){
+    var token = localStorage.getItem('token')
+
+    if(token == null){
+        token = ''
+    }
+
+    return token
+}
+
+// O nome bonito do tema de um evento: 'natal' vira 'Natal'
+function nomeDoTema(tema){
+    if(tema == 'natal'){
+        return 'Natal'
+    }else if(tema == 'pascoa'){
+        return 'Páscoa'
+    }
+
+    return tema
+}
+
+// Se o texto estiver vazio, devolve o texto padrão.
+// Ex.: textoOuPadrao(pessoa.bio, 'Ainda não escreveu nada.')
+function textoOuPadrao(texto, padrao){
+    if(texto == null || texto == ''){
+        return padrao
+    }
+
+    return texto
+}
+
 // Evita que um texto digitado pelo usuário (ex.: <b>) quebre o HTML da página
 function seguro(texto){
-    var resultado = String(texto || '')
+    // vazio (null) vira um texto vazio
+    if(texto == null){
+        texto = ''
+    }
+
+    var resultado = String(texto)
     resultado = resultado.replace(/&/g, '&amp;')
     resultado = resultado.replace(/</g, '&lt;')
     resultado = resultado.replace(/>/g, '&gt;')
@@ -350,7 +383,11 @@ function seguro(texto){
 
 // '2026-09-19' vira '19/09/2026'
 function formatarData(data){
-    var partes = String(data || '').substring(0, 10).split('-')
+    if(data == null){
+        return ''
+    }
+
+    var partes = String(data).substring(0, 10).split('-')
 
     if(partes.length != 3){
         return ''
@@ -509,13 +546,43 @@ function diminuirImagem(textoOriginal, arquivo, campo, depois){
 // 5. PEDAÇOS DE HTML QUE SE REPETEM
 // =====================================================
 
-// Foto de um card. Se não tiver imagem, mostra um quadro com a primeira letra do nome.
-function htmlFoto(imagem, nome){
-    if(imagem){
-        return '<img class="foto" src="' + seguro(imagem) + '" alt="">'
+// AS FOTOS PADRÃO: quando a pessoa não envia uma imagem, entra a imagem padrão daquele tipo.
+var FOTO_PADRAO = '../img/sem-foto.jpg'      // foto de perfil de quem ainda não colocou uma
+
+// tipo: 'monstro', 'raca', 'classe', 'campanha' ou 'ficha'. Devolve o caminho da imagem padrão.
+function fotoPadrao(tipo){
+    if(tipo == 'monstro'){
+        return '../img/padrao/monstro.jpg'
+    }else if(tipo == 'raca'){
+        return '../img/padrao/raca.jpg'
+    }else if(tipo == 'classe'){
+        return '../img/padrao/classe.jpg'
+    }else if(tipo == 'ficha'){
+        return '../img/retratos/r01.jpg'
     }
 
-    return '<div class="foto sem-foto">' + seguro(String(nome || '?').charAt(0).toUpperCase()) + '</div>'
+    // campanha (e qualquer outro)
+    return '../img/criar/nova-campanha.jpg'
+}
+
+// foto: a foto de perfil que veio do banco (pode estar vazia)
+function fotoDePerfil(foto){
+    if(foto == null || foto == ''){
+        return FOTO_PADRAO
+    }
+
+    return foto
+}
+
+// A imagem de um card (monstro, raça, classe, campanha, ficha).
+// imagem: a que veio do banco (pode estar vazia) | tipo: 'monstro', 'raca', 'classe', 'campanha' ou 'ficha'
+function htmlFoto(imagem, tipo){
+    // se não tem imagem, usa a padrão daquele tipo
+    if(imagem == null || imagem == ''){
+        imagem = fotoPadrao(tipo)
+    }
+
+    return '<img class="foto" src="' + seguro(imagem) + '" alt="">'
 }
 
 // Barra de vida em 10 quadradinhos ("gomos"). Os cheios ganham a classe "cheio".
@@ -549,7 +616,7 @@ function htmlCarta(ficha, botoes){
     return `
         <article class="carta">
             <a class="carta-link" href="ficha.html?id=${ficha.id}">
-                ${htmlFoto(ficha.retrato, ficha.nome)}
+                ${htmlFoto(ficha.retrato, 'ficha')}
                 <div class="topo-carta"><span class="selo">NV ${ficha.nivel}</span></div>
                 <div class="info">
                     <h3>${seguro(ficha.nome)}</h3>
@@ -595,176 +662,4 @@ function rolarDado(lados){
     // animação do CSS (.dado-resultado b, no style.css) toca de novo toda vez.
     resultado.innerHTML = '<b>' + numero + '</b><small>d' + lados + '</small>'
     resultado.classList.remove('oculto')
-}
-
-
-// =====================================================
-// 7. VISUAL: MODO ESCURO E MENU DO CELULAR
-// =====================================================
-// O tema fica guardado no localStorage (no navegador), igual o token.
-//   'escuro' -> o <html> ganha a classe "escuro" (as cores estão no style.css, parte "MODO ESCURO")
-//   qualquer outra coisa (ou nada) -> claro
-// O botão para trocar fica em Perfil > Configurações (perfil.html).
-// VISUAL: a classe fica no <html> (document.documentElement) e não no <body> porque
-// o <script> do <head> de cada página já coloca ela antes da página aparecer.
-// Assim a página não pisca branca quando a pessoa usa o modo escuro.
-
-function aplicarTema(){
-    var tema = localStorage.getItem('tema')
-
-    if(tema == 'escuro'){
-        document.documentElement.classList.add('escuro')
-    }else{
-        document.documentElement.classList.remove('escuro')
-    }
-}
-
-// tema: 'claro' ou 'escuro'
-function mudarTema(tema){
-    localStorage.setItem('tema', tema)
-    aplicarTema()
-}
-
-// roda em toda página que carrega o script.js
-aplicarTema()
-
-// Celular: o botão "Mais" da barra de baixo abre e fecha o menu inteiro
-function abrirMais(){
-    document.querySelector('.lateral').classList.toggle('mais-aberto')
-}
-
-// Botão de olho dos campos de senha: mostra ou esconde o que foi digitado.
-// O botão fica dentro de <div class="campo-senha"> junto com o input.
-function verSenha(botao){
-    var caixa = botao.parentElement
-    var input = caixa.querySelector('input')
-
-    if(input.type == 'password'){
-        input.type = 'text'
-        caixa.classList.add('mostrando')
-        botao.setAttribute('aria-label', 'Esconder senha')
-    }else{
-        input.type = 'password'
-        caixa.classList.remove('mostrando')
-        botao.setAttribute('aria-label', 'Mostrar senha')
-    }
-}
-
-
-
-// =====================================================
-// 8. VISUAL: ABERTURA (a tela escura com o "peak." e a porcentagem)
-// =====================================================
-// Aparece só UMA vez por visita: na primeira página de dentro do site.
-// O sessionStorage é igual ao localStorage, mas se apaga quando a aba fecha.
-//
-// Como a porcentagem funciona:
-//   cada buscar() soma 1 em pedidosFeitos; quando a resposta chega, soma 1 em pedidosProntos.
-//   A porcentagem "de verdade" é prontos / feitos. O número na tela vai subindo de 1 em 1
-//   até ela, e quando chega a 100 a abertura some devagar.
-// A linha rosa é um <progress> (a barrinha de progresso do HTML): o JS só muda o value,
-// e a aparência dela fica no style.css (regra do projeto: JS não escreve CSS).
-var pedidosFeitos = 0
-var pedidosProntos = 0
-var numeroAbertura = 0
-var relogioAbertura = null
-var inicioAbertura = 0
-
-function criarAbertura(){
-    // só nas páginas de dentro (as que têm o menu lateral) e só uma vez por visita.
-    // Se não for para abrir, tira a classe "abrindo" que o <head> colocou (a página aparece normal).
-    if(!document.querySelector('.lateral') || sessionStorage.getItem('abriu')){
-        document.documentElement.classList.remove('abrindo')
-        return
-    }
-
-    document.documentElement.classList.add('abrindo')
-
-    sessionStorage.setItem('abriu', 'sim')
-
-    document.body.insertAdjacentHTML('beforeend', `
-        <div class="abertura" id="abertura">
-            <div class="abertura-logo"><span>peak<i>.</i></span></div>
-            <progress class="abertura-linha" id="aberturaBarra" max="100" value="0"></progress>
-            <div class="abertura-baixo">
-                <small>PREPARANDO A MESA</small>
-                <b><span id="aberturaNumero">0</span><i>%</i></b>
-            </div>
-        </div>`)
-
-    inicioAbertura = Date.now()
-
-    // a cada 15 milésimos de segundo o número sobe um pouco
-    relogioAbertura = setInterval(subirAbertura, 15)
-}
-
-function subirAbertura(){
-    var alvo = 100
-
-    // ainda tem pedido esperando resposta: o número só vai até onde já carregou
-    if(pedidosFeitos > 0 && pedidosProntos < pedidosFeitos){
-        alvo = Math.floor(pedidosProntos / pedidosFeitos * 100)
-    }
-
-    // se o servidor demorar mais de 8 segundos, a abertura sai mesmo assim
-    if(Date.now() - inicioAbertura > 8000){
-        alvo = 100
-    }
-
-    if(numeroAbertura < alvo){
-        numeroAbertura = numeroAbertura + 1
-        document.getElementById('aberturaNumero').textContent = numeroAbertura
-        document.getElementById('aberturaBarra').value = numeroAbertura
-    }
-
-    if(numeroAbertura >= 100){
-        clearInterval(relogioAbertura)
-        tirarAbertura()
-    }
-}
-
-// a saída: o "peak." e o número somem, a tela escura apaga devagar
-// e o site aparece chegando um pouquinho mais perto (as animações estão no style.css)
-function tirarAbertura(){
-    document.getElementById('abertura').classList.add('saindo')
-    document.documentElement.classList.remove('abrindo')
-    document.body.classList.add('chegando')
-
-    // depois que a animação termina, a abertura é apagada da página
-    setTimeout(function(){
-        document.getElementById('abertura').remove()
-        document.body.classList.remove('chegando')
-    }, 1600)
-}
-
-criarAbertura()
-
-
-// =====================================================
-// 9. SEGREDINHO (easter egg)
-// =====================================================
-// 3 cliques rápidos no topo da página ("Boa noite, fulano"; no celular, o "Peak" lá em cima)
-// abrem o livro "A equipe Peak" direto no capítulo "Quem somos".
-var cliquesSegredo = 0
-var relogioSegredo = null
-
-function contarCliqueSegredo(){
-    cliquesSegredo = cliquesSegredo + 1
-
-    // se passar 1 segundo sem clicar, a contagem volta a zero
-    clearTimeout(relogioSegredo)
-    relogioSegredo = setTimeout(function(){
-        cliquesSegredo = 0
-    }, 1000)
-
-    if(cliquesSegredo == 3){
-        cliquesSegredo = 0
-        avisar('Você achou um segredo!', 'Conheça quem fez a Peak…', 'info', function(){
-            window.location.href = 'livro-equipe.html#cap-2'
-        })
-    }
-}
-
-if(document.querySelector('.topo')){
-    document.querySelector('.topo').addEventListener('click', contarCliqueSegredo)
 }
