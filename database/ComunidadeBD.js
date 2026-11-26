@@ -1,21 +1,15 @@
-// ComunidadeBD.js
-// Interesses e parcerias dos usuários, e as listas da página Comunidade.
-//
-// Tabelas usadas:
-//   interesses / usuario_interesses  -> o que cada pessoa gosta
-//   parcerias  / usuario_parcerias   -> o que cada pessoa É ('sou') e o que PROCURA ('procuro')
+
 
 const conexao = require('./conexao')
 
 class ComunidadeBD{
 
     static connect(){
-        // versão servidor: usa o pool (veja database/conexao.js)
+    
         return conexao
     }
 
-    // ---------- INTERESSES ----------
-    // Todos os interesses que existem (para a pessoa escolher)
+  
     static getInteresses(callback){
         const connection = ComunidadeBD.connect()
 
@@ -28,12 +22,11 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // Os interesses de UMA pessoa
+ 
     static getInteressesDoUsuario(usuarioId, callback){
         const connection = ComunidadeBD.connect()
 
-        // o JOIN junta as duas tabelas: usuario_interesses só tem números (ids),
-        // e o nome de cada interesse está na tabela interesses
+  
         var sql = `
             select i.id, i.nome
             from usuario_interesses ui
@@ -53,7 +46,7 @@ class ComunidadeBD{
     static addInteresse(interesseId, usuarioId, callback){
         const connection = ComunidadeBD.connect()
 
-        // primeiro confere se a pessoa já não marcou este interesse
+
         var sql = 'select id from usuario_interesses where usuarioId = ? and interesseId = ?'
 
         connection.query(sql, [usuarioId, interesseId], (error, results)=>{
@@ -89,8 +82,6 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // ---------- PARCERIAS ----------
-    // Todas as parcerias que existem (Ilustrador, Mestre...)
     static getParcerias(callback){
         const connection = ComunidadeBD.connect()
 
@@ -103,7 +94,6 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // As parcerias de UMA pessoa. Cada linha vem com o tipo: 'sou' ou 'procuro'
     static getParceriasDoUsuario(usuarioId, callback){
         const connection = ComunidadeBD.connect()
 
@@ -123,7 +113,7 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // dados: { parceriaId, tipo }   tipo = 'sou' ou 'procuro'
+
     static addParceria(dados, usuarioId, callback){
         var {parceriaId, tipo} = dados
 
@@ -168,10 +158,7 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // ---------- PÁGINA COMUNIDADE ----------
-    // A página pede três listas e junta tudo lá (js/comunidade.js):
-
-    // 1. as pessoas (todas com o e-mail confirmado)
+ 
     static getPessoas(callback){
         const connection = ComunidadeBD.connect()
 
@@ -186,7 +173,7 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // 2. os interesses de TODO MUNDO: cada linha diz "a pessoa X gosta de Y"
+   
     static getTodosInteresses(callback){
         const connection = ComunidadeBD.connect()
 
@@ -204,7 +191,6 @@ class ComunidadeBD{
         connection.end()
     }
 
-    // 3. as parcerias de TODO MUNDO: cada linha diz "a pessoa X é (ou procura) Y"
     static getTodasParcerias(callback){
         const connection = ComunidadeBD.connect()
 
