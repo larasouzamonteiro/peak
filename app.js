@@ -1,26 +1,4 @@
-// app.js  (VERSÃO SERVIDOR - para colocar no ar)
-// Servidor da Peak. Usa só http e url, como na aula.
-//
-// É o mesmo jeito do projeto de login da aula (http, url, callback, classes BD).
-// O que esta versão tem a mais (procure "VERSÃO SERVIDOR"):
-//   1. entrega as páginas (pasta front/), então o site abre pelo link
-//   2. login com token: o servidor sabe quem está pedindo
-//   3. recusa pedidos grandes demais (mais de 4 MB)
-//   4. bloqueia por 1 minuto quem erra a senha ou o código 5 vezes
-//   5. usa a porta que o Render mandar (process.env.PORT)
-//
-// Para ligar:   node app.js
-// Endereço:     http://localhost:3000
-//
-// GET  -> devolve dados
-// POST -> recebe dados em JSON pelo corpo da requisição
-//
-// O servidor sempre responde em JSON:
-//   deu certo -> { 'message': '...' }  (ou a lista pedida)
-//   deu erro  -> { 'error': '...' }
-//
-// Cada rota chama uma função de uma classe da pasta database/
-// (é lá que ficam as consultas SQL).
+
 
 const http = require('http')
 const url = require('url')
@@ -41,16 +19,9 @@ const RecadosBD = require('./database/RecadosBD')
 const ImagensBD = require('./database/ImagensBD')     // FOTOS MAIS RÁPIDAS (explicado lá embaixo)
 
 
-// =====================================================
-// VERSÃO SERVIDOR: AJUDANTES DE SEGURANÇA
-// =====================================================
-
-// ----- 1. entregar as páginas -----
-// Só a pasta front/ é entregue. database/, app.js, as senhas... nunca.
 const PASTA_FRONT = path.join(__dirname, 'front')
 
-// O tipo de cada arquivo, pela extensão (o navegador precisa saber se é página, imagem, som...)
-// Devolve '' se for uma extensão que o site não entrega.
+
 function tipoDoArquivo(extensao){
     if(extensao == '.html'){
         return 'text/html; charset=utf-8'
@@ -87,8 +58,6 @@ function tipoDoArquivo(extensao){
     return ''
 }
 
-// Página de erro bonita (front/html/404.html) para endereço que não existe.
-// O status continua 404 para o navegador saber que a página não existe.
 function paginaNaoEncontrada(res){
     fs.readFile(path.join(PASTA_FRONT, 'html', '404.html'), (erro, conteudo)=>{
         if(erro){
@@ -101,8 +70,7 @@ function paginaNaoEncontrada(res){
     })
 }
 
-// O endereço é de um arquivo do site? (a página inicial "/" ou algo dentro das pastas html, css, js, img e sons)
-// indexOf(...) == 0 quer dizer "começa com"
+
 function ehArquivoDoSite(pathname){
     if(pathname == '/'){
         return true
@@ -116,14 +84,13 @@ function ehArquivoDoSite(pathname){
 }
 
 function entregarArquivo(pathname, res){
-    // o endereço puro (https://site.com/) manda a pessoa para /html/index.html.
-    // Precisa ser um "redirecionamento" (302) para os links da página funcionarem.
+   
     if(pathname == '/'){
         res.writeHead(302, {'Location': '/html/index.html'})
         return res.end()
     }
 
-    // try/catch: um endereço quebrado (ex.: /html/%E0) faria o decodeURIComponent dar erro
+   
     var caminho
     try{
         caminho = path.normalize(path.join(PASTA_FRONT, decodeURIComponent(pathname)))
@@ -131,13 +98,13 @@ function entregarArquivo(pathname, res){
         return paginaNaoEncontrada(res)
     }
 
-    // impede pedidos como /../database/config.js (sair da pasta front)
+  
     if(caminho.indexOf(PASTA_FRONT + path.sep) != 0){
         res.writeHead(403)
         return res.end()
     }
 
-    var extensao = path.extname(caminho).toLowerCase()     // ex.: '.jpg'
+    var extensao = path.extname(caminho).toLowerCase()   
     var tipo = tipoDoArquivo(extensao)
 
     fs.readFile(caminho, (erro, conteudo)=>{
@@ -145,9 +112,7 @@ function entregarArquivo(pathname, res){
             return paginaNaoEncontrada(res)
         }
 
-        // fotos, vídeos, sons e letras ficam guardados no navegador por 7 dias:
-        // quem volta ao site não baixa tudo de novo (economiza a banda).
-        // Páginas, CSS e JS não: assim uma atualização aparece na hora.
+       
         var cache = 'public, max-age=604800'
         if(extensao == '.html' || extensao == '.css' || extensao == '.js'){
             cache = 'no-cache'
@@ -158,10 +123,7 @@ function entregarArquivo(pathname, res){
     })
 }
 
-// ----- 2. conferir os dados que chegam -----
-// Os dados do POST precisam ser textos ou números (a lista de itens da ficha é a única lista).
-// Por quê: se alguém mandar um OBJETO no lugar de um texto, o mysql transforma
-// o "where id = ?" em outra coisa e o SQL pode mexer em linhas que não devia.
+
 function temObjeto(dados){
     for(var campo in dados){
         if(campo != 'itemIds' && dados[campo] != null && typeof dados[campo] == 'object'){
@@ -171,13 +133,10 @@ function temObjeto(dados){
     return false
 }
 
-// ----- 3. bloquear tentativas repetidas -----
-// Guarda quantas vezes alguém errou. Passou do limite, bloqueia por 1 minuto.
-// (era 15 minutos; ficou 1 minuto para dar para mostrar na apresentação)
-// (fica na memória: se o servidor reiniciar, zera)
+
 var tentativas = {}
 
-// limite: quantos erros pode ter (5 se não disser nada)
+
 function bloqueado(chave, limite){
     var t = tentativas[chave]
     return t != undefined && t.erros >= (limite || 5) && Date.now() < t.ate
@@ -191,7 +150,7 @@ function contarErro(chave){
     }
 
     t.erros = t.erros + 1
-    t.ate = Date.now() + 1 * 60 * 1000      // 1 minuto (60 segundos x 1000 milissegundos)
+    t.ate = Date.now() + 1 * 60 * 1000      
     tentativas[chave] = t
 }
 
@@ -199,7 +158,7 @@ function limparErros(chave){
     delete tentativas[chave]
 }
 
-// reenviar o código: no máximo 1 vez por minuto para cada e-mail
+
 var ultimoReenvio = {}
 
 function responder(res, status, objeto){
@@ -208,9 +167,6 @@ function responder(res, status, objeto){
 }
 
 
-// Só continua (chama "depois") se a pessoa estiver logada.
-// Depois do login, a página manda o token em todo pedido no cabeçalho
-// "Authorization". Com ele o servidor descobre quem é a pessoa.
 function exigirLogin(req, res, depois){
 
     UsuariosBD.buscarPorToken(req.headers['authorization'], (usuario)=>{
@@ -225,10 +181,7 @@ function exigirLogin(req, res, depois){
     })
 }
 
-// As coisas de evento (ex.: Natal) só aparecem durante o evento.
-// A ÚNICA exceção é a página de Administração, que pede com "?todos=1"
-// (para o admin conseguir editar a campanha de Natal fora do Natal).
-// Nas outras páginas, até o admin vê igual a todo mundo.
+
 function verTudo(usuario, rota){
     if(usuario.tipo == 'admin' && rota.query.todos == '1'){
         return 'admin'
@@ -237,7 +190,7 @@ function verTudo(usuario, rota){
     return 'comum'
 }
 
-// Igual ao exigirLogin, mas só deixa passar quem é administrador.
+
 function exigirAdmin(req, res, depois){
 
     exigirLogin(req, res, (usuario)=>{
@@ -255,28 +208,24 @@ function exigirAdmin(req, res, depois){
 
 const callback = (req, res)=>{
 
-    // VERSÃO SERVIDOR: as páginas e o servidor estão no MESMO endereço,
-    // então não precisa do "Access-Control-Allow-Origin" (CORS) da versão da aula.
+
     var rota = url.parse(req.url, true)
 
-    // VERSÃO SERVIDOR: arquivos do site (páginas, css, js, imagens, sons)
+
     if(req.method == 'GET' && ehArquivoDoSite(rota.pathname)){
         entregarArquivo(rota.pathname, res)
         return
     }
 
-    // FOTOS MAIS RÁPIDAS: /imagem?tipo=monstro&id=7 entrega uma foto só (função lá embaixo)
     if(req.method == 'GET' && rota.pathname == '/imagem'){
         entregarImagem(rota, res)
         return
     }
 
-    // =====================================================
-    // GET
-    // =====================================================
+
     if(req.method == 'GET'){
 
-        // ----- listas fixas (para os formulários) -----
+
         if(rota.pathname == '/interesses'){
 
             exigirLogin(req, res, (usuario)=>{
@@ -304,7 +253,7 @@ const callback = (req, res)=>{
                 })
             })
 
-        // ----- perfil de uma pessoa: /usuario?id=3 -----
+
         }else if(rota.pathname == '/usuario'){
 
             exigirLogin(req, res, (usuario)=>{
@@ -349,20 +298,18 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getCampanhas(rota.query.id, (campanhas)=>{
-                    ImagensBD.trocarFotos(campanhas, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(campanhas, 'imagemCapa', 'campanha')     
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(campanhas))
                 })
             })
 
-        // ----- amigos do perfil: /usuario/companheiros?id=3 -----
-        // quem já esteve numa campanha junto com a pessoa (Mestre ou jogador).
-        // A lista é a mesma para qualquer pessoa logada que abrir o perfil.
+     
         }else if(rota.pathname == '/usuario/companheiros'){
 
             exigirLogin(req, res, function(usuario){
                 CampanhasBD.getCompanheiros(rota.query.id, function(companheiros){
-                    ImagensBD.trocarFotos(companheiros, 'fotoPerfil', 'perfil')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(companheiros, 'fotoPerfil', 'perfil')    
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(companheiros))
                 })
@@ -373,7 +320,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 ComunidadeBD.getPessoas((pessoas)=>{
-                    ImagensBD.trocarFotos(pessoas, 'fotoPerfil', 'perfil')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(pessoas, 'fotoPerfil', 'perfil')     /
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(pessoas))
                 })
@@ -397,15 +344,13 @@ const callback = (req, res)=>{
                 })
             })
 
-        // ----- fichas, raças e classes -----
-
-        // ----- mural da comunidade -----
+    
         }else if(rota.pathname == '/recados'){
 
             exigirLogin(req, res, (usuario)=>{
                 RecadosBD.getRecados(usuario.id, (recados)=>{
-                    ImagensBD.trocarFotos(recados, 'foto', 'recado')     // FOTOS MAIS RÁPIDAS
-                    ImagensBD.trocarFotos(recados, 'fotoPerfil', 'perfil', 'usuarioId')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(recados, 'foto', 'recado')     
+                    ImagensBD.trocarFotos(recados, 'fotoPerfil', 'perfil', 'usuarioId')    
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(recados))
                 })
@@ -425,10 +370,10 @@ const callback = (req, res)=>{
         
             }else if(rota.pathname == '/fichas'){
 
-            // só as fichas de quem está logado
+          
             exigirLogin(req, res, (usuario)=>{
                 FichasBD.getFichas(usuario.id, (fichas)=>{
-                    ImagensBD.trocarFotos(fichas, 'retrato', 'ficha')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(fichas, 'retrato', 'ficha')     
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(fichas))
                 })
@@ -436,7 +381,6 @@ const callback = (req, res)=>{
 
         }else if(rota.pathname == '/ficha'){
 
-            // /ficha?id=3 -> uma ficha completa
             exigirLogin(req, res, (usuario)=>{
                 FichasBD.getFicha(rota.query.id, (ficha)=>{
                     res.writeHead(200, {'Content-Type': 'application/json'})
@@ -471,12 +415,12 @@ const callback = (req, res)=>{
                 })
             })
 
-        // ----- monstros -----
+   
         }else if(rota.pathname == '/monstros'){
 
             exigirLogin(req, res, (usuario)=>{
               MonstrosBD.getMonstros(usuario.id, verTudo(usuario, rota), (monstros)=>{
-                    ImagensBD.trocarFotos(monstros, 'imagem', 'monstro')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(monstros, 'imagem', 'monstro')  
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
                 })
@@ -487,7 +431,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getCampanhas(usuario.id, (campanhas)=>{
-                    ImagensBD.trocarFotos(campanhas, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(campanhas, 'imagemCapa', 'campanha')    
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(campanhas))
                 })
@@ -497,7 +441,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                  CampanhasBD.getOficiais(verTudo(usuario, rota), (oficiais)=>{
-                    ImagensBD.trocarFotos(oficiais, 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(oficiais, 'imagemCapa', 'campanha')   
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(oficiais))
                 })
@@ -505,10 +449,10 @@ const callback = (req, res)=>{
 
         }else if(rota.pathname == '/campanha'){
 
-            // /campanha?id=3 -> uma campanha (só para quem participa dela)
+
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getCampanha(rota.query.id, usuario.id, (campanha)=>{
-                    ImagensBD.trocarFotos([campanha], 'imagemCapa', 'campanha')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos([campanha], 'imagemCapa', 'campanha')     
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(campanha))
                 })
@@ -518,7 +462,7 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getJogadores(rota.query.id, usuario.id, (jogadores)=>{
-                    ImagensBD.trocarFotos(jogadores, 'retrato', 'ficha')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(jogadores, 'retrato', 'ficha')     
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(jogadores))
                 })
@@ -528,14 +472,14 @@ const callback = (req, res)=>{
 
             exigirLogin(req, res, (usuario)=>{
                 CampanhasBD.getMonstros(rota.query.id, usuario.id, (monstros)=>{
-                    ImagensBD.trocarFotos(monstros, 'imagem', 'monstro', 'monstroId')     // FOTOS MAIS RÁPIDAS
+                    ImagensBD.trocarFotos(monstros, 'imagem', 'monstro', 'monstroId')   
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(monstros))
                 })
             })
 
 
-        // EVENTOS: o evento de agora (ou {} se não tiver)
+
         }else if(rota.pathname == '/eventos/ativo'){
 
             exigirLogin(req, res, (usuario)=>{
@@ -545,7 +489,7 @@ const callback = (req, res)=>{
                 })
             })
 
-        // EVENTOS: os retratos de presente que a pessoa ganhou (Oficina)
+      
         }else if(rota.pathname == '/retratos/ganhos'){
 
             exigirLogin(req, res, (usuario)=>{
@@ -556,7 +500,7 @@ const callback = (req, res)=>{
             })
 
 
-        // EVENTOS: a lista de todos os eventos (só admin)
+
         }else if(rota.pathname == '/admin/eventos'){
 
             exigirAdmin(req, res, (usuario)=>{
@@ -566,7 +510,7 @@ const callback = (req, res)=>{
                 })
             })
 
-        // ----- avisos da Peak (aparecem no topo do Início) -----
+   
         }else if(rota.pathname == '/avisos'){
 
             exigirLogin(req, res, (usuario)=>{
@@ -578,7 +522,7 @@ const callback = (req, res)=>{
 
         }else if(rota.pathname == '/sessoes'){
 
-            // /sessoes?campanhaId=3
+         
             exigirLogin(req, res, (usuario)=>{
                 SessoesBD.getSessoes(rota.query.campanhaId, usuario.id, (sessoes)=>{
                     res.writeHead(200, {'Content-Type': 'application/json'})
@@ -591,16 +535,13 @@ const callback = (req, res)=>{
             paginaNaoEncontrada(res)
         }
 
-    // =====================================================
-    // POST
-    // =====================================================
     }else if(req.method == 'POST'){
 
-        // quando o método for POST os dados vêm pelo CORPO da requisição (e não pela URL como no GET)
+ 
         var body = ''
         var grandeDemais = false
 
-        // VERSÃO SERVIDOR: no máximo 4 MB por pedido (uma imagem de 2,5 MB em base64 cabe)
+    
         req.on('data', (data)=>{
             body += data
 
@@ -619,7 +560,7 @@ const callback = (req, res)=>{
 
             var dados = {}
 
-            // VERSÃO SERVIDOR: se o JSON vier quebrado, responde erro em vez de travar
+    
             try{
                 if(body != ''){
                     dados = JSON.parse(body)
@@ -636,7 +577,7 @@ const callback = (req, res)=>{
                 return responder(res, 400, {'error': 'Dados inválidos'})
             }
 
-            // ----- cadastro e login (não pedem token) -----
+
             if(rota.pathname == '/registro'){
 
                 UsuariosBD.addUsuario(dados, (message)=>{
@@ -677,11 +618,9 @@ const callback = (req, res)=>{
                     res.end(JSON.stringify(message))
                 })
 
-            // ----- ESQUECI MINHA SENHA (página nova-senha.html) -----
-            // Usa a mesma coluna codigoEmail do cadastro: não precisa mudar o banco.
+       
             }else if(rota.pathname == '/senha/pedir'){
 
-                // igual ao reenviar: no máximo 1 código por minuto para cada e-mail
                 var emailSenha = String(dados.email).toLowerCase()
 
                 if(ultimoReenvio[emailSenha] && Date.now() - ultimoReenvio[emailSenha] < 60 * 1000){
@@ -695,7 +634,7 @@ const callback = (req, res)=>{
 
             }else if(rota.pathname == '/senha/trocar'){
 
-                // 5 códigos errados para o mesmo e-mail: bloqueia 1 minuto (a mesma regra do cadastro)
+            
                 var chaveSenha = 'senha:' + String(dados.email).toLowerCase()
 
                 if(bloqueado(chaveSenha)){
@@ -713,7 +652,7 @@ const callback = (req, res)=>{
 
             }else if(rota.pathname == '/login'){
 
-                // 5 senhas erradas para o mesmo usuário: bloqueia essa conta por 1 minuto
+      
                 var chaveLogin = 'login:' + String(dados.nomeUsuario).toLowerCase()
 
                 if(bloqueado(chaveLogin)){
@@ -730,8 +669,6 @@ const callback = (req, res)=>{
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.end(JSON.stringify(message))
                 })
-
-            // VERSÃO SERVIDOR: sair apaga o token no banco
             }else if(rota.pathname == '/logout'){
 
                 exigirLogin(req, res, (usuario)=>{
@@ -740,9 +677,7 @@ const callback = (req, res)=>{
                     })
                 })
 
-            // Daqui para baixo tudo pede login. O id de quem está mexendo vem
-            // SEMPRE do token (usuario.id), nunca do que a página mandou.
-            // ----- perfil -----
+
             }else if(rota.pathname == '/tutorial/visto'){
 
                 exigirLogin(req, res, (usuario)=>{
@@ -1222,7 +1157,7 @@ const callback = (req, res)=>{
                     })
                 })
 
-            // EVENTOS (admin): criar
+    
             }else if(rota.pathname == '/admin/eventos/criar'){
 
                 exigirAdmin(req, res, (usuario)=>{
@@ -1232,7 +1167,7 @@ const callback = (req, res)=>{
                     })
                 })
 
-            // EVENTOS (admin): apagar
+  
             }else if(rota.pathname == '/admin/eventos/excluir'){
 
                 exigirAdmin(req, res, (usuario)=>{
@@ -1242,7 +1177,6 @@ const callback = (req, res)=>{
                     })
                 })
 
-            // EVENTOS (admin): "Mostrar de novo" (apaga quem já viu)
             }else if(rota.pathname == '/admin/eventos/mostrar-de-novo'){
 
                 exigirAdmin(req, res, (usuario)=>{
@@ -1260,61 +1194,45 @@ const callback = (req, res)=>{
     }
 }
 
-// Se der erro no banco (ex.: MySQL desligado), mostra no terminal em vez de derrubar o servidor
+
 process.on('uncaughtException', (erro)=>{
     console.log('Erro:', erro.message)
 })
 
-// =====================================================
-// FOTOS MAIS RÁPIDAS (nov/2026)
-// =====================================================
-// Entrega UMA foto que está salva no banco como texto ("data:image/webp;base64,....").
-// Quem chama: o navegador, quando encontra <img src="/imagem?tipo=monstro&id=7">.
-// (o endereço foi colocado na lista pelo ImagensBD.trocarFotos)
-//
-// Não pede login porque a tag <img> não manda o token.
+
 function entregarImagem(rota, res){
     ImagensBD.getImagem(rota.query.tipo, rota.query.id, (foto)=>{
 
-        // não achou a foto (ou não é uma foto em texto): responde "não existe"
+      
         if(foto == null || foto.indexOf('data:') != 0){
             res.writeHead(404)
             res.end()
             return
         }
 
-        // o texto tem duas partes separadas pela vírgula:
-        //   "data:image/webp;base64"   ,   "UklGRl...(a foto em letras)"
+
         var virgula = foto.indexOf(',')
-        var tipoDaImagem = foto.substring(5, foto.indexOf(';'))      // ex.: image/webp
+        var tipoDaImagem = foto.substring(5, foto.indexOf(';'))     
         var letras = foto.substring(virgula + 1)
 
-        // Buffer.from(..., 'base64') transforma as letras de volta na imagem de verdade
+     
         var imagem = Buffer.from(letras, 'base64')
 
         res.writeHead(200, {
             'Content-Type': tipoDaImagem,
-            'Cache-Control': 'public, max-age=604800'     // o navegador guarda a foto por 7 dias
+            'Cache-Control': 'public, max-age=604800'    
         })
         res.end(imagem)
     })
 }
 
 
-// =====================================================
-// LIGAR O SERVIDOR (computador, Render) OU ENTREGAR PARA A VERCEL
-// =====================================================
-// "node app.js" (no computador e no Render): require.main é este arquivo,
-// então criamos o servidor e ficamos esperando pedidos na porta.
-// Na Vercel quem roda é o api/index.js: ele só "pega" o callback abaixo
-// (module.exports) e a própria Vercel chama callback(req, res) a cada pedido.
 if(require.main === module){
     const server = http.createServer(callback)
 
-    // VERSÃO SERVIDOR: o Render escolhe a porta e avisa pelo process.env.PORT
     var PORTA = process.env.PORT
 
-    // no computador não tem process.env.PORT: usa a 3000
+ 
     if(PORTA == null){
         PORTA = 3000
     }
