@@ -1,13 +1,6 @@
-// CampanhasBD.js
-// Tabelas "campanhas", "campanha_jogadores" e "campanha_monstros".
-//
-// Dois tipos de campanha moram na mesma tabela:
-//   oficial = 1 -> campanha oficial da Peak (feita pelo admin). Não tem Mestre nem código.
-//   oficial = 0 -> campanha de uma pessoa. Quem cria é o Mestre; os jogadores entram com o código.
 
 const conexao = require('./conexao')
 
-// Gera um código de convite como "KFRT-4821"
 function gerarCodigo(){
     var letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
     var codigo = ''
@@ -22,16 +15,12 @@ function gerarCodigo(){
 class CampanhasBD{
 
     static connect(){
-        // versão servidor: usa o pool (veja database/conexao.js)
         return conexao
     }
 
-    // ---------- LISTAS ----------
-    // As campanhas em que a pessoa é Mestre ou jogadora
     static getCampanhas(usuarioId, callback){
         const connection = CampanhasBD.connect()
 
-        // o "in (select ...)" pega as campanhas em que a pessoa aparece como jogadora
         var sql = `
             select c.id, c.nome, c.descricao, c.imagemCapa, c.usuarioMestreId, u.nomeUsuario as mestre,
                    (select o.tema from campanhas o where o.id = c.oficialId) as tema            from campanhas c
@@ -49,8 +38,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // As campanhas oficiais da Peak.
-    // As de tema só aparecem no evento delas (ou para o admin, que vê tudo).
     static getOficiais(tipo, callback){
         const connection = CampanhasBD.connect()
 
@@ -75,8 +62,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // ---------- UMA CAMPANHA ABERTA ----------
-    // Só quem participa (Mestre ou jogador) pode ver.
     static getCampanha(id, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -94,7 +79,6 @@ class CampanhasBD{
             if(results.length == 0){
                 callback({'error': 'Campanha não encontrada'})
             }else{
-                // versão servidor: o código de convite só vai para o Mestre
                 if(results[0].usuarioMestreId != usuarioId){
                     results[0].codigoConvite = ''
                 }
@@ -105,8 +89,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // Os jogadores da campanha, cada um com a ficha que escolheu
-    // (versão servidor: só quem participa da campanha consegue ver)
     static getJogadores(campanhaId, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -130,12 +112,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // Companheiros de mesa da pessoa (aba Amigos do perfil): todo mundo que está
-    // em alguma campanha junto com ela, como Mestre ou como jogador.
-    // Não depende de quem está olhando: qualquer pessoa logada vê a mesma lista.
-    // Só devolve id, nome e foto (nada de e-mail, telefone, token ou senha).
-    //   1ª parte: os Mestres das campanhas em que a pessoa joga
-    //   2ª parte: os jogadores das campanhas em que a pessoa é Mestre ou joga
     static getCompanheiros(usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -163,10 +139,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // Os monstros que o Mestre colocou na campanha.
-    // linhaId = id da linha em campanha_monstros (é ele que o botão Remover usa)
-    // (versão servidor: só quem participa da campanha consegue ver)
-    // (FOTOS MAIS RÁPIDAS: o m.id as monstroId é usado pelo ImagensBD.trocarFotos no app.js)
     static getMonstros(campanhaId, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -187,8 +159,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // ---------- CRIAR, EDITAR E EXCLUIR ----------
-    // campanha: { usuarioMestreId, nome, descricao, historia, imagemCapa }
     static addCampanha(campanha, callback){
 
         if(!campanha.nome){
@@ -215,7 +185,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // Editar: só o resumo e a história. campanha: { id, descricao, historia }
     static atualizar(campanha, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -234,7 +203,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // Só o Mestre exclui a campanha
     static excluir(id, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -253,10 +221,6 @@ class CampanhasBD{
         connection.end()
     }
 
-    // ---------- USAR UMA CAMPANHA OFICIAL ----------
-    // Cria uma campanha nova, igual à oficial, com a pessoa de Mestre.
-    // A cópia guarda em "oficialId" de qual campanha oficial ela veio: é assim que
-    // o Painel do Mestre sabe quais monstros daquela história mostrar.
     static usarOficial(oficialId, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -292,9 +256,6 @@ class CampanhasBD{
         })
     }
 
-    // ---------- ENTRAR E SAIR ----------
-    // O jogador entra com o código de convite e uma ficha dele
-    // dados: { codigo, usuarioId, fichaId }
     static entrar(dados, callback){
 
         if(!dados.codigo || !dados.fichaId){
@@ -303,7 +264,6 @@ class CampanhasBD{
 
         const connection = CampanhasBD.connect()
 
-        // 1. a campanha existe?
         var sql = 'select id, usuarioMestreId from campanhas where codigoConvite = ?'
 
         connection.query(sql, [dados.codigo], (error, campanhas)=>{
@@ -321,7 +281,6 @@ class CampanhasBD{
                 return callback({'error': 'Você é o Mestre desta campanha'})
             }
 
-            // 2. a ficha é da pessoa? ela já está na campanha?
             var sql2 = `
                 select
                 (select count(*) from fichas where id = ? and usuarioId = ?) as fichaMinha,
@@ -340,7 +299,6 @@ class CampanhasBD{
                     return callback({'error': 'Você já está nesta campanha'})
                 }
 
-                // 3. entra
                 var jogador = {campanhaId: campanha.id, usuarioId: dados.usuarioId, fichaId: dados.fichaId}
 
                 connection.query('insert into campanha_jogadores set ?', jogador, (error, results)=>{
@@ -353,7 +311,6 @@ class CampanhasBD{
         })
     }
 
-    // O jogador sai da campanha
     static sair(campanhaId, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
@@ -368,13 +325,9 @@ class CampanhasBD{
         connection.end()
     }
 
-    // ---------- MONSTROS DA CAMPANHA ----------
-    // O Mestre coloca um monstro na campanha
-    // dados: { campanhaId, monstroId, usuarioId }
     static addMonstro(dados, callback){
         const connection = CampanhasBD.connect()
 
-        // só o Mestre pode
         var sql = 'select id from campanhas where id = ? and usuarioMestreId = ?'
 
         connection.query(sql, [dados.campanhaId, dados.usuarioId], (error, results)=>{
@@ -385,8 +338,6 @@ class CampanhasBD{
                 return callback({'error': 'Só o Mestre pode mexer nos monstros da campanha'})
             }
 
-            // versão servidor: o monstro tem que ser um que o Mestre pode ver
-            // (oficial, público ou dele mesmo). Assim ninguém coloca o monstro privado de outra pessoa.
             var sql = 'select id from monstros where id = ? and (usuarioId is null or publico = 1 or usuarioId = ?)'
 
             connection.query(sql, [dados.monstroId, dados.usuarioId], (error, results)=>{
@@ -408,11 +359,9 @@ class CampanhasBD{
         })
     }
 
-    // O Mestre tira um monstro da campanha. linhaId: id da linha em campanha_monstros
     static removerMonstro(linhaId, usuarioId, callback){
         const connection = CampanhasBD.connect()
 
-        // o "in (...)" garante que a linha é de uma campanha em que a pessoa é Mestre
         var sql = 'delete from campanha_monstros where id = ? and campanhaId in (select id from campanhas where usuarioMestreId = ?)'
 
         connection.query(sql, [linhaId, usuarioId], (error, results)=>{
@@ -428,15 +377,12 @@ class CampanhasBD{
         connection.end()
     }
 
-    // ---------- ADMIN: CAMPANHAS OFICIAIS ----------
-    // campanha: { nome, descricao, historia, imagemCapa, criadaPor }
     static addOficial(campanha, callback){
 
         if(!campanha.nome){
             return callback({'error': 'Dê um nome para a campanha'})
         }
 
-        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
         var tema = null
 
         if(campanha.tema){
@@ -465,15 +411,12 @@ class CampanhasBD{
         connection.end()
     }
 
-    // campanha: { id, nome, descricao, historia, criadaPor, imagemCapa }
-    // Se a imagem vier vazia, a capa que já estava no banco continua.
     static atualizarOficial(campanha, callback){
 
         if(!campanha.nome){
             return callback({'error': 'Dê um nome para a campanha'})
         }
 
-        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
         var tema = null
 
         if(campanha.tema){
@@ -493,7 +436,6 @@ class CampanhasBD{
         connection.query(sql, valores, (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
-            // nenhuma linha mudou = esse id não existe (ou não é oficial)
             if(results.affectedRows == 0){
                 return callback({'error': 'Campanha oficial não encontrada'})
             }
@@ -504,14 +446,12 @@ class CampanhasBD{
         connection.end()
     }
 
-    // Os monstros daquela campanha oficial são apagados junto (ON DELETE CASCADE no banco.sql)
     static excluirOficial(id, callback){
         const connection = CampanhasBD.connect()
 
         connection.query('delete from campanhas where id = ? and oficial = 1', [id], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
-            // nenhuma linha apagada = esse id não existe (ou não é oficial)
             if(results.affectedRows == 0){
                 return callback({'error': 'Campanha oficial não encontrada'})
             }
