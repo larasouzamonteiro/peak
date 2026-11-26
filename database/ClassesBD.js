@@ -1,19 +1,11 @@
-// ClassesBD.js
-// Tabela "classes". Funciona igual às raças:
-//   usuarioId vazio (NULL) -> classe oficial da Peak
-//   usuarioId preenchido   -> classe criada por um jogador
-//   publico = 1            -> aparece para todo mundo (em "Comunidade")
-
 const conexao = require('./conexao')
 
 class ClassesBD{
 
     static connect(){
-        // versão servidor: usa o pool (veja database/conexao.js)
         return conexao
     }
-    // As classes que a pessoa pode ver: as oficiais, as públicas e as dela.
-    // E o tema: só aparece se não tiver tema, se for do evento de agora, ou para o admin.
+
     static getClasses(usuarioId, tipo, callback){
         const connection = ClassesBD.connect()
 
@@ -40,14 +32,12 @@ class ClassesBD{
         connection.end()
     }
 
-    // Criar uma classe (de um jogador). classe: { usuarioId, nome, descricao, imagem, publico }
     static addClasse(classe, callback){
 
         if(!classe.nome){
             return callback({'error': 'Digite o nome da classe'})
         }
 
-        // a caixinha "público": marcada vira 1, desmarcada vira 0
         var publico = 0
 
         if(classe.publico){
@@ -76,7 +66,6 @@ class ClassesBD{
     static atualizar(classe, usuarioId, callback){
         const connection = ClassesBD.connect()
 
-        // a caixinha "público": marcada vira 1, desmarcada vira 0
         var publico = 0
 
         if(classe.publico){
@@ -101,7 +90,6 @@ class ClassesBD{
     static excluir(id, usuarioId, callback){
         const connection = ClassesBD.connect()
 
-        // uma classe que já está em alguma ficha não pode ser apagada
         connection.query('select id from fichas where classeId = ?', [id], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
@@ -124,16 +112,12 @@ class ClassesBD{
         })
     }
 
-    // ---------- ADMIN: CLASSES OFICIAIS ----------
-    // Classe oficial = usuarioId vazio (NULL). Só o admin cria, edita e apaga.
-    // classe: { nome, descricao, imagem }
     static addOficial(classe, callback){
 
         if(!classe.nome){
             return callback({'error': 'Digite o nome da classe'})
         }
 
-        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
         var tema = null
 
         if(classe.tema){
@@ -160,15 +144,12 @@ class ClassesBD{
         connection.end()
     }
 
-    // classe: { id, nome, descricao, imagem }
-    // Se a imagem vier vazia, a imagem que já estava no banco continua.
     static atualizarOficial(classe, callback){
 
         if(!classe.nome){
             return callback({'error': 'Digite o nome da classe'})
         }
 
-        // '' (não marcado) vira null = aparece sempre; 'natal' = só aparece no evento
         var tema = null
 
         if(classe.tema){
@@ -201,7 +182,6 @@ class ClassesBD{
     static excluirOficial(id, callback){
         const connection = ClassesBD.connect()
 
-        // uma classe que já está em alguma ficha não pode ser apagada
         connection.query('select id from fichas where classeId = ?', [id], (error, results)=>{
             if(error){ console.log(error.message); return callback({'error': 'Erro no servidor. Tente de novo.'}) }
 
