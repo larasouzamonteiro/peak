@@ -1,12 +1,4 @@
-// admin.js  (página admin.html)
-// Painel do administrador. Ele só cuida do que é OFICIAL:
-//   - monstros oficiais (os gerais da Peak e os de cada campanha oficial)
-//   - campanhas oficiais
-//   - raças oficiais e classes oficiais (as que aparecem para todo mundo na Oficina)
-//   - avisos da Peak (o mais novo aparece no topo do Início)
-//
-// Quem protege de verdade é o servidor: as rotas /admin/... recusam quem não é admin.
-// Aqui a página só manda embora quem entrou por engano.
+
 
 var monstros = []            // só os oficiais (usuarioId vazio)
 var campanhas = []           // as campanhas oficiais
