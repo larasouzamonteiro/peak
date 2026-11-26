@@ -1,8 +1,4 @@
-// campanha.js  (página campanha.html?id=3)
-// Uma campanha aberta. Tem quatro abas: Mesa, História, Sessões e Painel do Mestre.
-// O Mestre vê tudo; o jogador não vê o Painel do Mestre nem os formulários.
 
-// o id da campanha vem do endereço: campanha.html?id=3
 var campanhaId = parametro('id')
 var campanha = null      // os dados que vieram do servidor
 var souMestre = false
