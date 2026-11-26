@@ -1,21 +1,11 @@
-// AvisosBD.js
-// Tabela "avisos": os recados da equipe da Peak que aparecem no topo do Início.
-// Só o admin cria e apaga (quem confere isso é o exigirAdmin do app.js).
-//
-//   getAvisos  -> os 3 avisos mais novos (para o Início)
-//   addAviso   -> cria um aviso novo
-//   excluir    -> apaga um aviso
-
 const conexao = require('./conexao')
 
 class AvisosBD{
 
     static connect(){
-        // versão servidor: usa o pool (veja database/conexao.js)
         return conexao
     }
 
-    // order by id desc: o mais novo primeiro. limit 3: só os 3 últimos.
     static getAvisos(callback){
         const connection = AvisosBD.connect()
 
@@ -28,21 +18,19 @@ class AvisosBD{
         })
     }
 
-    // aviso: { titulo, texto }
     static addAviso(aviso, callback){
 
         var titulo = ''
 
         if(aviso.titulo){
-            titulo = String(aviso.titulo).trim()     // trim tira os espaços do começo e do fim
+            titulo = String(aviso.titulo).trim()
         }
 
         var texto = ''
 
         if(aviso.texto){
-            texto = String(aviso.texto).trim()     // trim tira os espaços do começo e do fim
+            texto = String(aviso.texto).trim()
         }
-
 
         if(titulo == ''){
             return callback({'error': 'Digite o título do aviso'})
