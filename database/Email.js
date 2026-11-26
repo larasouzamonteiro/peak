@@ -1,14 +1,10 @@
-// Email.js
-// Envia o código de confirmação do cadastro, usando a biblioteca nodemailer.
-// (nodemailer não foi visto em aula: é a biblioteca mais usada para mandar e-mail pelo Node)
+
 
 const nodemailer = require('nodemailer')
 const emailConfig = require('./emailConfig')
 
 class Email{
 
-    // Monta o HTML do e-mail: simples, só texto e o código em destaque.
-    // tipo: 'senha' = código do "Esqueci minha senha"; sem tipo = confirmar o cadastro
     static montarEmail(codigo, tipo){
         var html = ''
 
@@ -28,12 +24,6 @@ class Email{
         return html
     }
 
-    // destino: e-mail de quem se cadastrou
-    // codigo:  os 6 números que a pessoa vai digitar na página
-    // tipo:    'senha' para o "Esqueci minha senha" (opcional; sem ele é o do cadastro)
-    // depois:  função chamada quando o envio TERMINAR (deu certo ou não).
-    //          Na Vercel isso é importante: ela "desliga" o servidor logo depois da resposta,
-    //          então só respondemos para a página depois que o e-mail saiu.
     static enviarCodigo(destino, codigo, tipo, depois){
 
         // assunto do e-mail: muda quando é para trocar a senha
@@ -55,9 +45,7 @@ class Email{
             return
         }
 
-        // "transporter" é quem entrega o e-mail (aqui, a conta do Gmail).
-        // O e-mail e a senha de app vêm do emailConfig.js (nunca escreva a senha aqui).
-        // family: 4 força IPv4, para evitar o erro ENETUNREACH (IPv6) de algumas redes.
+      
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
